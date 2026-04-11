@@ -34,7 +34,9 @@ import {
   HelpCircle,
   Instagram,
   Youtube,
-  Twitter
+  Twitter,
+  TrendingUp as TrendingUpIcon,
+  TrendingDown as TrendingDownIcon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { supabase } from './lib/supabase';
@@ -42,6 +44,58 @@ import { User } from '@supabase/supabase-js';
 import { legacyAuth, legacyDb } from './lib/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
+
+// --- Icon Helper Component ---
+const Icon = ({ name, className }: { name: string; className?: string }) => {
+  useEffect(() => {
+    // This is for the single-file deployment version where lucide is loaded via CDN
+    if ((window as any).lucide) {
+      (window as any).lucide.createIcons();
+    }
+  }, [name]);
+  
+  // For standard React builds, we can map the name to the component
+  const iconMap: Record<string, any> = {
+    'layout-dashboard': LayoutDashboard,
+    'wallet': Wallet,
+    'check-square': CheckSquare,
+    'rocket': Rocket,
+    'gamepad-2': Gamepad2,
+    'trending-up': TrendingUp,
+    'trending-down': TrendingDown,
+    'chevron-right': ChevronRight,
+    'lock': Lock,
+    'zap': Zap,
+    'arrow-up-right': ArrowUpRight,
+    'arrow-down-left': ArrowDownLeft,
+    'refresh-cw': RefreshCw,
+    'trophy': Trophy,
+    'users': Users,
+    'send': Send,
+    'search': Search,
+    'x': X,
+    'loader-2': Loader2,
+    'more-horizontal': MoreHorizontal,
+    'bar-chart-2': BarChart2,
+    'pie-chart': PieChart,
+    'cpu': Cpu,
+    'credit-card': CreditCard,
+    'arrow-right-left': ArrowRightLeft,
+    'shield-check': ShieldCheck,
+    'help-circle': HelpCircle,
+    'instagram': Instagram,
+    'youtube': Youtube,
+    'twitter': Twitter
+  };
+
+  const LucideIcon = iconMap[name];
+  if (LucideIcon) {
+    return <LucideIcon className={className} />;
+  }
+
+  // Fallback for CDN version
+  return <i data-lucide={name} className={className}></i>;
+};
 
 // --- Types ---
 type Tab = 'dashboard' | 'wallet' | 'tasks' | 'mainnet' | 'games' | 'more';
@@ -90,7 +144,7 @@ const TASKS = [
     id: 1, 
     title: 'Repost last X post', 
     reward: 0.01, 
-    icon: <Twitter className="w-5 h-5" />, 
+    icon: <Icon name="twitter" className="w-5 h-5" />, 
     link: 'https://x.com/DigitalGold2025',
     frequency: 'Every 24h'
   },
@@ -98,7 +152,7 @@ const TASKS = [
     id: 2, 
     title: 'Repost last Instagram post', 
     reward: 0.01, 
-    icon: <Instagram className="w-5 h-5" />, 
+    icon: <Icon name="instagram" className="w-5 h-5" />, 
     link: 'https://instagram.com/digitalgold11',
     frequency: 'Every 24h'
   },
@@ -106,7 +160,7 @@ const TASKS = [
     id: 3, 
     title: 'React on last Telegram post', 
     reward: 0.01, 
-    icon: <Send className="w-5 h-5" />, 
+    icon: <Icon name="send" className="w-5 h-5" />, 
     link: 'https://t.me/digitalgold2025',
     frequency: 'Every 24h'
   },
@@ -114,7 +168,7 @@ const TASKS = [
     id: 4, 
     title: 'Check for news in Youtube', 
     reward: 0.05, 
-    icon: <Youtube className="w-5 h-5" />, 
+    icon: <Icon name="youtube" className="w-5 h-5" />, 
     link: 'https://www.youtube.com/@DigitalGold25',
     frequency: 'Every 3 days'
   },
@@ -170,13 +224,13 @@ const MarketView = ({ onClose }: { onClose: () => void }) => {
       <header className="px-5 pt-8 pb-4 flex items-center justify-between border-b border-white/5">
         <h2 className="text-xl font-bold text-gold-gradient">Global Market</h2>
         <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors">
-          <X className="w-6 h-6 text-gray-400" />
+          <Icon name="x" className="w-6 h-6 text-gray-400" />
         </button>
       </header>
 
       <div className="px-5 py-4">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+          <Icon name="search" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
           <input 
             type="text" 
             placeholder="Search coins..." 
@@ -458,7 +512,7 @@ const Dashboard = ({
             onClick={onViewAll}
             className="text-gold text-xs font-medium flex items-center gap-1 hover:brightness-110 transition-all"
           >
-            View All <ChevronRight className="w-3 h-3" />
+            View All <Icon name="chevron-right" className="w-3 h-3" />
           </button>
         </div>
         <div className="glass rounded-2xl overflow-hidden">
@@ -499,7 +553,7 @@ const Dashboard = ({
                     </td>
                     <td className={`px-4 py-4 text-right font-medium ${item.price_change_percentage_24h >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                       <div className="flex items-center justify-end gap-1">
-                        {item.price_change_percentage_24h >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                        {item.price_change_percentage_24h >= 0 ? <Icon name="trending-up" className="w-3 h-3" /> : <Icon name="trending-down" className="w-3 h-3" />}
                         {item.price_change_percentage_24h != null ? Math.abs(item.price_change_percentage_24h).toFixed(2) : '0.00'}%
                       </div>
                     </td>
@@ -543,7 +597,7 @@ const WalletTab = ({
       <div className={`glass rounded-3xl p-5 border-gold/40 bg-gradient-to-r from-gold/10 to-transparent relative overflow-hidden transition-all duration-500 ${migrationStatus ? 'gold-glow' : 'opacity-80'}`}>
         <div className="flex items-center gap-4 mb-4">
           <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${migrationStatus ? 'bg-gold/20 text-gold' : 'bg-green-500/20 text-green-400'}`}>
-            {migrationStatus ? <RefreshCw className="w-6 h-6 animate-spin-slow" /> : <CheckSquare className="w-6 h-6" />}
+            {migrationStatus ? <Icon name="refresh-cw" className="w-6 h-6 animate-spin-slow" /> : <Icon name="check-square" className="w-6 h-6" />}
           </div>
           <div>
             <h4 className={`font-bold ${migrationStatus ? 'text-gold' : 'text-green-400'}`}>
@@ -563,7 +617,7 @@ const WalletTab = ({
             : 'bg-white/5 text-gray-500 cursor-default'
           }`}
         >
-          {migrationStatus ? <><RefreshCw className="w-5 h-5" /> Sync Legacy Assets</> : 'Wallet Verified'}
+          {migrationStatus ? <><Icon name="refresh-cw" className="w-5 h-5" /> Sync Legacy Assets</> : 'Wallet Verified'}
         </button>
       </div>
 
@@ -578,10 +632,10 @@ const WalletTab = ({
         
         <div className="flex gap-3">
           <button className="flex-1 bg-white/10 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-white/20 transition-colors border border-white/5">
-            <ArrowUpRight className="w-4 h-4" /> Send
+            <Icon name="arrow-up-right" className="w-4 h-4" /> Send
           </button>
           <button className="flex-1 bg-white/10 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-white/20 transition-colors border border-white/5">
-            <ArrowDownLeft className="w-4 h-4" /> Receive
+            <Icon name="arrow-down-left" className="w-4 h-4" /> Receive
           </button>
         </div>
       </div>
@@ -1448,7 +1502,7 @@ export default function App() {
           onClick={handleLogout}
           className="bg-white/5 border border-white/10 p-2 rounded-xl hover:bg-white/10 transition-all group"
         >
-          <X className="w-5 h-5 text-gray-500 group-hover:text-gold" />
+          <Icon name="x" className="w-5 h-5 text-gray-500 group-hover:text-gold" />
         </button>
       </div>
 
@@ -1563,37 +1617,37 @@ export default function App() {
         <NavButton 
           active={activeTab === 'dashboard'} 
           onClick={() => setActiveTab('dashboard')} 
-          icon={<LayoutDashboard className="w-6 h-6" />} 
+          icon={<Icon name="layout-dashboard" className="w-6 h-6" />} 
           label="Home" 
         />
         <NavButton 
           active={activeTab === 'wallet'} 
           onClick={() => setActiveTab('wallet')} 
-          icon={<Wallet className="w-6 h-6" />} 
+          icon={<Icon name="wallet" className="w-6 h-6" />} 
           label="Wallet" 
         />
         <NavButton 
           active={activeTab === 'tasks'} 
           onClick={() => setActiveTab('tasks')} 
-          icon={<CheckSquare className="w-6 h-6" />} 
+          icon={<Icon name="check-square" className="w-6 h-6" />} 
           label="Tasks" 
         />
         <NavButton 
           active={activeTab === 'mainnet'} 
           onClick={() => setActiveTab('mainnet')} 
-          icon={<Rocket className="w-6 h-6" />} 
+          icon={<Icon name="rocket" className="w-6 h-6" />} 
           label="Mainnet" 
         />
         <NavButton 
           active={activeTab === 'games'} 
           onClick={() => setActiveTab('games')} 
-          icon={<Gamepad2 className="w-6 h-6" />} 
+          icon={<Icon name="gamepad-2" className="w-6 h-6" />} 
           label="Games" 
         />
         <NavButton 
           active={activeTab === 'more'} 
           onClick={() => setActiveTab('more')} 
-          icon={<MoreHorizontal className="w-6 h-6" />} 
+          icon={<Icon name="more-horizontal" className="w-6 h-6" />} 
           label="More" 
         />
       </nav>
