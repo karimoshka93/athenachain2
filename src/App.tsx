@@ -325,9 +325,11 @@ const Dashboard = ({
 
   useEffect(() => {
     const fetchDashboardMarket = async () => {
+      // Small delay to avoid hitting rate limits too quickly on page load
+      await new Promise(resolve => setTimeout(resolve, 500));
       try {
-        const ids = 'bitcoin,ethereum,solana,the-open-network,binancecoin,dogecoin,shiba-inu,pinetwork';
-        const response = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids}&order=market_cap_desc&sparkline=false`, {
+        // Fetching top 50 coins instead of specific IDs to be more robust against API errors with specific IDs
+        const response = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=false`, {
           headers: { 'Accept': 'application/json' }
         });
         
@@ -346,20 +348,26 @@ const Dashboard = ({
           price_change_percentage_24h: 0 
         };
 
-        const hasPi = Array.isArray(data) && data.some((c: any) => c.symbol === 'pi');
-        const finalData = hasPi ? data.map((c: any) => c.symbol === 'pi' ? { ...c, current_price: 'Coming Soon', image: '/pi.png' } : c) : [
-          { 
-            id: 'pi-network', 
-            symbol: 'pi', 
-            name: 'Pi Network', 
-            image: '/pi.png', 
-            current_price: 'Coming Soon', 
-            price_change_percentage_24h: 0 
-          },
-          ...(Array.isArray(data) ? data : [])
-        ];
+        // We want to show specific coins on the dashboard
+        const targetSymbols = ['btc', 'eth', 'sol', 'ton', 'bnb', 'doge', 'shib', 'usdt'];
+        const filteredData = Array.isArray(data) 
+          ? data.filter((c: any) => targetSymbols.includes(c.symbol.toLowerCase()))
+          : [];
 
-        setMarketData([gldCoin, ...finalData]);
+        const piCoin: MarketCoin = (Array.isArray(data) && data.find((c: any) => c.symbol.toLowerCase() === 'pi')) || { 
+          id: 'pi-network', 
+          symbol: 'pi', 
+          name: 'Pi Network', 
+          image: '/pi.png', 
+          current_price: 'Coming Soon', 
+          price_change_percentage_24h: 0 
+        };
+
+        // Ensure Pi has the correct image and price status
+        piCoin.image = '/pi.png';
+        piCoin.current_price = 'Coming Soon';
+
+        setMarketData([gldCoin, piCoin, ...filteredData]);
       } catch (error) {
         console.warn('Dashboard market data fetch failed, using fallback:', error);
         
@@ -373,7 +381,8 @@ const Dashboard = ({
           price_change_percentage_24h: 0 
         };
 
-        const fallbackCoins: MarketCoin[] = MOCK_COINS.slice(0, 7).map(coin => ({
+        // In fallback, we use MOCK_COINS but skip the first one (GLD) to avoid duplication
+        const fallbackCoins: MarketCoin[] = MOCK_COINS.slice(1, 8).map(coin => ({
           id: coin.id,
           symbol: coin.symbol.toLowerCase(),
           name: coin.name,
@@ -656,7 +665,7 @@ const WalletTab = ({
             Object.entries(userAssets).map(([symbol, balance]) => {
               const coinInfo = MOCK_COINS.find(c => c.symbol.toLowerCase() === symbol.toLowerCase());
               const name = coinInfo?.name || symbol;
-              const icon = coinInfo?.icon || `https://picsum.photos/seed/${symbol}/100/100`;
+              const icon = coinInfo?.icon || '/pi.png';
               
               return (
                 <div key={symbol} className="glass rounded-2xl p-4 flex items-center justify-between hover:bg-white/5 transition-colors cursor-pointer border-white/5">
