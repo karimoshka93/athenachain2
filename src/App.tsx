@@ -46,6 +46,41 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 
 // --- Icon Helper Component ---
+const CoinIcon = ({ image, symbol, className = "w-10 h-10" }: { image?: string; symbol: string; className?: string }) => {
+  const isGld = symbol.toLowerCase() === 'gld' || symbol.toLowerCase() === 'athena-gld';
+  const isPi = symbol.toLowerCase() === 'pi' || symbol.toLowerCase() === 'pi-network';
+  
+  if (isGld) {
+    return (
+      <div className={`${className} rounded-full bg-gold-gradient flex items-center justify-center text-black font-black text-[10px] border border-white/20 shadow-lg shadow-gold/20 flex-shrink-0`}>
+        GLD
+      </div>
+    );
+  }
+  
+  if (isPi) {
+    return (
+      <div className={`${className} rounded-full bg-gradient-to-br from-purple-600 to-indigo-700 flex items-center justify-center text-white font-black text-[10px] border border-white/20 shadow-lg shadow-purple-500/20 flex-shrink-0`}>
+        PI
+      </div>
+    );
+  }
+
+  return (
+    <div className={`${className} rounded-full overflow-hidden bg-white/5 flex items-center justify-center border border-white/10 flex-shrink-0`}>
+      <img 
+        src={image} 
+        alt={symbol} 
+        className="w-full h-full object-cover" 
+        referrerPolicy="no-referrer"
+        onError={(e) => {
+          (e.target as HTMLImageElement).style.display = 'none';
+        }}
+      />
+    </div>
+  );
+};
+
 const Icon = ({ name, className }: { name: string; className?: string }) => {
   useEffect(() => {
     // This is for the single-file deployment version where lucide is loaded via CDN
@@ -121,8 +156,8 @@ interface MarketCoin {
 
 // --- Mock Data ---
 const MOCK_COINS: Coin[] = [
-  { id: 'gld', name: 'Athena GLD', symbol: 'GLD', balance: 1250.50, price: 3.00, change: 5.4, icon: 'https://github.com/karimoshka93/athenachain2/blob/main/public/GLD.jpg?raw=true' },
-  { id: 'pi', name: 'Pi Network', symbol: 'PI', balance: 450.00, price: 32.40, change: 2.1, icon: 'https://github.com/karimoshka93/athenachain2/blob/main/public/pi.png?raw=true' },
+  { id: 'gld', name: 'Athena GLD', symbol: 'GLD', balance: 1250.50, price: 3.00, change: 5.4, icon: '' },
+  { id: 'pi', name: 'Pi Network', symbol: 'PI', balance: 450.00, price: 32.40, change: 2.1, icon: '' },
   { id: 'sol', name: 'Solana', symbol: 'SOL', balance: 12.5, price: 145.20, change: 3.8, icon: 'https://coin-images.coingecko.com/coins/images/4128/large/solana.png' },
   { id: 'ton', name: 'TON', symbol: 'TON', balance: 85.00, price: 5.12, change: 12.5, icon: 'https://coin-images.coingecko.com/coins/images/17980/large/ton_symbol.png' },
   { id: 'usdt', name: 'USDT', symbol: 'USDT', balance: 250.00, price: 1.00, change: 0.01, icon: 'https://coin-images.coingecko.com/coins/images/325/large/tether.png' },
@@ -266,7 +301,7 @@ const MarketView = ({ onClose }: { onClose: () => void }) => {
                 className="glass rounded-2xl p-4 flex items-center justify-between hover:bg-white/5 transition-colors border-white/5"
               >
                 <div className="flex items-center gap-4">
-                  <img src={coin.image} alt={coin.name} className="w-10 h-10 rounded-full" referrerPolicy="no-referrer" />
+                  <CoinIcon image={coin.image} symbol={coin.symbol} className="w-10 h-10" />
                   <div className="flex flex-col">
                     <span className="font-bold text-sm">{coin.name}</span>
                     <span className="text-gray-500 text-[10px] uppercase font-semibold tracking-wider">{coin.symbol}</span>
@@ -343,7 +378,7 @@ const Dashboard = ({
           id: 'athena-gld', 
           symbol: 'gld', 
           name: 'Athena GLD', 
-          image: 'https://github.com/karimoshka93/athenachain2/blob/main/public/GLD.jpg?raw=true', 
+          image: '', 
           current_price: 'Listing Soon', 
           price_change_percentage_24h: 0 
         };
@@ -358,13 +393,13 @@ const Dashboard = ({
           id: 'pi-network', 
           symbol: 'pi', 
           name: 'Pi Network', 
-          image: 'https://github.com/karimoshka93/athenachain2/blob/main/public/pi.png?raw=true', 
+          image: '', 
           current_price: 'Coming Soon', 
           price_change_percentage_24h: 0 
         };
 
         // Ensure Pi has the correct image and price status
-        piCoin.image = 'https://github.com/karimoshka93/athenachain2/blob/main/public/pi.png?raw=true';
+        piCoin.image = '';
         piCoin.current_price = 'Coming Soon';
 
         setMarketData([gldCoin, piCoin, ...filteredData]);
@@ -376,7 +411,7 @@ const Dashboard = ({
           id: 'athena-gld', 
           symbol: 'gld', 
           name: 'Athena GLD', 
-          image: 'https://github.com/karimoshka93/athenachain2/blob/main/public/GLD.jpg?raw=true', 
+          image: '', 
           current_price: 'Listing Soon', 
           price_change_percentage_24h: 0 
         };
@@ -547,7 +582,7 @@ const Dashboard = ({
                   <tr key={item.symbol} className="hover:bg-white/5 transition-colors">
                     <td className="px-4 py-4">
                       <div className="flex items-center gap-2">
-                        <img src={item.image} alt={item.name} className="w-5 h-5 rounded-full" referrerPolicy="no-referrer" />
+                        <CoinIcon image={item.image} symbol={item.symbol} className="w-5 h-5" />
                         <div className="flex flex-col">
                           <span className="font-semibold">{item.name}</span>
                           <span className="text-gray-500 text-[10px] uppercase">{item.symbol}</span>
@@ -670,9 +705,7 @@ const WalletTab = ({
               return (
                 <div key={symbol} className="glass rounded-2xl p-4 flex items-center justify-between hover:bg-white/5 transition-colors cursor-pointer border-white/5">
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-gray-800 overflow-hidden border border-white/10 flex items-center justify-center">
-                      <img src={icon} alt={name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-                    </div>
+                    <CoinIcon image={coinInfo?.icon} symbol={symbol} className="w-10 h-10" />
                     <div className="flex flex-col">
                       <span className="font-bold text-sm">{name}</span>
                       <span className="text-gray-500 text-[10px] uppercase font-semibold tracking-wider">{symbol}</span>
@@ -1263,7 +1296,9 @@ export default function App() {
               className="w-24 h-24 rounded-full border-2 border-gold/20 flex items-center justify-center relative"
             >
               <div className="absolute inset-0 rounded-full border-t-2 border-gold animate-spin" />
-              <img src="https://github.com/karimoshka93/athenachain2/blob/main/public/GLD.jpg?raw=true" alt="Athena Logo" className="w-16 h-16 rounded-full" />
+              <div className="w-16 h-16 rounded-full bg-gold-gradient flex items-center justify-center text-black shadow-2xl shadow-gold/40">
+                <Loader2 className="w-8 h-8 animate-spin" />
+              </div>
             </motion.div>
             <div className="text-center">
               <h1 className="text-3xl font-bold text-gold-gradient">Athena Chain</h1>
