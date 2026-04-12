@@ -343,12 +343,16 @@ const Dashboard = ({
   onViewAll, 
   onClaim, 
   lastMiningTime, 
-  onStartMining 
+  onStartMining,
+  deferredPrompt,
+  onInstall
 }: { 
   onViewAll: () => void, 
   onClaim: (amount: number) => void,
   lastMiningTime: string | null,
-  onStartMining: () => void
+  onStartMining: () => void,
+  deferredPrompt: any,
+  onInstall: () => void
 }) => {
   const [minedAmount, setMinedAmount] = useState(0);
   const [marketData, setMarketData] = useState<MarketCoin[]>([]);
@@ -486,6 +490,30 @@ const Dashboard = ({
         </div>
         <p className="text-gray-400 text-sm">Welcome back, Pioneer</p>
       </header>
+
+      {deferredPrompt && (
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-gold/10 border border-gold/20 rounded-2xl p-4 flex items-center justify-between gap-4"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gold/20 flex items-center justify-center text-gold">
+              <Icon name="rocket" className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-white">Install Athena App</p>
+              <p className="text-[10px] text-gray-400">Add to home screen for quick access</p>
+            </div>
+          </div>
+          <button 
+            onClick={onInstall}
+            className="bg-gold text-black font-bold text-xs px-4 py-2 rounded-lg hover:brightness-110 active:scale-95 transition-all"
+          >
+            Install
+          </button>
+        </motion.div>
+      )}
 
       {/* Mining Section */}
       <div className="glass rounded-3xl p-8 flex flex-col items-center justify-center gap-6 relative overflow-hidden">
@@ -961,6 +989,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('dashboard');
   const [showMarketView, setShowMarketView] = useState(false);
   const [marketPrices, setMarketPrices] = useState<Record<string, number>>({ 'GLD': 3.00 });
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [migrationStatus, setMigrationStatus] = useState(true);
   const [showMigrationModal, setShowMigrationModal] = useState(false);
   const [userAssets, setUserAssets] = useState<Record<string, number>>({});
@@ -985,6 +1014,24 @@ export default function App() {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    const handler = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstall = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setDeferredPrompt(null);
+    }
+  };
 
   // Load user data when authenticated
   useEffect(() => {
@@ -1501,6 +1548,8 @@ export default function App() {
             onClaim={handleClaimMining} 
             lastMiningTime={lastMiningTime}
             onStartMining={handleStartMining}
+            deferredPrompt={deferredPrompt}
+            onInstall={handleInstall}
           />
         );
       case 'wallet': 
@@ -1529,6 +1578,8 @@ export default function App() {
             onClaim={handleClaimMining} 
             lastMiningTime={lastMiningTime}
             onStartMining={handleStartMining}
+            deferredPrompt={deferredPrompt}
+            onInstall={handleInstall}
           />
         );
     }

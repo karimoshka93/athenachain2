@@ -1,0 +1,21 @@
+{
+  "name": "Athena Chain",
+  "short_name": "Athena",
+  "description": "Premium Web3 crypto platform for the Athena Chain Network.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0e14",
+  "theme_color": "#f3ba2f",
+  "icons": [
+    {
+      "src": "https://github.com/karimoshka93/athenachain2/blob/main/public/GLD.jpg?raw=true",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "https://github.com/karimoshka93/athenachain2/blob/main/public/GLD.jpg?raw=true",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
