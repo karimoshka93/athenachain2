@@ -32,6 +32,7 @@ import {
   ArrowRightLeft,
   ShieldCheck,
   HelpCircle,
+  Download,
   Instagram,
   Youtube,
   Twitter,
@@ -939,8 +940,17 @@ const MoreTab = () => {
         { name: "NFT Market", icon: <Gamepad2 className="w-5 h-5" /> },
         { name: "Academy", icon: <HelpCircle className="w-5 h-5" /> },
       ]
+    },
+    {
+      title: "Support",
+      items: [
+        { name: "Install App", icon: <Download className="w-5 h-5" />, isInstall: true },
+        { name: "Help Center", icon: <HelpCircle className="w-5 h-5" /> },
+      ]
     }
   ];
+
+  const [showInstallGuide, setShowInstallGuide] = useState(false);
 
   return (
     <div className="flex flex-col gap-8 pb-24">
@@ -956,20 +966,75 @@ const MoreTab = () => {
             {section.items.map((item, itemIdx) => (
               <div 
                 key={itemIdx} 
-                className="flex flex-col items-center gap-2 p-3 rounded-2xl bg-white/5 border border-white/5 opacity-60 grayscale relative group"
+                onClick={() => {
+                  if (item.isInstall) setShowInstallGuide(true);
+                }}
+                className={`flex flex-col items-center gap-2 p-3 rounded-2xl bg-white/5 border border-white/5 relative group cursor-pointer ${!item.isInstall ? 'opacity-60 grayscale' : ''}`}
               >
-                <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-400">
+                <div className={`w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center ${item.isInstall ? 'text-gold' : 'text-gray-400'}`}>
                   {item.icon}
                 </div>
-                <span className="text-[10px] text-center font-medium text-gray-500 leading-tight">{item.name}</span>
-                <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity">
-                   <span className="text-[8px] font-bold text-gold uppercase tracking-tighter">Soon</span>
-                </div>
+                <span className={`text-[10px] text-center font-medium leading-tight ${item.isInstall ? 'text-white' : 'text-gray-500'}`}>{item.name}</span>
+                {!item.isInstall && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-[8px] font-bold text-gold uppercase tracking-tighter">Soon</span>
+                  </div>
+                )}
               </div>
             ))}
           </div>
         </div>
       ))}
+
+      {showInstallGuide && (
+        <div className="fixed inset-0 bg-black/90 z-[100] flex items-center justify-center p-6">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-[#1a1d23] border border-white/10 rounded-3xl p-6 w-full max-w-sm flex flex-col gap-6"
+          >
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold text-white">Install Athena App</h2>
+              <button onClick={() => setShowInstallGuide(false)} className="text-gray-400 hover:text-white">
+                <Icon name="x" className="w-6 h-6" />
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <div className="flex gap-4">
+                <div className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center text-gold font-bold text-sm shrink-0">1</div>
+                <div>
+                  <p className="text-sm font-bold text-white">Android (Chrome)</p>
+                  <p className="text-xs text-gray-400">Tap the three dots (⋮) in the top right and select "Install app".</p>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center text-gold font-bold text-sm shrink-0">2</div>
+                <div>
+                  <p className="text-sm font-bold text-white">iOS (Safari)</p>
+                  <p className="text-xs text-gray-400">Tap the Share button (square with arrow) and select "Add to Home Screen".</p>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center text-gold font-bold text-sm shrink-0">3</div>
+                <div>
+                  <p className="text-sm font-bold text-white">Desktop</p>
+                  <p className="text-xs text-gray-400">Click the install icon in the address bar next to the bookmark star.</p>
+                </div>
+              </div>
+            </div>
+
+            <button 
+              onClick={() => setShowInstallGuide(false)}
+              className="w-full bg-gold text-black font-bold py-3 rounded-xl hover:brightness-110 transition-all"
+            >
+              Got it!
+            </button>
+          </motion.div>
+        </div>
+      )}
       
       <a 
         href="mailto:digitalgold390@gmail.com"
