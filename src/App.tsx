@@ -345,14 +345,16 @@ const Dashboard = ({
   lastMiningTime, 
   onStartMining,
   deferredPrompt,
-  onInstall
+  onInstall,
+  miningMessage
 }: { 
   onViewAll: () => void, 
   onClaim: (amount: number) => void,
   lastMiningTime: string | null,
   onStartMining: () => void,
   deferredPrompt: any,
-  onInstall: () => void
+  onInstall: () => void,
+  miningMessage: { type: 'success' | 'error', text: string } | null
 }) => {
   const [minedAmount, setMinedAmount] = useState(0);
   const [marketData, setMarketData] = useState<MarketCoin[]>([]);
@@ -539,6 +541,17 @@ const Dashboard = ({
         </div>
 
         <div className="flex flex-col items-center gap-4">
+          {miningMessage && (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className={`text-[10px] font-bold px-4 py-2 rounded-lg text-center ${
+                miningMessage.type === 'success' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+              }`}
+            >
+              {miningMessage.text}
+            </motion.div>
+          )}
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => {
@@ -999,6 +1012,34 @@ export default function App() {
   const [legacyPassword, setLegacyPassword] = useState('');
   const [isMigrating, setIsMigrating] = useState(false);
   const [migrationMessage, setMigrationMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [isWaitingForAd, setIsWaitingForAd] = useState(false);
+  const [adClickTime, setAdClickTime] = useState<number | null>(null);
+  const [miningMessage, setMiningMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && isWaitingForAd && adClickTime) {
+        const now = Date.now();
+        const elapsed = now - adClickTime;
+        
+        if (elapsed >= 4000) {
+          // Success, start mining
+          setIsWaitingForAd(false);
+          setAdClickTime(null);
+          setMiningMessage(null);
+          executeStartMining();
+        } else {
+          // Too fast
+          setMiningMessage({ type: 'error', text: 'Please watch the ad for at least 4 seconds to start mining.' });
+          setIsWaitingForAd(false);
+          setAdClickTime(null);
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [isWaitingForAd, adClickTime]);
 
   useEffect(() => {
     // Check active session
@@ -1506,7 +1547,18 @@ export default function App() {
     }
   };
 
-  const handleStartMining = async () => {
+  const handleStartMining = () => {
+    if (!user) return;
+    
+    const adUrl = "https://www.profitablecpmratenetwork.com/iefjy68tq?key=8a88eabcfabfca1a7fadd4a9fb46a455";
+    setAdClickTime(Date.now());
+    setIsWaitingForAd(true);
+    setMiningMessage({ type: 'success', text: 'Opening ad... Please watch for 4 seconds to start mining.' });
+    
+    window.open(adUrl, '_blank');
+  };
+
+  const executeStartMining = async () => {
     if (!user) return;
     const now = new Date().toISOString();
     try {
@@ -1570,6 +1622,7 @@ export default function App() {
             onStartMining={handleStartMining}
             deferredPrompt={deferredPrompt}
             onInstall={handleInstall}
+            miningMessage={miningMessage}
           />
         );
       case 'wallet': 
@@ -1600,6 +1653,7 @@ export default function App() {
             onStartMining={handleStartMining}
             deferredPrompt={deferredPrompt}
             onInstall={handleInstall}
+            miningMessage={miningMessage}
           />
         );
     }
