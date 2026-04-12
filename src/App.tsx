@@ -1211,6 +1211,23 @@ export default function App() {
       const legacyUid = legacyUserCredential.user.uid;
       console.log('Legacy Firebase UID:', legacyUid);
 
+      // --- ANTI-FARMING CHECK ---
+      // Check if this legacy UID has already been migrated by ANY user
+      const { data: existingProfile, error: checkError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('legacy_uid', legacyUid)
+        .maybeSingle();
+
+      if (checkError && checkError.code !== 'PGRST116') {
+        console.warn('Anti-farming check warning:', checkError.message);
+      }
+
+      if (existingProfile) {
+        throw new Error('This legacy account has already been migrated to another Athena wallet.');
+      }
+      // ---------------------------
+
       // 2. Fetch balances from Firebase Cloud Firestore
       console.log('Fetching from Firestore collections: users and wallets');
       
@@ -1274,10 +1291,13 @@ export default function App() {
 
       if (balanceError) throw balanceError;
 
-      // 4. Update profile is_synced status
+      // 4. Update profile is_synced status and lock legacy_uid
       const { error: profileError } = await supabase
         .from('profiles')
-        .update({ is_synced: true })
+        .update({ 
+          is_synced: true,
+          legacy_uid: legacyUid 
+        })
         .eq('id', user.id);
 
       if (profileError) throw profileError;
