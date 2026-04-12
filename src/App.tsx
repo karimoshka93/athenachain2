@@ -121,8 +121,8 @@ interface MarketCoin {
 
 // --- Mock Data ---
 const MOCK_COINS: Coin[] = [
-  { id: 'gld', name: 'Athena GLD', symbol: 'GLD', balance: 1250.50, price: 3.00, change: 5.4, icon: '/GLD.jpg' },
-  { id: 'pi', name: 'Pi Network', symbol: 'PI', balance: 450.00, price: 32.40, change: 2.1, icon: '/pi.png' },
+  { id: 'gld', name: 'Athena GLD', symbol: 'GLD', balance: 1250.50, price: 3.00, change: 5.4, icon: 'https://raw.githubusercontent.com/karimoshka93/athenachain2/main/public/GLD.jpg' },
+  { id: 'pi', name: 'Pi Network', symbol: 'PI', balance: 450.00, price: 32.40, change: 2.1, icon: 'https://raw.githubusercontent.com/karimoshka93/athenachain2/main/public/pi.png' },
   { id: 'sol', name: 'Solana', symbol: 'SOL', balance: 12.5, price: 145.20, change: 3.8, icon: 'https://coin-images.coingecko.com/coins/images/4128/large/solana.png' },
   { id: 'ton', name: 'TON', symbol: 'TON', balance: 85.00, price: 5.12, change: 12.5, icon: 'https://coin-images.coingecko.com/coins/images/17980/large/ton_symbol.png' },
   { id: 'usdt', name: 'USDT', symbol: 'USDT', balance: 250.00, price: 1.00, change: 0.01, icon: 'https://coin-images.coingecko.com/coins/images/325/large/tether.png' },
@@ -343,7 +343,7 @@ const Dashboard = ({
           id: 'athena-gld', 
           symbol: 'gld', 
           name: 'Athena GLD', 
-          image: '/GLD.jpg', 
+          image: 'https://raw.githubusercontent.com/karimoshka93/athenachain2/main/public/GLD.jpg', 
           current_price: 'Listing Soon', 
           price_change_percentage_24h: 0 
         };
@@ -358,13 +358,13 @@ const Dashboard = ({
           id: 'pi-network', 
           symbol: 'pi', 
           name: 'Pi Network', 
-          image: '/pi.png', 
+          image: 'https://raw.githubusercontent.com/karimoshka93/athenachain2/main/public/pi.png', 
           current_price: 'Coming Soon', 
           price_change_percentage_24h: 0 
         };
 
         // Ensure Pi has the correct image and price status
-        piCoin.image = '/pi.png';
+        piCoin.image = 'https://raw.githubusercontent.com/karimoshka93/athenachain2/main/public/pi.png';
         piCoin.current_price = 'Coming Soon';
 
         setMarketData([gldCoin, piCoin, ...filteredData]);
@@ -376,7 +376,7 @@ const Dashboard = ({
           id: 'athena-gld', 
           symbol: 'gld', 
           name: 'Athena GLD', 
-          image: '/GLD.jpg', 
+          image: 'https://raw.githubusercontent.com/karimoshka93/athenachain2/main/public/GLD.jpg', 
           current_price: 'Listing Soon', 
           price_change_percentage_24h: 0 
         };
@@ -665,7 +665,7 @@ const WalletTab = ({
             Object.entries(userAssets).map(([symbol, balance]) => {
               const coinInfo = MOCK_COINS.find(c => c.symbol.toLowerCase() === symbol.toLowerCase());
               const name = coinInfo?.name || symbol;
-              const icon = coinInfo?.icon || '/pi.png';
+              const icon = coinInfo?.icon || 'https://raw.githubusercontent.com/karimoshka93/athenachain2/main/public/pi.png';
               
               return (
                 <div key={symbol} className="glass rounded-2xl p-4 flex items-center justify-between hover:bg-white/5 transition-colors cursor-pointer border-white/5">
@@ -1263,7 +1263,7 @@ export default function App() {
               className="w-24 h-24 rounded-full border-2 border-gold/20 flex items-center justify-center relative"
             >
               <div className="absolute inset-0 rounded-full border-t-2 border-gold animate-spin" />
-              <img src="/GLD.jpg" alt="Athena Logo" className="w-16 h-16 rounded-full" />
+              <img src="https://raw.githubusercontent.com/karimoshka93/athenachain2/main/public/GLD.jpg" alt="Athena Logo" className="w-16 h-16 rounded-full" />
             </motion.div>
             <div className="text-center">
               <h1 className="text-3xl font-bold text-gold-gradient">Athena Chain</h1>
