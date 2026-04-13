@@ -44,7 +44,7 @@ import { supabase } from './lib/supabase';
 import { User } from '@supabase/supabase-js';
 import { legacyAuth, legacyDb } from './lib/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
 // --- Icon Helper Component ---
 const CoinIcon = ({ image, symbol, className = "w-10 h-10" }: { image?: string; symbol: string; className?: string }) => {
@@ -53,8 +53,13 @@ const CoinIcon = ({ image, symbol, className = "w-10 h-10" }: { image?: string; 
   
   if (isGld) {
     return (
-      <div className={`${className} rounded-full bg-gold-gradient flex items-center justify-center text-black font-black text-[10px] border border-white/20 shadow-lg shadow-gold/20 flex-shrink-0`}>
-        GLD
+      <div className={`${className} rounded-full overflow-hidden bg-gold-gradient flex items-center justify-center border border-white/20 shadow-lg shadow-gold/20 flex-shrink-0`}>
+        <img 
+          src="https://ik.imagekit.io/7e0zp2ext/GLD.png?updatedAt=1772483693392" 
+          alt="GLD" 
+          className="w-full h-full object-cover"
+          referrerPolicy="no-referrer"
+        />
       </div>
     );
   }
@@ -157,14 +162,19 @@ interface MarketCoin {
 
 // --- Mock Data ---
 const MOCK_COINS: Coin[] = [
-  { id: 'gld', name: 'Athena GLD', symbol: 'GLD', balance: 1250.50, price: 3.00, change: 5.4, icon: '' },
-  { id: 'pi', name: 'Pi Network', symbol: 'PI', balance: 450.00, price: 32.40, change: 2.1, icon: '' },
+  { id: 'gld', name: 'Athena GLD', symbol: 'GLD', balance: 1250.50, price: 3.00, change: 5.4, icon: 'https://ik.imagekit.io/7e0zp2ext/GLD.png?updatedAt=1772483693392' },
+  { id: 'pi', name: 'Pi Network', symbol: 'PI', balance: 450.00, price: 32.40, change: 2.1, icon: 'https://github.com/karimoshka93/athenachain2/blob/main/public/pi.png?raw=true' },
+  { id: 'btc', name: 'Bitcoin', symbol: 'BTC', balance: 0.05, price: 65000, change: 1.2, icon: 'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png' },
+  { id: 'eth', name: 'Ethereum', symbol: 'ETH', balance: 1.5, price: 3500, change: -0.8, icon: 'https://coin-images.coingecko.com/coins/images/279/large/ethereum.png' },
+  { id: 'xrp', name: 'XRP', symbol: 'XRP', balance: 1000, price: 0.62, change: 2.5, icon: 'https://coin-images.coingecko.com/coins/images/44/large/xrp-symbol-white-128.png' },
   { id: 'sol', name: 'Solana', symbol: 'SOL', balance: 12.5, price: 145.20, change: 3.8, icon: 'https://coin-images.coingecko.com/coins/images/4128/large/solana.png' },
   { id: 'ton', name: 'TON', symbol: 'TON', balance: 85.00, price: 5.12, change: 12.5, icon: 'https://coin-images.coingecko.com/coins/images/17980/large/ton_symbol.png' },
   { id: 'usdt', name: 'USDT', symbol: 'USDT', balance: 250.00, price: 1.00, change: 0.01, icon: 'https://coin-images.coingecko.com/coins/images/325/large/tether.png' },
   { id: 'bnb', name: 'BNB', symbol: 'BNB', balance: 1.2, price: 580.00, change: -0.5, icon: 'https://coin-images.coingecko.com/coins/images/825/large/bnb-icon2_2x.png' },
   { id: 'shib', name: 'Shiba Inu', symbol: 'SHIB', balance: 5000000, price: 0.000025, change: -2.1, icon: 'https://coin-images.coingecko.com/coins/images/11903/large/shiba.png' },
   { id: 'doge', name: 'Dogecoin', symbol: 'DOGE', balance: 1500, price: 0.15, change: 1.8, icon: 'https://coin-images.coingecko.com/coins/images/5/large/dogecoin.png' },
+  { id: 'pepe', name: 'Pepe', symbol: 'PEPE', balance: 10000000, price: 0.000008, change: 15.2, icon: 'https://coin-images.coingecko.com/coins/images/29850/large/pepe-token.jpeg' },
+  { id: 'wif', name: 'Dogwifhat', symbol: 'WIF', balance: 500, price: 2.50, change: -5.4, icon: 'https://coin-images.coingecko.com/coins/images/33566/large/dogwifhat.jpg' },
 ];
 
 const MARKET_DATA = [
@@ -656,12 +666,14 @@ const Dashboard = ({
 
 const WalletTab = ({ 
   migrationStatus, 
-  onSync, 
+  onMainSync,
+  onExtraSync, 
   userAssets,
   marketPrices
 }: { 
   migrationStatus: boolean, 
-  onSync: () => void,
+  onMainSync: () => void,
+  onExtraSync: () => void,
   userAssets: Record<string, number>,
   marketPrices: Record<string, number>
 }) => {
@@ -695,7 +707,7 @@ const WalletTab = ({
           </div>
         </div>
         <button 
-          onClick={onSync}
+          onClick={onMainSync}
           disabled={!migrationStatus}
           className={`w-full font-extrabold py-4 rounded-xl transition-all flex items-center justify-center gap-3 text-lg ${
             migrationStatus 
@@ -710,6 +722,23 @@ const WalletTab = ({
       {/* Portfolio Card */}
       <div className="glass rounded-3xl p-6 bg-gradient-to-br from-white/5 to-transparent relative overflow-hidden">
         <div className="absolute -top-10 -right-10 w-32 h-32 bg-gold/5 rounded-full blur-3xl" />
+        
+        {/* Extra Sync Button - Only visible if already synced */}
+        {!migrationStatus && (
+          <div className="absolute top-4 right-4 flex flex-col items-end gap-1">
+            <button 
+              onClick={onExtraSync}
+              className="w-10 h-10 rounded-full bg-gold/20 border border-gold/30 flex items-center justify-center text-gold hover:bg-gold/30 transition-all gold-glow active:scale-90 group"
+              title="Extra Sync (Available Today Only)"
+            >
+              <Icon name="refresh-cw" className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
+            </button>
+            <span className="text-[7px] font-bold text-gold uppercase tracking-tighter bg-gold/10 px-1.5 py-0.5 rounded-md border border-gold/20">
+              Extra Sync
+            </span>
+          </div>
+        )}
+
         <div className="flex flex-col gap-1 mb-1">
           <p className="text-gray-400 text-xs uppercase tracking-widest">Total Estimated Balance</p>
           <p className="text-[10px] text-gold/60 font-medium italic">* Real-time market prices (GLD fixed until listing)</p>
@@ -724,6 +753,16 @@ const WalletTab = ({
             <Icon name="arrow-down-left" className="w-4 h-4" /> Receive
           </button>
         </div>
+      </div>
+
+      {/* Temporary Notice */}
+      <div className="bg-gold/5 border border-gold/10 rounded-2xl p-3 flex items-start gap-3">
+        <div className="w-8 h-8 rounded-full bg-gold/10 flex items-center justify-center text-gold shrink-0">
+          <Icon name="zap" className="w-4 h-4" />
+        </div>
+        <p className="text-[10px] text-gray-400 leading-relaxed">
+          <span className="text-gold font-bold">Notice:</span> The <span className="text-white font-bold">Extra Sync</span> feature is available <span className="text-white font-bold">today only</span> to help users migrate missing XRP balances. This button will be removed tomorrow.
+        </p>
       </div>
 
       {/* Assets List */}
@@ -753,16 +792,17 @@ const WalletTab = ({
                       <span className="text-gray-500 text-[10px] uppercase font-semibold tracking-wider">{symbol}</span>
                     </div>
                   </div>
-                  <div className="flex flex-col items-end">
-                    <span className="font-mono font-bold text-sm">{balance.toLocaleString()}</span>
-                    <span className="text-gray-500 text-[10px]">
-                      {(() => {
-                        const upperSymbol = symbol.toUpperCase();
-                        const price = marketPrices[upperSymbol] || MOCK_COINS.find(c => c.symbol === upperSymbol)?.price || 0;
-                        return `$${(balance * price).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
-                      })()}
-                    </span>
-                  </div>
+                    <div className="flex flex-col items-end">
+                      <span className="font-mono font-bold text-sm">{balance.toLocaleString()}</span>
+                      <span className="text-gray-500 text-[10px]">
+                        {(() => {
+                          const upperSymbol = symbol.toUpperCase();
+                          if (upperSymbol === 'PI') return 'Soon';
+                          const price = marketPrices[upperSymbol] || MOCK_COINS.find(c => c.symbol === upperSymbol)?.price || 0;
+                          return `$${(balance * price).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+                        })()}
+                      </span>
+                    </div>
                 </div>
               );
             })
@@ -951,6 +991,16 @@ const MoreTab = () => {
   ];
 
   const [showInstallGuide, setShowInstallGuide] = useState(false);
+  const [browserInfo, setBrowserInfo] = useState({ isIOS: false, isAndroid: false, isChrome: false });
+
+  useEffect(() => {
+    const ua = navigator.userAgent;
+    setBrowserInfo({
+      isIOS: /iPad|iPhone|iPod/.test(ua),
+      isAndroid: /Android/.test(ua),
+      isChrome: /Chrome/.test(ua) && !/Edge/.test(ua)
+    });
+  }, []);
 
   return (
     <div className="flex flex-col gap-8 pb-24">
@@ -1001,28 +1051,40 @@ const MoreTab = () => {
             </div>
 
             <div className="flex flex-col gap-4">
-              <div className="flex gap-4">
-                <div className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center text-gold font-bold text-sm shrink-0">1</div>
-                <div>
-                  <p className="text-sm font-bold text-white">Android (Chrome)</p>
-                  <p className="text-xs text-gray-400">Tap the three dots (⋮) in the top right and select "Install app".</p>
+              {browserInfo.isAndroid && (
+                <div className="flex gap-4">
+                  <div className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center text-gold font-bold text-sm shrink-0">1</div>
+                  <div>
+                    <p className="text-sm font-bold text-white">Android (Chrome)</p>
+                    <p className="text-xs text-gray-400">Tap the three dots (⋮) in the top right and select "Install app".</p>
+                  </div>
                 </div>
-              </div>
+              )}
 
-              <div className="flex gap-4">
-                <div className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center text-gold font-bold text-sm shrink-0">2</div>
-                <div>
-                  <p className="text-sm font-bold text-white">iOS (Safari)</p>
-                  <p className="text-xs text-gray-400">Tap the Share button (square with arrow) and select "Add to Home Screen".</p>
+              {browserInfo.isIOS && (
+                <div className="flex gap-4">
+                  <div className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center text-gold font-bold text-sm shrink-0">1</div>
+                  <div>
+                    <p className="text-sm font-bold text-white">iOS (Safari)</p>
+                    <p className="text-xs text-gray-400">Tap the Share button (square with arrow) and select "Add to Home Screen".</p>
+                  </div>
                 </div>
-              </div>
+              )}
 
-              <div className="flex gap-4">
-                <div className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center text-gold font-bold text-sm shrink-0">3</div>
-                <div>
-                  <p className="text-sm font-bold text-white">Desktop</p>
-                  <p className="text-xs text-gray-400">Click the install icon in the address bar next to the bookmark star.</p>
+              {!browserInfo.isIOS && !browserInfo.isAndroid && (
+                <div className="flex gap-4">
+                  <div className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center text-gold font-bold text-sm shrink-0">1</div>
+                  <div>
+                    <p className="text-sm font-bold text-white">Desktop</p>
+                    <p className="text-xs text-gray-400">Click the install icon in the address bar next to the bookmark star.</p>
+                  </div>
                 </div>
+              )}
+
+              <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
+                <p className="text-[10px] text-gray-500 leading-relaxed italic">
+                  Athena Chain is a Progressive Web App (PWA). This means you can install it directly from your browser without using an App Store.
+                </p>
               </div>
             </div>
 
@@ -1073,6 +1135,8 @@ export default function App() {
   const [userAssets, setUserAssets] = useState<Record<string, number>>({});
   const [lastMiningTime, setLastMiningTime] = useState<string | null>(null);
   const [completedTasks, setCompletedTasks] = useState<number[]>([]);
+  const [legacyUid, setLegacyUid] = useState<string | null>(null);
+  const [isExtraSync, setIsExtraSync] = useState(false);
   const [legacyEmail, setLegacyEmail] = useState('');
   const [legacyPassword, setLegacyPassword] = useState('');
   const [isMigrating, setIsMigrating] = useState(false);
@@ -1108,14 +1172,27 @@ export default function App() {
 
   useEffect(() => {
     // Check active session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (error && error.message.includes('Refresh Token Not Found')) {
+        supabase.auth.signOut();
+        setUser(null);
+      } else {
+        setUser(session?.user ?? null);
+      }
+      setIsAuthLoading(false);
+    }).catch(() => {
       setIsAuthLoading(false);
     });
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
+        setUser(session?.user ?? null);
+      } else if (session) {
+        setUser(session.user);
+      } else {
+        setUser(null);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -1152,7 +1229,7 @@ export default function App() {
         // 1. Load profile to check sync status, mining time, and tasks
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
-          .select('is_synced, last_mining_time, completed_tasks')
+          .select('last_mining_time, completed_tasks, legacy_uid')
           .eq('id', user.id)
           .single();
 
@@ -1161,9 +1238,10 @@ export default function App() {
         }
 
         // Set defaults if profile is missing or fields are null
-        setMigrationStatus(profile ? !profile.is_synced : true);
+        setMigrationStatus(profile?.legacy_uid === null || profile?.legacy_uid === undefined);
         setLastMiningTime(profile?.last_mining_time || null);
         setCompletedTasks(profile?.completed_tasks || []);
+        setLegacyUid(profile?.legacy_uid || null);
 
         // 2. Load balances
         const { data: balances, error: balancesError } = await supabase
@@ -1284,7 +1362,21 @@ export default function App() {
     await supabase.auth.signOut();
   };
 
-  const handleSync = () => {
+  const handleMainSync = () => {
+    setIsExtraSync(false);
+    setLegacyEmail('');
+    setLegacyPassword('');
+    setMigrationMessage(null);
+    setShowMigrationModal(true);
+  };
+
+  const handleExtraSync = () => {
+    setIsExtraSync(true);
+    if (user?.email) {
+      setLegacyEmail(user.email);
+    }
+    setLegacyPassword('');
+    setMigrationMessage(null);
     setShowMigrationModal(true);
   };
 
@@ -1313,32 +1405,42 @@ export default function App() {
       }
 
       // 1. Verify legacy Firebase account
-      const legacyUserCredential = await signInWithEmailAndPassword(legacyAuth, legacyEmail.trim(), legacyPassword);
-      const legacyUid = legacyUserCredential.user.uid;
-      console.log('Legacy Firebase UID:', legacyUid);
+      const emailToUse = isExtraSync ? user.email : legacyEmail.trim().toLowerCase();
+      if (!emailToUse) throw new Error('Email is required for synchronization.');
+      
+      const legacyUserCredential = await signInWithEmailAndPassword(legacyAuth, emailToUse, legacyPassword);
+      const currentLegacyUid = legacyUserCredential.user.uid;
+      if (!currentLegacyUid) throw new Error('Could not retrieve legacy account ID.');
+      console.log('Legacy Firebase UID:', currentLegacyUid);
 
       // --- ANTI-FARMING CHECK ---
-      // Check if this legacy UID has already been migrated by ANY user
+      // 1. GLOBAL CHECK: Check if this legacy UID has already been migrated by ANYONE else
       const { data: existingProfile, error: checkError } = await supabase
         .from('profiles')
         .select('id')
-        .eq('legacy_uid', legacyUid)
+        .eq('legacy_uid', currentLegacyUid)
         .maybeSingle();
 
-      if (checkError && checkError.code !== 'PGRST116') {
-        console.warn('Anti-farming check warning:', checkError.message);
+      if (checkError) {
+        console.error('Anti-farming check error:', checkError);
+        throw new Error('Security check failed. Please try again.');
       }
 
-      if (existingProfile) {
-        throw new Error('This legacy account has already been migrated to another Athena wallet.');
+      if (existingProfile && existingProfile.id !== user.id) {
+        throw new Error('This legacy account is already linked to another Athena wallet. One legacy account can only be synced to one Athena account.');
+      }
+
+      // 2. USER CHECK: Check if the CURRENT user has already migrated a DIFFERENT legacy account
+      if (legacyUid && legacyUid !== currentLegacyUid) {
+        throw new Error('Security Alert: This Athena wallet is already linked to a different legacy account. You must use the same legacy account you previously registered.');
       }
       // ---------------------------
 
       // 2. Fetch balances from Firebase Cloud Firestore
-      console.log('Fetching from Firestore collections: users and wallets');
+      console.log('Fetching from Firestore collections: users and wallets for UID:', currentLegacyUid);
       
-      const userDocRef = doc(legacyDb, "users", legacyUid);
-      const walletDocRef = doc(legacyDb, "wallets", legacyUid);
+      const userDocRef = doc(legacyDb, "users", currentLegacyUid);
+      const walletDocRef = doc(legacyDb, "wallets", currentLegacyUid);
 
       const [userSnap, walletSnap] = await Promise.all([
         getDoc(userDocRef),
@@ -1347,6 +1449,21 @@ export default function App() {
 
       const userData = userSnap.exists() ? userSnap.data() : {};
       const walletData = walletSnap.exists() ? walletSnap.data() : {};
+
+      // --- LEGACY LOCK (FIREBASE SIDE) ---
+      // This prevents the same legacy account from being used by multiple Athena accounts
+      // even if Supabase RLS prevents us from checking other profiles.
+      if (userData.athena_uid && userData.athena_uid !== user.id) {
+        throw new Error('This legacy account is already linked to another Athena wallet. One legacy account can only be synced to one Athena account.');
+      }
+
+      // Mark this legacy account as linked to this Athena user
+      try {
+        await updateDoc(userDocRef, { athena_uid: user.id });
+      } catch (err) {
+        console.warn('Could not write lock to legacy DB, but proceeding if user owns it:', err);
+      }
+      // -----------------------------------
 
       console.log('Users collection data:', userData);
       console.log('Wallets collection data:', walletData);
@@ -1370,6 +1487,7 @@ export default function App() {
       if (walletData.solBalance !== undefined) legacyBalances['SOL'] = Number(walletData.solBalance);
       if (walletData.tonBalance !== undefined) legacyBalances['TON'] = Number(walletData.tonBalance);
       if (walletData.wifBalance !== undefined) legacyBalances['WIF'] = Number(walletData.wifBalance);
+      if (walletData.xrpBalance !== undefined) legacyBalances['XRP'] = Number(walletData.xrpBalance);
 
       if (Object.keys(legacyBalances).length === 0) {
         throw new Error('No legacy assets found for this account in Firestore.');
@@ -1397,20 +1515,23 @@ export default function App() {
 
       if (balanceError) throw balanceError;
 
-      // 4. Update profile is_synced status and lock legacy_uid
+      // 4. Update profile status and lock legacy_uid
       const { error: profileError } = await supabase
         .from('profiles')
         .update({ 
-          is_synced: true,
-          legacy_uid: legacyUid 
+          legacy_uid: currentLegacyUid
         })
         .eq('id', user.id);
 
-      if (profileError) throw profileError;
+      if (profileError) {
+        console.error('Critical Profile Update Error:', profileError);
+        throw new Error(`Failed to link legacy account: ${profileError.message}`);
+      }
 
       // 5. Success!
       setUserAssets(legacyBalances as Record<string, number>);
       setMigrationStatus(false);
+      setLegacyUid(currentLegacyUid);
       setMigrationMessage({ type: 'success', text: 'Success! All assets migrated to Athena Chain' });
       
       // Close modal
@@ -1423,18 +1544,27 @@ export default function App() {
     try {
       await Promise.race([migrationPromise, timeoutPromise]);
     } catch (error: any) {
-      console.error('Migration error:', error);
+      console.error('Migration error details:', {
+        code: error.code,
+        message: error.message,
+        fullError: error
+      });
+      
       let errorMessage = error.message;
       
       // Handle Firebase Auth errors more robustly
-      if (
+      const isAuthError = 
         error.code?.includes('auth/') || 
         error.message?.includes('auth/') ||
         error.message?.toLowerCase().includes('credential') ||
         error.message?.toLowerCase().includes('password') ||
-        error.message?.toLowerCase().includes('user-not-found')
-      ) {
-        errorMessage = 'Invalid V1 credentials. Please check your legacy email and password.';
+        error.message?.toLowerCase().includes('user-not-found') ||
+        error.message?.toLowerCase().includes('invalid-email');
+
+      if (isAuthError) {
+        errorMessage = 'Invalid V1 credentials. Please double-check your legacy email and password. Ensure you are using the exact account from the previous app.';
+      } else if (errorMessage.includes('unique constraint') || errorMessage.includes('23505') || errorMessage.includes('already linked')) {
+        errorMessage = 'This legacy account is already linked to another Athena wallet. One legacy account can only be synced to one Athena account.';
       }
       
       setMigrationMessage({ type: 'error', text: errorMessage });
@@ -1469,8 +1599,13 @@ export default function App() {
               className="w-24 h-24 rounded-full border-2 border-gold/20 flex items-center justify-center relative"
             >
               <div className="absolute inset-0 rounded-full border-t-2 border-gold animate-spin" />
-              <div className="w-16 h-16 rounded-full bg-gold-gradient flex items-center justify-center text-black shadow-2xl shadow-gold/40">
-                <Loader2 className="w-8 h-8 animate-spin" />
+              <div className="w-16 h-16 rounded-full bg-gold-gradient flex items-center justify-center text-black shadow-2xl shadow-gold/40 overflow-hidden">
+                <img 
+                  src="https://ik.imagekit.io/7e0zp2ext/GLD.png?updatedAt=1772483693392" 
+                  alt="Athena Logo" 
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
               </div>
             </motion.div>
             <div className="text-center">
@@ -1694,7 +1829,8 @@ export default function App() {
         return (
           <WalletTab 
             migrationStatus={migrationStatus} 
-            onSync={handleSync} 
+            onMainSync={handleMainSync}
+            onExtraSync={handleExtraSync} 
             userAssets={userAssets} 
             marketPrices={marketPrices} 
           />
@@ -1797,17 +1933,26 @@ export default function App() {
               )}
 
               <div className="flex flex-col gap-4">
-                <div className="flex flex-col gap-1">
-                  <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">V1 Email</label>
-                  <input 
-                    type="email" 
-                    value={legacyEmail}
-                    onChange={(e) => setLegacyEmail(e.target.value)}
-                    placeholder="V1 Email Address"
-                    disabled={isMigrating}
-                    className="bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-gold/50 transition-colors"
-                  />
-                </div>
+                {isExtraSync ? (
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">Legacy ID</label>
+                    <div className="bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs text-gold/70 font-mono truncate">
+                      {legacyUid}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">V1 Email</label>
+                    <input 
+                      type="email" 
+                      value={legacyEmail}
+                      onChange={(e) => setLegacyEmail(e.target.value)}
+                      placeholder="V1 Email Address"
+                      disabled={isMigrating}
+                      className="bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-gold/50 transition-colors"
+                    />
+                  </div>
+                )}
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">V1 Password</label>
                   <input 
