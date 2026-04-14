@@ -1,4 +1,4 @@
-const CACHE_NAME = 'athena-cache-v5';
+const CACHE_NAME = 'athena-cache-v6';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -7,6 +7,7 @@ const ASSETS_TO_CACHE = [
 ];
 
 self.addEventListener('install', (event) => {
+  self.skipWaiting(); // Force the waiting service worker to become the active service worker
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(ASSETS_TO_CACHE);
@@ -20,6 +21,7 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME) {
+            console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
@@ -38,6 +40,22 @@ self.addEventListener('message', (event) => {
 self.addEventListener('fetch', (event) => {
   // Skip cross-origin requests (like Supabase/Firebase) to avoid issues
   if (!event.request.url.startsWith(self.location.origin) && !event.request.url.includes('imagekit.io')) {
+    return;
+  }
+
+  // Use Network First strategy for the root and index.html to ensure updates
+  if (event.request.mode === 'navigate' || event.request.url.endsWith('index.html') || event.request.url === self.location.origin + '/') {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
+          return response;
+        })
+        .catch(() => caches.match(event.request))
+    );
     return;
   }
 

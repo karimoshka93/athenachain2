@@ -1778,20 +1778,20 @@ export default function App() {
                   />
                 </div>
               )}
+              {authMode === 'login' && (
+                <button 
+                  type="button" 
+                  onClick={() => {
+                    console.log('Forgot password clicked');
+                    setAuthMode('forgot-password');
+                    setAuthMessage(null);
+                  }}
+                  className="text-gold text-xs font-medium self-end hover:brightness-110 transition-all py-1 px-2 -mr-2 relative z-20 cursor-pointer"
+                >
+                  Forgot Password?
+                </button>
+              )}
             </div>
-
-            {authMode === 'login' && (
-              <button 
-                type="button" 
-                onClick={() => {
-                  setAuthMode('forgot-password');
-                  setAuthMessage(null);
-                }}
-                className="text-gold text-xs font-medium self-end hover:brightness-110 transition-all"
-              >
-                Forgot Password?
-              </button>
-            )}
 
             <button 
               type="submit"
@@ -1826,7 +1826,7 @@ export default function App() {
                     setAuthMode('login');
                     setAuthMessage(null);
                   }}
-                  className="text-gold font-bold hover:underline"
+                  className="text-gold font-bold hover:underline py-2 px-4 cursor-pointer relative z-20"
                 >
                   Back to Login
                 </button>
@@ -1839,7 +1839,7 @@ export default function App() {
                       setAuthMode(authMode === 'login' ? 'signup' : 'login');
                       setAuthMessage(null);
                     }}
-                    className="text-gold font-bold hover:underline"
+                    className="text-gold font-bold hover:underline py-2 px-4 cursor-pointer relative z-20"
                   >
                     {authMode === 'login' ? 'Sign Up' : 'Login'}
                   </button>
