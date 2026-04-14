@@ -1193,9 +1193,10 @@ const MoreTab = ({ userId, onBalanceUpdate }: { userId: string; onBalanceUpdate:
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+  const [authMode, setAuthMode] = useState<'login' | 'signup' | 'forgot-password' | 'update-password'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [authMessage, setAuthMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
@@ -1259,7 +1260,9 @@ export default function App() {
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
+      if (event === 'PASSWORD_RECOVERY') {
+        setAuthMode('update-password');
+      } else if (event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
         setUser(session?.user ?? null);
       } else if (session) {
         setUser(session.user);
@@ -1417,6 +1420,28 @@ export default function App() {
             text: 'Registration successful! Please check your email for verification.' 
           });
         }
+      } else if (authMode === 'forgot-password') {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin,
+        });
+        if (error) throw error;
+        setAuthMessage({ 
+          type: 'success', 
+          text: 'Password reset link sent! Please check your email.' 
+        });
+      } else if (authMode === 'update-password') {
+        const { error } = await supabase.auth.updateUser({
+          password: newPassword,
+        });
+        if (error) throw error;
+        setAuthMessage({ 
+          type: 'success', 
+          text: 'Password updated successfully! You can now login.' 
+        });
+        setTimeout(() => {
+          setAuthMode('login');
+          setAuthMessage(null);
+        }, 2000);
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
@@ -1690,7 +1715,9 @@ export default function App() {
 
           <form onSubmit={handleAuth} className="w-full glass rounded-3xl p-6 flex flex-col gap-4 border-white/5">
             <h2 className="text-xl font-bold text-center mb-2">
-              {authMode === 'login' ? 'Welcome Back' : 'Create Account'}
+              {authMode === 'login' ? 'Welcome Back' : 
+               authMode === 'signup' ? 'Create Account' : 
+               authMode === 'forgot-password' ? 'Reset Password' : 'New Password'}
             </h2>
             
             {authMessage && (
@@ -1702,28 +1729,45 @@ export default function App() {
             )}
 
             <div className="flex flex-col gap-3">
-              <div className="flex flex-col gap-1">
-                <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">Email Address</label>
-                <input 
-                  type="email" 
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@example.com"
-                  required
-                  className="bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-gold/50 transition-colors"
-                />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">Password</label>
-                <input 
-                  type="password" 
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  className="bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-gold/50 transition-colors"
-                />
-              </div>
+              {authMode !== 'update-password' && (
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">Email Address</label>
+                  <input 
+                    type="email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="name@example.com"
+                    required
+                    className="bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-gold/50 transition-colors"
+                  />
+                </div>
+              )}
+              {authMode === 'update-password' && (
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">New Password</label>
+                  <input 
+                    type="password" 
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    className="bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-gold/50 transition-colors"
+                  />
+                </div>
+              )}
+              {authMode !== 'forgot-password' && authMode !== 'update-password' && (
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">Password</label>
+                  <input 
+                    type="password" 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    className="bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-gold/50 transition-colors"
+                  />
+                </div>
+              )}
               {authMode === 'signup' && (
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">Referral Code (Optional)</label>
@@ -1737,7 +1781,14 @@ export default function App() {
             </div>
 
             {authMode === 'login' && (
-              <button type="button" className="text-gold text-xs font-medium self-end hover:brightness-110 transition-all">
+              <button 
+                type="button" 
+                onClick={() => {
+                  setAuthMode('forgot-password');
+                  setAuthMessage(null);
+                }}
+                className="text-gold text-xs font-medium self-end hover:brightness-110 transition-all"
+              >
                 Forgot Password?
               </button>
             )}
@@ -1750,7 +1801,9 @@ export default function App() {
               {isProcessing ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
-                authMode === 'login' ? 'SIGN IN' : 'CREATE ACCOUNT'
+                authMode === 'login' ? 'SIGN IN' : 
+                authMode === 'signup' ? 'CREATE ACCOUNT' : 
+                authMode === 'forgot-password' ? 'SEND RESET LINK' : 'UPDATE PASSWORD'
               )}
             </button>
 
@@ -1766,17 +1819,32 @@ export default function App() {
             </button>
 
             <p className="text-center text-xs text-gray-500 mt-2">
-              {authMode === 'login' ? "Don't have an account?" : "Already have an account?"}{' '}
-              <button 
-                type="button"
-                onClick={() => {
-                  setAuthMode(authMode === 'login' ? 'signup' : 'login');
-                  setAuthMessage(null);
-                }}
-                className="text-gold font-bold hover:underline"
-              >
-                {authMode === 'login' ? 'Sign Up' : 'Login'}
-              </button>
+              {authMode === 'forgot-password' ? (
+                <button 
+                  type="button"
+                  onClick={() => {
+                    setAuthMode('login');
+                    setAuthMessage(null);
+                  }}
+                  className="text-gold font-bold hover:underline"
+                >
+                  Back to Login
+                </button>
+              ) : (
+                <>
+                  {authMode === 'login' ? "Don't have an account?" : "Already have an account?"}{' '}
+                  <button 
+                    type="button"
+                    onClick={() => {
+                      setAuthMode(authMode === 'login' ? 'signup' : 'login');
+                      setAuthMessage(null);
+                    }}
+                    className="text-gold font-bold hover:underline"
+                  >
+                    {authMode === 'login' ? 'Sign Up' : 'Login'}
+                  </button>
+                </>
+              )}
             </p>
           </form>
         </motion.div>
