@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useAnimation } from 'motion/react';
 import { supabase } from '../lib/supabase';
-import { Loader2, Trophy, Zap, AlertCircle, Play } from 'lucide-react';
+import { Loader2, Trophy, Zap, AlertCircle, Play, X } from 'lucide-react';
 
 interface SpinWheelProps {
   userId: string;
   onBalanceUpdate: () => void;
+  onClose?: () => void;
 }
 
 const PRIZES = [
@@ -19,7 +20,7 @@ const PRIZES = [
   { name: 'Try Again', color: '#222', icon: '❌' },
 ];
 
-const SpinWheel: React.FC<SpinWheelProps> = ({ userId, onBalanceUpdate }) => {
+const SpinWheel: React.FC<SpinWheelProps> = ({ userId, onBalanceUpdate, onClose }) => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [isWaitingForAd, setIsWaitingForAd] = useState(false);
   const [adClickTime, setAdClickTime] = useState<number | null>(null);
@@ -121,7 +122,15 @@ const SpinWheel: React.FC<SpinWheelProps> = ({ userId, onBalanceUpdate }) => {
     <div className="flex flex-col items-center gap-8 w-full max-w-md mx-auto p-6 glass rounded-3xl relative overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-1 bg-gold-gradient opacity-50" />
       
-      <div className="flex flex-col items-center gap-2 text-center">
+      <div className="flex flex-col items-center gap-2 text-center relative w-full">
+        {onClose && (
+          <button 
+            onClick={onClose}
+            className="absolute right-0 top-0 p-2 text-gray-400 hover:text-white transition-colors"
+          >
+            <X className="w-6 h-6" />
+          </button>
+        )}
         <h2 className="text-2xl font-bold text-gold-gradient flex items-center gap-2">
           <Zap className="w-6 h-6 fill-gold" />
           Wheel of Fortune

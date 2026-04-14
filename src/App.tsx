@@ -45,7 +45,7 @@ import { User } from '@supabase/supabase-js';
 import { legacyAuth, legacyDb } from './lib/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import SpinWheel from './components/SpinWheel';
+import GamesPage from './components/GamesPage';
 
 // --- Icon Helper Component ---
 const CoinIcon = ({ image, symbol, className = "w-10 h-10" }: { image?: string; symbol: string; className?: string }) => {
@@ -920,36 +920,7 @@ const MainnetTab = () => {
   );
 };
 
-const GamesTab = ({ userId, onBalanceUpdate }: { userId: string; onBalanceUpdate: () => void }) => {
-  return (
-    <div className="flex flex-col gap-6 pb-24">
-      <header className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold text-gold-gradient">Mini-Games</h1>
-        <p className="text-gray-400 text-sm">Play to win GLD jackpots</p>
-      </header>
 
-      <SpinWheel userId={userId} onBalanceUpdate={onBalanceUpdate} />
-
-      <div className="grid grid-cols-2 gap-4 mt-4">
-        {[1, 2, 3, 4, 5].map((i) => (
-          <div key={i} className="aspect-square glass rounded-3xl p-4 flex flex-col items-center justify-center gap-3 relative group overflow-hidden opacity-60">
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60 opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-gray-600 group-hover:text-gold transition-colors">
-              <Gamepad2 className="w-8 h-8" />
-            </div>
-            <span className="text-gray-500 text-xs font-bold uppercase tracking-tighter">Game {i + 1}</span>
-            <div className="absolute top-3 right-3">
-              <Lock className="w-4 h-4 text-gold/40" />
-            </div>
-            <div className="absolute bottom-4 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
-              <span className="text-gold text-[10px] font-bold uppercase">Coming Soon</span>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
 
 // --- Main App ---
 
@@ -1847,7 +1818,7 @@ export default function App() {
           />
         );
       case 'mainnet': return <MainnetTab />;
-      case 'games': return <GamesTab userId={user?.id || ''} onBalanceUpdate={loadUserData} />;
+      case 'games': return <GamesPage userId={user?.id || ''} onBalanceUpdate={loadUserData} />;
       case 'more': return <MoreTab />;
       default: 
         return (
