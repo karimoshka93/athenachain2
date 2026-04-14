@@ -9,7 +9,8 @@ import {
   Wallet, 
   CheckSquare, 
   Rocket, 
-  Gamepad2, 
+  Gamepad2,
+  Video, 
   TrendingUp, 
   TrendingDown, 
   ChevronRight, 
@@ -127,7 +128,8 @@ const Icon = ({ name, className }: { name: string; className?: string }) => {
     'help-circle': HelpCircle,
     'instagram': Instagram,
     'youtube': Youtube,
-    'twitter': Twitter
+    'twitter': Twitter,
+    'video': Video
   };
 
   const LucideIcon = iconMap[name];
@@ -193,7 +195,7 @@ const TASKS = [
     reward: 0.01, 
     icon: <Icon name="twitter" className="w-5 h-5" />, 
     link: 'https://x.com/DigitalGold2025',
-    frequency: 'Every 24h'
+    frequency: 'Every 5 days'
   },
   { 
     id: 2, 
@@ -201,7 +203,7 @@ const TASKS = [
     reward: 0.01, 
     icon: <Icon name="instagram" className="w-5 h-5" />, 
     link: 'https://instagram.com/digitalgold11',
-    frequency: 'Every 24h'
+    frequency: 'Every 5 days'
   },
   { 
     id: 3, 
@@ -209,7 +211,7 @@ const TASKS = [
     reward: 0.01, 
     icon: <Icon name="send" className="w-5 h-5" />, 
     link: 'https://t.me/digitalgold2025',
-    frequency: 'Every 24h'
+    frequency: 'Every 5 days'
   },
   { 
     id: 4, 
@@ -217,7 +219,34 @@ const TASKS = [
     reward: 0.05, 
     icon: <Icon name="youtube" className="w-5 h-5" />, 
     link: 'https://www.youtube.com/@DigitalGold25',
-    frequency: 'Every 3 days'
+    frequency: 'Every 5 days'
+  },
+  { 
+    id: 5, 
+    title: 'Watch TikTok Video', 
+    reward: 0.1, 
+    icon: <Icon name="video" className="w-5 h-5" />, 
+    link: 'https://vt.tiktok.com/ZSHHX81St/',
+    frequency: 'Every 5 days',
+    requiredCode: 'sunset glow'
+  },
+  { 
+    id: 6, 
+    title: 'Watch YouTube Short', 
+    reward: 0.1, 
+    icon: <Icon name="youtube" className="w-5 h-5" />, 
+    link: 'https://youtube.com/shorts/PYy0371wafc?si=1SNQ_v5601lGRCbL',
+    frequency: 'Every 5 days',
+    requiredCode: 'move in gold'
+  },
+  { 
+    id: 7, 
+    title: 'Watch Instagram Reel', 
+    reward: 0.1, 
+    icon: <Icon name="instagram" className="w-5 h-5" />, 
+    link: 'https://www.instagram.com/reel/DW6MAnIjZGb/?igsh=ZmkwNm03dTZ2djYz',
+    frequency: 'Every 5 days',
+    requiredCode: 'Rise beyond'
   },
 ];
 
@@ -821,6 +850,21 @@ const TasksTab = ({
   completedTasks: number[], 
   onCompleteTask: (taskId: number, reward: number) => void 
 }) => {
+  const [taskCodes, setTaskCodes] = useState<Record<number, string>>({});
+  const [errorMessages, setErrorMessages] = useState<Record<number, string>>({});
+
+  const handleVerify = (task: any) => {
+    const inputCode = taskCodes[task.id]?.trim().toLowerCase();
+    const requiredCode = task.requiredCode?.trim().toLowerCase();
+
+    if (inputCode === requiredCode) {
+      onCompleteTask(task.id, task.reward);
+      setErrorMessages(prev => ({ ...prev, [task.id]: '' }));
+    } else {
+      setErrorMessages(prev => ({ ...prev, [task.id]: 'Invalid code. Please try again.' }));
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6 pb-24">
       <header className="flex flex-col gap-1">
@@ -831,44 +875,69 @@ const TasksTab = ({
       <div className="flex flex-col gap-3">
         {TASKS.map((task) => {
           const isCompleted = completedTasks.includes(task.id);
+          const needsCode = !!task.requiredCode;
+
           return (
             <div 
               key={task.id} 
-              className={`glass rounded-2xl p-5 flex items-center justify-between group transition-all ${
-                isCompleted ? 'opacity-50 border-green-500/30' : 'hover:border-gold/30 active:scale-[0.98]'
+              className={`glass rounded-2xl p-5 flex flex-col gap-4 group transition-all ${
+                isCompleted ? 'opacity-50 border-green-500/30' : 'hover:border-gold/30'
               }`}
             >
-              <div className="flex items-center gap-4">
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${
-                  isCompleted ? 'bg-green-500/10 text-green-500' : 'bg-white/5 text-gold group-hover:bg-gold/10'
-                }`}>
-                  {isCompleted ? <ShieldCheck className="w-5 h-5" /> : task.icon}
-                </div>
-                <div className="flex flex-col">
-                  <span className={`font-bold text-sm ${isCompleted ? 'text-gray-400 line-through' : ''}`}>{task.title}</span>
-                  <div className="flex items-center gap-2">
-                    <span className={`${isCompleted ? 'text-green-500' : 'text-gold'} text-xs font-bold`}>
-                      {isCompleted ? 'Rewarded' : `+${task.reward} GLD`}
-                    </span>
-                    <span className="text-gray-500 text-[10px] uppercase tracking-tighter bg-white/5 px-1.5 py-0.5 rounded">{task.frequency}</span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${
+                    isCompleted ? 'bg-green-500/10 text-green-500' : 'bg-white/5 text-gold group-hover:bg-gold/10'
+                  }`}>
+                    {isCompleted ? <ShieldCheck className="w-5 h-5" /> : task.icon}
+                  </div>
+                  <div className="flex flex-col">
+                    <span className={`font-bold text-sm ${isCompleted ? 'text-gray-400 line-through' : ''}`}>{task.title}</span>
+                    <div className="flex items-center gap-2">
+                      <span className={`${isCompleted ? 'text-green-500' : 'text-gold'} text-xs font-bold`}>
+                        {isCompleted ? 'Rewarded' : `+${task.reward} GLD`}
+                      </span>
+                      <span className="text-gray-500 text-[10px] uppercase tracking-tighter bg-white/5 px-1.5 py-0.5 rounded">{task.frequency}</span>
+                    </div>
                   </div>
                 </div>
+                
+                {isCompleted ? (
+                  <div className="bg-green-500/10 text-green-500 px-4 py-2 rounded-lg text-sm font-bold">
+                    Done
+                  </div>
+                ) : (
+                  <button 
+                    onClick={() => window.open(task.link, '_blank')}
+                    className="bg-gold/10 text-gold group-hover:bg-gold group-hover:text-black px-4 py-2 rounded-lg text-sm font-bold transition-all"
+                  >
+                    Go
+                  </button>
+                )}
               </div>
-              
-              {isCompleted ? (
-                <div className="bg-green-500/10 text-green-500 px-4 py-2 rounded-lg text-sm font-bold">
-                  Done
+
+              {!isCompleted && needsCode && (
+                <div className="flex flex-col gap-2 mt-2 pt-4 border-t border-white/5">
+                  <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Enter Verification Code</p>
+                  <div className="flex gap-2">
+                    <input 
+                      type="text"
+                      value={taskCodes[task.id] || ''}
+                      onChange={(e) => setTaskCodes(prev => ({ ...prev, [task.id]: e.target.value }))}
+                      placeholder="Enter code from video..."
+                      className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-gold/50 transition-colors"
+                    />
+                    <button 
+                      onClick={() => handleVerify(task)}
+                      className="bg-gold-gradient text-black font-bold px-6 py-2 rounded-xl text-sm hover:brightness-110 active:scale-95 transition-all"
+                    >
+                      Verify
+                    </button>
+                  </div>
+                  {errorMessages[task.id] && (
+                    <p className="text-red-400 text-[10px] font-medium">{errorMessages[task.id]}</p>
+                  )}
                 </div>
-              ) : (
-                <button 
-                  onClick={() => {
-                    window.open(task.link, '_blank');
-                    onCompleteTask(task.id, task.reward);
-                  }}
-                  className="bg-gold/10 text-gold group-hover:bg-gold group-hover:text-black px-4 py-2 rounded-lg text-sm font-bold transition-all"
-                >
-                  Go
-                </button>
               )}
             </div>
           );
