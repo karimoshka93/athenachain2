@@ -45,6 +45,7 @@ import { User } from '@supabase/supabase-js';
 import { legacyAuth, legacyDb } from './lib/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import SpinWheel from './components/SpinWheel';
 
 // --- Icon Helper Component ---
 const CoinIcon = ({ image, symbol, className = "w-10 h-10" }: { image?: string; symbol: string; className?: string }) => {
@@ -919,7 +920,7 @@ const MainnetTab = () => {
   );
 };
 
-const GamesTab = () => {
+const GamesTab = ({ userId, onBalanceUpdate }: { userId: string; onBalanceUpdate: () => void }) => {
   return (
     <div className="flex flex-col gap-6 pb-24">
       <header className="flex flex-col gap-1">
@@ -927,14 +928,16 @@ const GamesTab = () => {
         <p className="text-gray-400 text-sm">Play to win GLD jackpots</p>
       </header>
 
-      <div className="grid grid-cols-2 gap-4">
-        {[1, 2, 3, 4, 5, 6].map((i) => (
-          <div key={i} className="aspect-square glass rounded-3xl p-4 flex flex-col items-center justify-center gap-3 relative group overflow-hidden">
+      <SpinWheel userId={userId} onBalanceUpdate={onBalanceUpdate} />
+
+      <div className="grid grid-cols-2 gap-4 mt-4">
+        {[1, 2, 3, 4, 5].map((i) => (
+          <div key={i} className="aspect-square glass rounded-3xl p-4 flex flex-col items-center justify-center gap-3 relative group overflow-hidden opacity-60">
             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60 opacity-0 group-hover:opacity-100 transition-opacity" />
             <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-gray-600 group-hover:text-gold transition-colors">
               <Gamepad2 className="w-8 h-8" />
             </div>
-            <span className="text-gray-500 text-xs font-bold uppercase tracking-tighter">Game {i}</span>
+            <span className="text-gray-500 text-xs font-bold uppercase tracking-tighter">Game {i + 1}</span>
             <div className="absolute top-3 right-3">
               <Lock className="w-4 h-4 text-gold/40" />
             </div>
@@ -1216,6 +1219,54 @@ export default function App() {
     }
   };
 
+  const loadUserData = async () => {
+    if (!user) return;
+    try {
+      // 1. Load profile to check sync status, mining time, and tasks
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('last_mining_time, completed_tasks, legacy_uid')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError && profileError.code !== 'PGRST116') {
+        console.error('Error loading profile:', profileError);
+      }
+
+      // Set defaults if profile is missing or fields are null
+      setMigrationStatus(profile?.legacy_uid === null || profile?.legacy_uid === undefined);
+      setLastMiningTime(profile?.last_mining_time || null);
+      setCompletedTasks(profile?.completed_tasks || []);
+      setLegacyUid(profile?.legacy_uid || null);
+
+      // 2. Load balances
+      const { data: balances, error: balancesError } = await supabase
+        .from('user_balances')
+        .select('coin_symbol, amount')
+        .eq('user_id', user.id);
+
+      if (balancesError) {
+        console.error('Error loading balances:', balancesError);
+        setUserAssets({}); // Default to empty
+      } else {
+        const assets: Record<string, number> = {};
+        if (balances && balances.length > 0) {
+          balances.forEach(b => {
+            assets[b.coin_symbol] = b.amount;
+          });
+        }
+        setUserAssets(assets);
+      }
+    } catch (err) {
+      console.error('Unexpected error loading user data:', err);
+      // Ensure defaults on error
+      setMigrationStatus(true);
+      setLastMiningTime(null);
+      setCompletedTasks([]);
+      setUserAssets({});
+    }
+  };
+
   // Load user data when authenticated
   useEffect(() => {
     if (!user) {
@@ -1223,53 +1274,6 @@ export default function App() {
       setMigrationStatus(true);
       return;
     }
-
-    const loadUserData = async () => {
-      try {
-        // 1. Load profile to check sync status, mining time, and tasks
-        const { data: profile, error: profileError } = await supabase
-          .from('profiles')
-          .select('last_mining_time, completed_tasks, legacy_uid')
-          .eq('id', user.id)
-          .single();
-
-        if (profileError && profileError.code !== 'PGRST116') {
-          console.error('Error loading profile:', profileError);
-        }
-
-        // Set defaults if profile is missing or fields are null
-        setMigrationStatus(profile?.legacy_uid === null || profile?.legacy_uid === undefined);
-        setLastMiningTime(profile?.last_mining_time || null);
-        setCompletedTasks(profile?.completed_tasks || []);
-        setLegacyUid(profile?.legacy_uid || null);
-
-        // 2. Load balances
-        const { data: balances, error: balancesError } = await supabase
-          .from('user_balances')
-          .select('coin_symbol, amount')
-          .eq('user_id', user.id);
-
-        if (balancesError) {
-          console.error('Error loading balances:', balancesError);
-          setUserAssets({}); // Default to empty
-        } else {
-          const assets: Record<string, number> = {};
-          if (balances && balances.length > 0) {
-            balances.forEach(b => {
-              assets[b.coin_symbol] = b.amount;
-            });
-          }
-          setUserAssets(assets);
-        }
-      } catch (err) {
-        console.error('Unexpected error loading user data:', err);
-        // Ensure defaults on error
-        setMigrationStatus(true);
-        setLastMiningTime(null);
-        setCompletedTasks([]);
-        setUserAssets({});
-      }
-    };
 
     loadUserData();
   }, [user]);
@@ -1843,7 +1847,7 @@ export default function App() {
           />
         );
       case 'mainnet': return <MainnetTab />;
-      case 'games': return <GamesTab />;
+      case 'games': return <GamesTab userId={user?.id || ''} onBalanceUpdate={loadUserData} />;
       case 'more': return <MoreTab />;
       default: 
         return (
