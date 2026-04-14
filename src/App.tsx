@@ -1260,6 +1260,7 @@ export default function App() {
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Auth Event:', event);
       if (event === 'PASSWORD_RECOVERY') {
         setAuthMode('update-password');
       } else if (event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
@@ -1680,7 +1681,7 @@ export default function App() {
     );
   }
 
-  if (!user) {
+  if (!user || authMode === 'update-password') {
     return (
       <div className="min-h-screen bg-[#0b0e14] text-white max-w-md mx-auto relative overflow-hidden flex flex-col items-center justify-center px-8">
         <div className="fixed top-[-10%] left-[-20%] w-[80%] h-[40%] bg-gold/5 rounded-full blur-[120px] pointer-events-none" />
@@ -1819,10 +1820,13 @@ export default function App() {
             </button>
 
             <p className="text-center text-xs text-gray-500 mt-2">
-              {authMode === 'forgot-password' ? (
+              {(authMode === 'forgot-password' || authMode === 'update-password') ? (
                 <button 
                   type="button"
                   onClick={() => {
+                    if (authMode === 'update-password') {
+                      supabase.auth.signOut();
+                    }
                     setAuthMode('login');
                     setAuthMessage(null);
                   }}
