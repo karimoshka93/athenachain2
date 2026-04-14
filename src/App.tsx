@@ -45,7 +45,7 @@ import { User } from '@supabase/supabase-js';
 import { legacyAuth, legacyDb } from './lib/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import GamesPage from './components/GamesPage';
+import SpinWheel from './components/SpinWheel';
 
 // --- Icon Helper Component ---
 const CoinIcon = ({ image, symbol, className = "w-10 h-10" }: { image?: string; symbol: string; className?: string }) => {
@@ -140,7 +140,7 @@ const Icon = ({ name, className }: { name: string; className?: string }) => {
 };
 
 // --- Types ---
-type Tab = 'dashboard' | 'wallet' | 'tasks' | 'mainnet' | 'games' | 'more';
+type Tab = 'dashboard' | 'wallet' | 'tasks' | 'mainnet' | 'more';
 
 interface Coin {
   id: string;
@@ -926,7 +926,8 @@ const MainnetTab = () => {
 
 // --- Main App ---
 
-const MoreTab = () => {
+const MoreTab = ({ userId, onBalanceUpdate }: { userId: string; onBalanceUpdate: () => void }) => {
+  const [showWheel, setShowWheel] = useState(false);
   const sections = [
     {
       title: "Trading",
@@ -944,6 +945,14 @@ const MoreTab = () => {
         { name: "Athena Earn", icon: <Zap className="w-5 h-5" /> },
         { name: "Crypto Card", icon: <CreditCard className="w-5 h-5" /> },
         { name: "Loans", icon: <ShieldCheck className="w-5 h-5" /> },
+      ]
+    },
+    {
+      title: "Games",
+      items: [
+        { name: "Wheel of Fortune", icon: <Zap className="w-5 h-5" />, isGame: true },
+        { name: "Crash Game", icon: <TrendingUp className="w-5 h-5" /> },
+        { name: "Dice", icon: <Gamepad2 className="w-5 h-5" /> },
       ]
     },
     {
@@ -992,14 +1001,15 @@ const MoreTab = () => {
                 key={itemIdx} 
                 onClick={() => {
                   if (item.isInstall) setShowInstallGuide(true);
+                  if (item.isGame) setShowWheel(true);
                 }}
-                className={`flex flex-col items-center gap-2 p-3 rounded-2xl bg-white/5 border border-white/5 relative group cursor-pointer ${!item.isInstall ? 'opacity-60 grayscale' : ''}`}
+                className={`flex flex-col items-center gap-2 p-3 rounded-2xl bg-white/5 border border-white/5 relative group cursor-pointer ${(!item.isInstall && !item.isGame) ? 'opacity-60 grayscale' : ''}`}
               >
-                <div className={`w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center ${item.isInstall ? 'text-gold' : 'text-gray-400'}`}>
+                <div className={`w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center ${(item.isInstall || item.isGame) ? 'text-gold' : 'text-gray-400'}`}>
                   {item.icon}
                 </div>
-                <span className={`text-[10px] text-center font-medium leading-tight ${item.isInstall ? 'text-white' : 'text-gray-500'}`}>{item.name}</span>
-                {!item.isInstall && (
+                <span className={`text-[10px] text-center font-medium leading-tight ${(item.isInstall || item.isGame) ? 'text-white' : 'text-gray-500'}`}>{item.name}</span>
+                {(!item.isInstall && !item.isGame) && (
                   <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity">
                     <span className="text-[8px] font-bold text-gold uppercase tracking-tighter">Soon</span>
                   </div>
@@ -1009,6 +1019,26 @@ const MoreTab = () => {
           </div>
         </div>
       ))}
+
+      {/* Wheel Modal */}
+      <AnimatePresence>
+        {showWheel && (
+          <div className="fixed inset-0 bg-black/90 z-[100] flex items-center justify-center p-6 backdrop-blur-sm">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="w-full max-w-md"
+            >
+              <SpinWheel 
+                userId={userId} 
+                onBalanceUpdate={onBalanceUpdate} 
+                onClose={() => setShowWheel(false)} 
+              />
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {showInstallGuide && (
         <div className="fixed inset-0 bg-black/90 z-[100] flex items-center justify-center p-6">
@@ -1818,8 +1848,7 @@ export default function App() {
           />
         );
       case 'mainnet': return <MainnetTab />;
-      case 'games': return <GamesPage userId={user?.id || ''} onBalanceUpdate={loadUserData} />;
-      case 'more': return <MoreTab />;
+      case 'more': return <MoreTab userId={user?.id || ''} onBalanceUpdate={loadUserData} />;
       default: 
         return (
           <Dashboard 
@@ -1991,12 +2020,6 @@ export default function App() {
           onClick={() => setActiveTab('mainnet')} 
           icon={<Icon name="rocket" className="w-6 h-6" />} 
           label="Mainnet" 
-        />
-        <NavButton 
-          active={activeTab === 'games'} 
-          onClick={() => setActiveTab('games')} 
-          icon={<Icon name="gamepad-2" className="w-6 h-6" />} 
-          label="Games" 
         />
         <NavButton 
           active={activeTab === 'more'} 
