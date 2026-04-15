@@ -758,22 +758,6 @@ const WalletTab = ({
       <div className="glass rounded-3xl p-6 bg-gradient-to-br from-white/5 to-transparent relative overflow-hidden">
         <div className="absolute -top-10 -right-10 w-32 h-32 bg-gold/5 rounded-full blur-3xl" />
         
-        {/* Extra Sync Button - Only visible if already synced */}
-        {!migrationStatus && (
-          <div className="absolute top-4 right-4 flex flex-col items-end gap-1">
-            <button 
-              onClick={onExtraSync}
-              className="w-10 h-10 rounded-full bg-gold/20 border border-gold/30 flex items-center justify-center text-gold hover:bg-gold/30 transition-all gold-glow active:scale-90 group"
-              title="Extra Sync (Available Today Only)"
-            >
-              <Icon name="refresh-cw" className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
-            </button>
-            <span className="text-[7px] font-bold text-gold uppercase tracking-tighter bg-gold/10 px-1.5 py-0.5 rounded-md border border-gold/20">
-              Extra Sync
-            </span>
-          </div>
-        )}
-
         <div className="flex flex-col gap-1 mb-1">
           <p className="text-gray-400 text-xs uppercase tracking-widest">Total Estimated Balance</p>
           <p className="text-[10px] text-gold/60 font-medium italic">* Real-time market prices (GLD fixed until listing)</p>
@@ -788,16 +772,6 @@ const WalletTab = ({
             <Icon name="arrow-down-left" className="w-4 h-4" /> Receive
           </button>
         </div>
-      </div>
-
-      {/* Temporary Notice */}
-      <div className="bg-gold/5 border border-gold/10 rounded-2xl p-3 flex items-start gap-3">
-        <div className="w-8 h-8 rounded-full bg-gold/10 flex items-center justify-center text-gold shrink-0">
-          <Icon name="zap" className="w-4 h-4" />
-        </div>
-        <p className="text-[10px] text-gray-400 leading-relaxed">
-          <span className="text-gold font-bold">Notice:</span> The <span className="text-white font-bold">Extra Sync</span> feature is available <span className="text-white font-bold">today only</span> to help users migrate missing XRP balances. This button will be removed tomorrow.
-        </p>
       </div>
 
       {/* Assets List */}
@@ -2061,14 +2035,6 @@ export default function App() {
       <div className="fixed top-[-10%] left-[-20%] w-[80%] h-[40%] bg-gold/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="fixed bottom-[-10%] right-[-20%] w-[80%] h-[40%] bg-gold/5 rounded-full blur-[120px] pointer-events-none" />
 
-      {/* Profile Circle (Top Left) */}
-      <div className="absolute top-8 left-5 z-50">
-        <div className="w-10 h-10 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center overflow-hidden relative group">
-          <div className="absolute inset-0 bg-gold/5 animate-pulse" />
-          <Icon name="users" className="w-5 h-5 text-gold/70" />
-        </div>
-      </div>
-
       {/* Logout Button (Top Right) */}
       <div className="absolute top-8 right-5 z-50">
         <button 
@@ -2215,16 +2181,21 @@ export default function App() {
           label="Tasks" 
         />
         <NavButton 
-          active={activeTab === 'mainnet'} 
-          onClick={() => setActiveTab('mainnet')} 
-          icon={<Icon name="rocket" className="w-6 h-6" />} 
-          label="Mainnet" 
-        />
-        <NavButton 
           active={activeTab === 'more'} 
           onClick={() => setActiveTab('more')} 
           icon={<Icon name="more-horizontal" className="w-6 h-6" />} 
           label="More" 
+        />
+        <NavButton 
+          active={false} 
+          onClick={() => {}} 
+          icon={
+            <div className="w-8 h-8 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center overflow-hidden relative">
+              <div className="absolute inset-0 bg-gold/5 animate-pulse" />
+              <Icon name="users" className="w-4 h-4 text-gold/70" />
+            </div>
+          } 
+          label="Profile" 
         />
       </nav>
     </div>
