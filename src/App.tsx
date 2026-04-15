@@ -47,6 +47,7 @@ import { legacyAuth, legacyDb } from './lib/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import SpinWheel from './components/SpinWheel';
+import SlotsGame from './components/SlotsGame';
 
 // --- Icon Helper Component ---
 const CoinIcon = ({ image, symbol, className = "w-10 h-10" }: { image?: string; symbol: string; className?: string }) => {
@@ -997,6 +998,7 @@ const MainnetTab = () => {
 
 const MoreTab = ({ userId, onBalanceUpdate }: { userId: string; onBalanceUpdate: () => void }) => {
   const [showWheel, setShowWheel] = useState(false);
+  const [showSlots, setShowSlots] = useState(false);
   const sections = [
     {
       title: "Trading",
@@ -1019,7 +1021,8 @@ const MoreTab = ({ userId, onBalanceUpdate }: { userId: string; onBalanceUpdate:
     {
       title: "Games",
       items: [
-        { name: "Wheel of Fortune", icon: <Zap className="w-5 h-5" />, isGame: true },
+        { name: "Wheel of Fortune", icon: <Zap className="w-5 h-5" />, isGame: true, gameType: 'wheel' },
+        { name: "Athena Slots", icon: <Trophy className="w-5 h-5" />, isGame: true, gameType: 'slots' },
         { name: "Crash Game", icon: <TrendingUp className="w-5 h-5" /> },
         { name: "Dice", icon: <Gamepad2 className="w-5 h-5" /> },
       ]
@@ -1070,7 +1073,10 @@ const MoreTab = ({ userId, onBalanceUpdate }: { userId: string; onBalanceUpdate:
                 key={itemIdx} 
                 onClick={() => {
                   if (item.isInstall) setShowInstallGuide(true);
-                  if (item.isGame) setShowWheel(true);
+                  if (item.isGame) {
+                    if (item.gameType === 'wheel') setShowWheel(true);
+                    if (item.gameType === 'slots') setShowSlots(true);
+                  }
                 }}
                 className={`flex flex-col items-center gap-2 p-3 rounded-2xl bg-white/5 border border-white/5 relative group cursor-pointer ${(!item.isInstall && !item.isGame) ? 'opacity-60 grayscale' : ''}`}
               >
@@ -1103,6 +1109,26 @@ const MoreTab = ({ userId, onBalanceUpdate }: { userId: string; onBalanceUpdate:
                 userId={userId} 
                 onBalanceUpdate={onBalanceUpdate} 
                 onClose={() => setShowWheel(false)} 
+              />
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Slots Modal */}
+      <AnimatePresence>
+        {showSlots && (
+          <div className="fixed inset-0 bg-black/90 z-[100] flex items-center justify-center p-6 backdrop-blur-sm">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="w-full max-w-md"
+            >
+              <SlotsGame 
+                userId={userId} 
+                onBalanceUpdate={onBalanceUpdate} 
+                onClose={() => setShowSlots(false)} 
               />
             </motion.div>
           </div>
