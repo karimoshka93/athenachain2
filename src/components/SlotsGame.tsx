@@ -10,10 +10,8 @@ interface SlotsGameProps {
 }
 
 const SYMBOLS = [
-  { id: 'GLD', icon: '💰', color: '#FFD700', value: 10 },
-  { id: 'PI', icon: '🥧', color: '#6B21A8', value: 5 },
-  { id: 'USDT', icon: '💵', color: '#26A17B', value: 2 },
-  { id: 'XRP', icon: '✖️', color: '#23292F', value: 1 },
+  { id: 'GLD', icon: '💰', color: '#FFD700', value: 0.01 },
+  { id: 'PI', icon: '🥧', color: '#6B21A8', value: 1 },
   { id: 'MISS', icon: '❌', color: '#333', value: 0 },
 ];
 
@@ -108,32 +106,24 @@ const SlotsGame: React.FC<SlotsGameProps> = ({ userId, onBalanceUpdate, onClose 
     try {
       // Logic for win
       const rand = Math.random();
-      let winSymbol = SYMBOLS[SYMBOLS.length - 1]; // Default to MISS
-      let isWin = false;
+      let winSymbol = SYMBOLS[0]; // Default to GLD
+      let isWin = true;
 
-      if (rand < 0.05) { winSymbol = SYMBOLS[0]; isWin = true; } // 5% GLD
-      else if (rand < 0.15) { winSymbol = SYMBOLS[1]; isWin = true; } // 10% Pi
-      else if (rand < 0.30) { winSymbol = SYMBOLS[2]; isWin = true; } // 15% USDT
-      else if (rand < 0.50) { winSymbol = SYMBOLS[3]; isWin = true; } // 20% XRP
-      
-      const finalReels = isWin 
-        ? [winSymbol.icon, winSymbol.icon, winSymbol.icon]
-        : [
-            SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)].icon,
-            SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)].icon,
-            SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)].icon,
-          ];
-
-      // Ensure MISS if not win
-      if (!isWin && finalReels[0] === finalReels[1] && finalReels[1] === finalReels[2]) {
-        finalReels[2] = SYMBOLS[SYMBOLS.length - 1].icon;
+      // New Odds: 95% GLD (0.01), 5% PI (1)
+      if (rand < 0.05) { 
+        winSymbol = SYMBOLS[1]; // 5% PI
+      } else { 
+        winSymbol = SYMBOLS[0]; // 95% GLD
       }
+      
+      const finalReels = [winSymbol.icon, winSymbol.icon, winSymbol.icon];
 
       // Call Supabase
       const { error } = await supabase.rpc('handle_slots_win', {
-        prize_val: isWin ? winSymbol.value : 0,
+        prize_val: winSymbol.value,
         user_uuid: userId,
-        combo: finalReels.join('-')
+        combo: finalReels.join('-'),
+        symbol: winSymbol.id
       });
 
       if (error) throw error;
@@ -144,11 +134,7 @@ const SlotsGame: React.FC<SlotsGameProps> = ({ userId, onBalanceUpdate, onClose 
         setReels(finalReels);
         setIsSpinning(false);
         
-        if (isWin) {
-          setMessage({ type: 'success', text: `JACKPOT! You won ${winSymbol.value} ${winSymbol.id}!` });
-        } else {
-          setMessage({ type: 'info', text: 'No luck this time. Try again in 2 hours!' });
-        }
+        setMessage({ type: 'success', text: `JACKPOT! You won ${winSymbol.value} ${winSymbol.id}!` });
         
         onBalanceUpdate();
         checkCooldown();
@@ -157,7 +143,8 @@ const SlotsGame: React.FC<SlotsGameProps> = ({ userId, onBalanceUpdate, onClose 
     } catch (err: any) {
       clearInterval(spinInterval);
       console.error('Slots error:', err);
-      setMessage({ type: 'error', text: 'Failed to spin. Please try again later.' });
+      const errorMsg = err.message || 'Failed to spin. Please try again later.';
+      setMessage({ type: 'error', text: errorMsg });
       setIsSpinning(false);
     }
   };
