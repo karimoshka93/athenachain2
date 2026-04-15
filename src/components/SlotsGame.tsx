@@ -11,8 +11,10 @@ interface SlotsGameProps {
 
 const SYMBOLS = [
   { id: 'GLD', icon: '💰', color: '#FFD700', value: 0.01 },
-  { id: 'PI', icon: '🥧', color: '#6B21A8', value: 1 },
-  { id: 'MISS', icon: '❌', color: '#333', value: 0 },
+  { id: 'PiNetwork', icon: 'π', color: '#6B21A8', value: 1 },
+  { id: 'USDT', icon: '💵', color: '#26A17B', value: 0 },
+  { id: 'XRP', icon: '✖️', color: '#23292F', value: 0 },
+  { id: 'Try Again', icon: '❌', color: '#333', value: 0 },
 ];
 
 const SlotsGame: React.FC<SlotsGameProps> = ({ userId, onBalanceUpdate, onClose }) => {
@@ -107,9 +109,8 @@ const SlotsGame: React.FC<SlotsGameProps> = ({ userId, onBalanceUpdate, onClose 
       // Logic for win
       const rand = Math.random();
       let winSymbol = SYMBOLS[0]; // Default to GLD
-      let isWin = true;
-
-      // New Odds: 95% GLD (0.01), 5% PI (1)
+      
+      // Odds: 95% GLD (0.01), 5% PI (1)
       if (rand < 0.05) { 
         winSymbol = SYMBOLS[1]; // 5% PI
       } else { 
@@ -123,7 +124,7 @@ const SlotsGame: React.FC<SlotsGameProps> = ({ userId, onBalanceUpdate, onClose 
         prize_val: winSymbol.value,
         user_uuid: userId,
         combo: finalReels.join('-'),
-        symbol: winSymbol.id
+        symbol: winSymbol.id === 'PiNetwork' ? 'PI' : winSymbol.id // Map to DB symbol
       });
 
       if (error) throw error;
@@ -142,6 +143,7 @@ const SlotsGame: React.FC<SlotsGameProps> = ({ userId, onBalanceUpdate, onClose 
 
     } catch (err: any) {
       clearInterval(spinInterval);
+      setReels(['💰', '💰', '💰']); // Reset to neutral state on error
       console.error('Slots error:', err);
       const errorMsg = err.message || 'Failed to spin. Please try again later.';
       setMessage({ type: 'error', text: errorMsg });
