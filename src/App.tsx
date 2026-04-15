@@ -2061,6 +2061,14 @@ export default function App() {
       <div className="fixed top-[-10%] left-[-20%] w-[80%] h-[40%] bg-gold/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="fixed bottom-[-10%] right-[-20%] w-[80%] h-[40%] bg-gold/5 rounded-full blur-[120px] pointer-events-none" />
 
+      {/* Profile Circle (Top Left) */}
+      <div className="absolute top-8 left-5 z-50">
+        <div className="w-10 h-10 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center overflow-hidden relative group">
+          <div className="absolute inset-0 bg-gold/5 animate-pulse" />
+          <Icon name="users" className="w-5 h-5 text-gold/70" />
+        </div>
+      </div>
+
       {/* Logout Button (Top Right) */}
       <div className="absolute top-8 right-5 z-50">
         <button 
