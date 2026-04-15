@@ -196,7 +196,8 @@ const TASKS = [
     reward: 0.01, 
     icon: <Icon name="twitter" className="w-5 h-5" />, 
     link: 'https://x.com/DigitalGold2025',
-    frequency: 'Every 5 days'
+    frequency: 'Daily',
+    isDaily: true
   },
   { 
     id: 2, 
@@ -204,7 +205,8 @@ const TASKS = [
     reward: 0.01, 
     icon: <Icon name="instagram" className="w-5 h-5" />, 
     link: 'https://instagram.com/digitalgold11',
-    frequency: 'Every 5 days'
+    frequency: 'Daily',
+    isDaily: true
   },
   { 
     id: 3, 
@@ -212,7 +214,8 @@ const TASKS = [
     reward: 0.01, 
     icon: <Icon name="send" className="w-5 h-5" />, 
     link: 'https://t.me/digitalgold2025',
-    frequency: 'Every 5 days'
+    frequency: 'Daily',
+    isDaily: true
   },
   { 
     id: 4, 
@@ -220,7 +223,8 @@ const TASKS = [
     reward: 0.05, 
     icon: <Icon name="youtube" className="w-5 h-5" />, 
     link: 'https://www.youtube.com/@DigitalGold25',
-    frequency: 'Every 5 days'
+    frequency: 'Daily',
+    isDaily: true
   },
   { 
     id: 5, 
@@ -1336,8 +1340,28 @@ export default function App() {
       // Set defaults if profile is missing or fields are null
       setMigrationStatus(profile?.legacy_uid === null || profile?.legacy_uid === undefined);
       setLastMiningTime(profile?.last_mining_time || null);
-      setCompletedTasks(profile?.completed_tasks || []);
       setLegacyUid(profile?.legacy_uid || null);
+
+      // --- Daily Tasks Reset Logic ---
+      let tasks = profile?.completed_tasks || [];
+      const today = parseInt(new Date().toISOString().split('T')[0].replace(/-/g, ''));
+      const lastResetEntry = tasks.find((id: number) => id > 1000000); // Use > 1M for date storage
+      const lastResetDate = lastResetEntry ? lastResetEntry - 1000000 : 0;
+
+      if (lastResetDate !== today) {
+        // It's a new day! Filter out daily tasks
+        const dailyTaskIds = TASKS.filter(t => (t as any).isDaily).map(t => t.id);
+        tasks = tasks.filter((id: number) => !dailyTaskIds.includes(id) && id <= 1000000);
+        // Add new reset marker
+        tasks.push(today + 1000000);
+        
+        // Update Supabase immediately
+        await supabase
+          .from('profiles')
+          .update({ completed_tasks: tasks })
+          .eq('id', user.id);
+      }
+      setCompletedTasks(tasks);
 
       // 2. Load balances
       const { data: balances, error: balancesError } = await supabase
