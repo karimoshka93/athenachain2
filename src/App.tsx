@@ -825,13 +825,15 @@ const WalletTab = ({
                     </div>
                   </div>
                     <div className="flex flex-col items-end">
-                      <span className="font-mono font-bold text-sm">{balance.toLocaleString()}</span>
+                      <span className="font-mono font-bold text-sm">
+                        {balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}
+                      </span>
                       <span className="text-gray-500 text-[10px]">
                         {(() => {
                           const upperSymbol = symbol.toUpperCase();
                           if (upperSymbol === 'PI') return 'Soon';
                           const price = marketPrices[upperSymbol] || MOCK_COINS.find(c => c.symbol === upperSymbol)?.price || 0;
-                          return `$${(balance * price).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+                          return `$${(balance * price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                         })()}
                       </span>
                     </div>
@@ -854,16 +856,27 @@ const TasksTab = ({
 }) => {
   const [taskCodes, setTaskCodes] = useState<Record<number, string>>({});
   const [errorMessages, setErrorMessages] = useState<Record<number, string>>({});
+  const [visitedTasks, setVisitedTasks] = useState<number[]>([]);
+  const [completingTaskId, setCompletingTaskId] = useState<number | null>(null);
 
-  const handleVerify = (task: any) => {
+  const handleVerify = async (task: any) => {
     const inputCode = taskCodes[task.id]?.trim().toLowerCase();
     const requiredCode = task.requiredCode?.trim().toLowerCase();
 
     if (inputCode === requiredCode) {
-      onCompleteTask(task.id, task.reward);
+      setCompletingTaskId(task.id);
+      await onCompleteTask(task.id, task.reward);
+      setCompletingTaskId(null);
       setErrorMessages(prev => ({ ...prev, [task.id]: '' }));
     } else {
       setErrorMessages(prev => ({ ...prev, [task.id]: 'Invalid code. Please try again.' }));
+    }
+  };
+
+  const handleGo = (task: any) => {
+    window.open(task.link, '_blank');
+    if (!visitedTasks.includes(task.id)) {
+      setVisitedTasks(prev => [...prev, task.id]);
     }
   };
 
@@ -878,6 +891,7 @@ const TasksTab = ({
         {TASKS.map((task) => {
           const isCompleted = completedTasks.includes(task.id);
           const needsCode = !!task.requiredCode;
+          const isVisited = visitedTasks.includes(task.id);
 
           return (
             <div 
@@ -909,12 +923,27 @@ const TasksTab = ({
                     Done
                   </div>
                 ) : (
-                  <button 
-                    onClick={() => window.open(task.link, '_blank')}
-                    className="bg-gold/10 text-gold group-hover:bg-gold group-hover:text-black px-4 py-2 rounded-lg text-sm font-bold transition-all"
-                  >
-                    Go
-                  </button>
+                  <div className="flex gap-2">
+                    {!needsCode && isVisited && (
+                      <button 
+                        onClick={async () => {
+                          setCompletingTaskId(task.id);
+                          await onCompleteTask(task.id, task.reward);
+                          setCompletingTaskId(null);
+                        }}
+                        disabled={completingTaskId === task.id}
+                        className="bg-green-500 text-black px-4 py-2 rounded-lg text-sm font-bold hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                      >
+                        {completingTaskId === task.id ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Check'}
+                      </button>
+                    )}
+                    <button 
+                      onClick={() => handleGo(task)}
+                      className={`${!needsCode && isVisited ? 'bg-white/5 text-gray-400' : 'bg-gold/10 text-gold group-hover:bg-gold group-hover:text-black'} px-4 py-2 rounded-lg text-sm font-bold transition-all`}
+                    >
+                      {needsCode ? 'Go' : (isVisited ? 'Re-visit' : 'Go')}
+                    </button>
+                  </div>
                 )}
               </div>
 
@@ -931,9 +960,10 @@ const TasksTab = ({
                     />
                     <button 
                       onClick={() => handleVerify(task)}
-                      className="bg-gold-gradient text-black font-bold px-6 py-2 rounded-xl text-sm hover:brightness-110 active:scale-95 transition-all"
+                      disabled={completingTaskId === task.id}
+                      className="bg-gold-gradient text-black font-bold px-6 py-2 rounded-xl text-sm hover:brightness-110 active:scale-95 transition-all disabled:opacity-50 flex items-center gap-2"
                     >
-                      Verify
+                      {completingTaskId === task.id ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Verify'}
                     </button>
                   </div>
                   {errorMessages[task.id] && (
@@ -997,7 +1027,118 @@ const MainnetTab = () => {
 
 // --- Main App ---
 
-const MoreTab = ({ userId, onBalanceUpdate, onLogout }: { userId: string; onBalanceUpdate: () => void; onLogout: () => void }) => {
+const KYCPage = ({ data, onSync, onBack, hasLegacyUid }: { 
+  data: { status: string; realName: string | null; phone: string | null; date: string | null } | null,
+  onSync: () => Promise<void>,
+  onBack: () => void,
+  hasLegacyUid: boolean
+}) => {
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const initSync = async () => {
+      if (hasLegacyUid && (!data || data.status === 'pending')) {
+        setLoading(true);
+        await onSync();
+        setLoading(false);
+      }
+    };
+    initSync();
+  }, []);
+
+  return (
+    <div className="flex flex-col gap-6 pb-24">
+      <header className="flex items-center gap-4">
+        <button onClick={onBack} className="p-2 rounded-xl bg-white/5 border border-white/10 text-gray-400">
+          <Icon name="arrow-left" className="w-5 h-5" />
+        </button>
+        <div>
+          <h1 className="text-2xl font-bold text-gold-gradient">KYC Verification</h1>
+          <p className="text-gray-400 text-sm">Identity & Eligibility Status</p>
+        </div>
+      </header>
+
+      {!hasLegacyUid ? (
+        <div className="glass rounded-3xl p-8 flex flex-col items-center text-center gap-4 border-red-500/20">
+          <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center text-red-500">
+            <Icon name="lock" className="w-8 h-8" />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-white">Wallet Not Synced</h3>
+            <p className="text-gray-400 text-sm mt-2">You must sync your legacy wallet first to access KYC verification.</p>
+          </div>
+          <button 
+            onClick={onBack}
+            className="mt-2 px-6 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-bold"
+          >
+            Go Back
+          </button>
+        </div>
+      ) : loading ? (
+        <div className="glass rounded-3xl p-12 flex flex-col items-center justify-center gap-4 border-gold/20">
+          <Loader2 className="w-10 h-10 text-gold animate-spin" />
+          <p className="text-gold font-medium animate-pulse">Verifying Identity...</p>
+        </div>
+      ) : data?.status === 'verified' ? (
+        <div className="flex flex-col gap-4">
+          <div className="glass rounded-3xl p-6 border-green-500/20 bg-green-500/5">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center text-green-500">
+                <Icon name="shield-check" className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-white">KYC Verified</h3>
+                <p className="text-green-500/70 text-xs font-medium uppercase tracking-wider">Mainnet Eligible</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-1 p-3 rounded-xl bg-white/5 border border-white/5">
+                <span className="text-[10px] text-gray-500 uppercase font-bold">Real Name</span>
+                <span className="text-sm font-medium text-white">{data.realName}</span>
+              </div>
+              <div className="flex flex-col gap-1 p-3 rounded-xl bg-white/5 border border-white/5">
+                <span className="text-[10px] text-gray-500 uppercase font-bold">Phone Number</span>
+                <span className="text-sm font-medium text-white">{data.phone}</span>
+              </div>
+              <div className="flex flex-col gap-1 p-3 rounded-xl bg-white/5 border border-white/5">
+                <span className="text-[10px] text-gray-500 uppercase font-bold">Verification Date</span>
+                <span className="text-sm font-medium text-white">{data.date}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-gold/5 border border-gold/10">
+            <p className="text-[10px] text-gold/70 leading-relaxed text-center italic">
+              Your identity has been successfully bridged from the legacy system. You are now eligible for the upcoming Mainnet migration.
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className="glass rounded-3xl p-8 flex flex-col items-center text-center gap-6 border-red-500/20">
+          <div className="w-20 h-20 rounded-full bg-red-500/10 flex items-center justify-center text-red-500">
+            <Icon name="x" className="w-10 h-10" />
+          </div>
+          <div>
+            <h3 className="text-xl font-bold text-white">Verification Failed</h3>
+            <p className="text-red-400 text-sm mt-2 font-medium">Failed. Wait for KYC Stage 3.</p>
+            <p className="text-gray-500 text-xs mt-4 leading-relaxed">
+              We couldn't retrieve your complete KYC Stage 2 data from the legacy system. Please wait for the Stage 3 manual verification process.
+            </p>
+          </div>
+          <button 
+            onClick={onBack}
+            className="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-white font-bold"
+          >
+            Return to Profile
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: string; onBalanceUpdate: () => void; onLogout: () => void; onKYCClick: () => void }) => {
   const [showWheel, setShowWheel] = useState(false);
   const [showSlots, setShowSlots] = useState(false);
   const sections = [
@@ -1083,6 +1224,7 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout }: { userId: string; onBala
                 key={itemIdx} 
                 onClick={() => {
                   if (item.isInstall) setShowInstallGuide(true);
+                  if (item.name === 'KYC') onKYCClick();
                   if (item.isGame) {
                     if (item.gameType === 'wheel') setShowWheel(true);
                     if (item.gameType === 'slots') setShowSlots(true);
@@ -1269,6 +1411,12 @@ export default function App() {
   const [isWaitingForAd, setIsWaitingForAd] = useState(false);
   const [adClickTime, setAdClickTime] = useState<number | null>(null);
   const [miningMessage, setMiningMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [kycData, setKycData] = useState<{
+    status: string;
+    realName: string | null;
+    phone: string | null;
+    date: string | null;
+  } | null>(null);
 
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -1350,7 +1498,7 @@ export default function App() {
       // 1. Load profile to check sync status, mining time, and tasks
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
-        .select('last_mining_time, completed_tasks, legacy_uid')
+        .select('last_mining_time, completed_tasks, legacy_uid, kyc_status, real_name, full_phone_number, kyc_stage2_date')
         .eq('id', user.id)
         .single();
 
@@ -1362,6 +1510,12 @@ export default function App() {
       setMigrationStatus(profile?.legacy_uid === null || profile?.legacy_uid === undefined);
       setLastMiningTime(profile?.last_mining_time || null);
       setLegacyUid(profile?.legacy_uid || null);
+      setKycData({
+        status: profile?.kyc_status || 'pending',
+        realName: profile?.real_name || null,
+        phone: profile?.full_phone_number || null,
+        date: profile?.kyc_stage2_date || null
+      });
 
       // --- Daily Tasks Reset Logic ---
       let tasks = profile?.completed_tasks || [];
@@ -2048,6 +2202,58 @@ export default function App() {
     }
   };
 
+  const handleSyncKYC = async () => {
+    if (!user || !legacyUid) return;
+    if (kycData && kycData.status !== 'pending') return;
+
+    try {
+      const userDocRef = doc(legacyDb, "users", legacyUid);
+      const userSnap = await getDoc(userDocRef);
+      
+      if (userSnap.exists()) {
+        const data = userSnap.data();
+        const { fullPhoneNumber, realName, kycStage2SubmittedAt } = data;
+
+        // Check if all three are present
+        if (fullPhoneNumber && realName && kycStage2SubmittedAt) {
+          // Success: Update Supabase
+          const { error: updateError } = await supabase
+            .from('profiles')
+            .update({
+              full_phone_number: fullPhoneNumber,
+              real_name: realName,
+              kyc_stage2_date: kycStage2SubmittedAt,
+              kyc_status: 'verified'
+            })
+            .eq('id', user.id);
+
+          if (updateError) throw updateError;
+
+          setKycData({
+            status: 'verified',
+            realName,
+            phone: fullPhoneNumber,
+            date: kycStage2SubmittedAt
+          });
+        } else {
+          // Missing data: Mark as failed
+          const { error: updateError } = await supabase
+            .from('profiles')
+            .update({ kyc_status: 'failed' })
+            .eq('id', user.id);
+
+          if (updateError) throw updateError;
+
+          setKycData(prev => prev ? { ...prev, status: 'failed' } : { status: 'failed', realName: null, phone: null, date: null });
+        }
+      } else {
+        throw new Error('Legacy user document not found.');
+      }
+    } catch (err) {
+      console.error('KYC Sync Error:', err);
+    }
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard': 
@@ -2080,8 +2286,17 @@ export default function App() {
             onCompleteTask={handleCompleteTask} 
           />
         );
+      case 'kyc':
+        return (
+          <KYCPage 
+            data={kycData} 
+            onSync={handleSyncKYC} 
+            onBack={() => setActiveTab('more')} 
+            hasLegacyUid={!!legacyUid}
+          />
+        );
       case 'mainnet': return <MainnetTab />;
-      case 'more': return <MoreTab userId={user?.id || ''} onBalanceUpdate={loadUserData} onLogout={handleLogout} />;
+      case 'more': return <MoreTab userId={user?.id || ''} onBalanceUpdate={loadUserData} onLogout={handleLogout} onKYCClick={() => setActiveTab('kyc')} />;
       default: 
         return (
           <Dashboard 
