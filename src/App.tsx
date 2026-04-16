@@ -1147,7 +1147,7 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
       items: [
         { name: "Profile", icon: <UserIcon className="w-5 h-5" /> },
         { name: "Settings", icon: <Settings className="w-5 h-5" /> },
-        { name: "KYC", icon: <ShieldCheck className="w-5 h-5" /> },
+        { name: "KYC", icon: <ShieldCheck className="w-5 h-5" />, isActive: true },
         { name: "Referral", icon: <Users className="w-5 h-5" /> },
       ]
     },
@@ -1230,13 +1230,13 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
                     if (item.gameType === 'slots') setShowSlots(true);
                   }
                 }}
-                className={`flex flex-col items-center gap-2 p-3 rounded-2xl bg-white/5 border border-white/5 relative group cursor-pointer ${(!item.isInstall && !item.isGame) ? 'opacity-60 grayscale' : ''}`}
+                className={`flex flex-col items-center gap-2 p-3 rounded-2xl bg-white/5 border border-white/5 relative group cursor-pointer ${(item.isInstall || item.isGame || item.isActive) ? '' : 'opacity-60 grayscale'}`}
               >
-                <div className={`w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center ${(item.isInstall || item.isGame) ? 'text-gold' : 'text-gray-400'}`}>
+                <div className={`w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center ${(item.isInstall || item.isGame || item.isActive) ? 'text-gold' : 'text-gray-400'}`}>
                   {item.icon}
                 </div>
-                <span className={`text-[10px] text-center font-medium leading-tight ${(item.isInstall || item.isGame) ? 'text-white' : 'text-gray-500'}`}>{item.name}</span>
-                {(!item.isInstall && !item.isGame) && (
+                <span className={`text-[10px] text-center font-medium leading-tight ${(item.isInstall || item.isGame || item.isActive) ? 'text-white' : 'text-gray-500'}`}>{item.name}</span>
+                {(!item.isInstall && !item.isGame && !item.isActive) && (
                   <>
                     <div className="absolute top-2 right-2 px-1.5 py-0.5 bg-gold/10 rounded-md border border-gold/20">
                       <span className="text-[6px] font-bold text-gold uppercase tracking-tighter">Soon</span>
