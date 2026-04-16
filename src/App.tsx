@@ -392,7 +392,8 @@ const Dashboard = ({
   onStartMining,
   deferredPrompt,
   onInstall,
-  miningMessage
+  miningMessage,
+  onProfileClick
 }: { 
   onViewAll: () => void, 
   onClaim: (amount: number) => void,
@@ -400,7 +401,8 @@ const Dashboard = ({
   onStartMining: () => void,
   deferredPrompt: any,
   onInstall: () => void,
-  miningMessage: { type: 'success' | 'error', text: string } | null
+  miningMessage: { type: 'success' | 'error', text: string } | null,
+  onProfileClick: () => void
 }) => {
   const [minedAmount, setMinedAmount] = useState(0);
   const [marketData, setMarketData] = useState<MarketCoin[]>([]);
@@ -530,13 +532,23 @@ const Dashboard = ({
     <div className="flex flex-col gap-6 pb-24">
       <header className="flex flex-col gap-1">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gold-gradient">Athena Chain</h1>
+          <div className="flex items-center gap-3">
+            <div 
+              onClick={onProfileClick}
+              className="w-10 h-10 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center overflow-hidden cursor-pointer hover:bg-gold/20 transition-all shadow-lg shadow-gold/5"
+            >
+              <Icon name="users" className="w-5 h-5 text-gold" />
+            </div>
+            <div className="flex flex-col">
+              <h1 className="text-xl font-bold text-gold-gradient">Athena Chain</h1>
+              <p className="text-gray-400 text-[10px] uppercase tracking-widest">Pioneer Node</p>
+            </div>
+          </div>
           <div className="flex items-center gap-2 bg-gold/10 px-3 py-1 rounded-full border border-gold/20">
             <div className="w-2 h-2 bg-gold rounded-full animate-pulse" />
-            <span className="text-[10px] font-bold text-gold uppercase">Preparing Migration</span>
+            <span className="text-[10px] font-bold text-gold uppercase">Live</span>
           </div>
         </div>
-        <p className="text-gray-400 text-sm">Welcome back, Pioneer</p>
       </header>
 
       {deferredPrompt && (
@@ -721,9 +733,18 @@ const WalletTab = ({
 
   return (
     <div className="flex flex-col gap-6 pb-24">
-      <header className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold text-gold-gradient">Portfolio</h1>
-        <p className="text-gray-400 text-sm">Manage your global assets</p>
+      <header className="flex items-center justify-between">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-bold text-gold-gradient">Portfolio</h1>
+          <p className="text-gray-400 text-sm">Manage your global assets</p>
+        </div>
+        <button 
+          onClick={onExtraSync}
+          className="w-10 h-10 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center text-gold hover:bg-gold/20 transition-all shadow-lg shadow-gold/5"
+          title="Extra Sync"
+        >
+          <Icon name="refresh-cw" className="w-5 h-5" />
+        </button>
       </header>
 
       {/* Migration Card */}
@@ -1318,22 +1339,27 @@ export default function App() {
 
       // --- Daily Tasks Reset Logic ---
       let tasks = profile?.completed_tasks || [];
-      const today = parseInt(new Date().toISOString().split('T')[0].replace(/-/g, ''));
-      const lastResetEntry = tasks.find((id: number) => id > 1000000); // Use > 1M for date storage
-      const lastResetDate = lastResetEntry ? lastResetEntry - 1000000 : 0;
+      try {
+        const today = parseInt(new Date().toISOString().split('T')[0].replace(/-/g, ''));
+        const lastResetEntry = tasks.find((id: number) => id > 1000000); // Use > 1M for date storage
+        const lastResetDate = lastResetEntry ? lastResetEntry - 1000000 : 0;
 
-      if (lastResetDate !== today) {
-        // It's a new day! Filter out daily tasks
-        const dailyTaskIds = TASKS.filter(t => (t as any).isDaily).map(t => t.id);
-        tasks = tasks.filter((id: number) => !dailyTaskIds.includes(id) && id <= 1000000);
-        // Add new reset marker
-        tasks.push(today + 1000000);
-        
-        // Update Supabase immediately
-        await supabase
-          .from('profiles')
-          .update({ completed_tasks: tasks })
-          .eq('id', user.id);
+        if (lastResetDate !== today) {
+          // It's a new day! Filter out daily tasks
+          const dailyTaskIds = TASKS.filter(t => (t as any).isDaily).map(t => t.id);
+          tasks = tasks.filter((id: number) => !dailyTaskIds.includes(id) && id <= 1000000);
+          // Add new reset marker
+          tasks.push(today + 1000000);
+          
+          // Update Supabase immediately
+          await supabase
+            .from('profiles')
+            .update({ completed_tasks: tasks })
+            .eq('id', user.id);
+        }
+      } catch (taskResetErr) {
+        console.error('Error during daily task reset:', taskResetErr);
+        // Continue to load balances even if task reset fails
       }
       setCompletedTasks(tasks);
 
@@ -1345,7 +1371,7 @@ export default function App() {
 
       if (balancesError) {
         console.error('Error loading balances:', balancesError);
-        setUserAssets({}); // Default to empty
+        // Don't overwrite existing local assets if there's an error
       } else {
         const assets: Record<string, number> = {};
         if (balances && balances.length > 0) {
@@ -1357,11 +1383,7 @@ export default function App() {
       }
     } catch (err) {
       console.error('Unexpected error loading user data:', err);
-      // Ensure defaults on error
-      setMigrationStatus(true);
-      setLastMiningTime(null);
-      setCompletedTasks([]);
-      setUserAssets({});
+      // Don't clear userAssets here to prevent accidental resets on next update
     }
   };
 
@@ -1884,8 +1906,17 @@ export default function App() {
     if (!user) return;
 
     try {
-      // 1. Get current GLD balance
-      const currentGld = userAssets['GLD'] || 0;
+      // Safety check: Fetch latest balance from server to prevent overwriting with 0 if local state is stale
+      const { data: currentBalanceData, error: fetchError } = await supabase
+        .from('user_balances')
+        .select('amount')
+        .eq('user_id', user.id)
+        .eq('coin_symbol', 'GLD')
+        .single();
+
+      if (fetchError && fetchError.code !== 'PGRST116') throw fetchError;
+
+      const currentGld = currentBalanceData?.amount || 0;
       const newGld = currentGld + amount;
 
       // 2. Update Supabase: Balance and Reset Mining Time
@@ -1948,9 +1979,19 @@ export default function App() {
     if (!user || completedTasks.includes(taskId)) return;
 
     try {
-      const newCompletedTasks = [...completedTasks, taskId];
-      const currentGld = userAssets['GLD'] || 0;
+      // Safety check: Fetch latest balance from server to prevent overwriting with 0 if local state is stale
+      const { data: currentBalanceData, error: fetchError } = await supabase
+        .from('user_balances')
+        .select('amount')
+        .eq('user_id', user.id)
+        .eq('coin_symbol', 'GLD')
+        .single();
+
+      if (fetchError && fetchError.code !== 'PGRST116') throw fetchError;
+
+      const currentGld = currentBalanceData?.amount || 0;
       const newGld = currentGld + reward;
+      const newCompletedTasks = [...completedTasks, taskId];
 
       // Update Supabase: Tasks, Balance
       const [profileRes, balanceRes] = await Promise.all([
@@ -1993,6 +2034,7 @@ export default function App() {
             deferredPrompt={deferredPrompt}
             onInstall={handleInstall}
             miningMessage={miningMessage}
+            onProfileClick={() => setActiveTab('more')}
           />
         );
       case 'wallet': 
@@ -2024,6 +2066,7 @@ export default function App() {
             deferredPrompt={deferredPrompt}
             onInstall={handleInstall}
             miningMessage={miningMessage}
+            onProfileClick={() => setActiveTab('more')}
           />
         );
     }
@@ -2183,16 +2226,9 @@ export default function App() {
         <NavButton 
           active={activeTab === 'more'} 
           onClick={() => setActiveTab('more')} 
-          icon={<Icon name="more-horizontal" className="w-6 h-6" />} 
-          label="More" 
-        />
-        <NavButton 
-          active={false} 
-          onClick={() => {}} 
           icon={
-            <div className="w-8 h-8 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center overflow-hidden relative">
-              <div className="absolute inset-0 bg-gold/5 animate-pulse" />
-              <Icon name="users" className="w-4 h-4 text-gold/70" />
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center overflow-hidden transition-all ${activeTab === 'more' ? 'bg-gold/20 border-gold' : 'bg-gold/10 border-gold/20'} border`}>
+              <Icon name="users" className={`w-4 h-4 ${activeTab === 'more' ? 'text-gold' : 'text-gold/70'}`} />
             </div>
           } 
           label="Profile" 
