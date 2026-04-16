@@ -21,6 +21,8 @@ import {
   RefreshCw,
   Trophy,
   Users,
+  User as UserIcon,
+  Settings,
   Send,
   Search,
   X,
@@ -995,10 +997,19 @@ const MainnetTab = () => {
 
 // --- Main App ---
 
-const MoreTab = ({ userId, onBalanceUpdate }: { userId: string; onBalanceUpdate: () => void }) => {
+const MoreTab = ({ userId, onBalanceUpdate, onLogout }: { userId: string; onBalanceUpdate: () => void; onLogout: () => void }) => {
   const [showWheel, setShowWheel] = useState(false);
   const [showSlots, setShowSlots] = useState(false);
   const sections = [
+    {
+      title: "Account",
+      items: [
+        { name: "Profile", icon: <UserIcon className="w-5 h-5" /> },
+        { name: "Settings", icon: <Settings className="w-5 h-5" /> },
+        { name: "KYC", icon: <ShieldCheck className="w-5 h-5" /> },
+        { name: "Referral", icon: <Users className="w-5 h-5" /> },
+      ]
+    },
     {
       title: "Trading",
       items: [
@@ -1084,15 +1095,30 @@ const MoreTab = ({ userId, onBalanceUpdate }: { userId: string; onBalanceUpdate:
                 </div>
                 <span className={`text-[10px] text-center font-medium leading-tight ${(item.isInstall || item.isGame) ? 'text-white' : 'text-gray-500'}`}>{item.name}</span>
                 {(!item.isInstall && !item.isGame) && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span className="text-[8px] font-bold text-gold uppercase tracking-tighter">Soon</span>
-                  </div>
+                  <>
+                    <div className="absolute top-2 right-2 px-1.5 py-0.5 bg-gold/10 rounded-md border border-gold/20">
+                      <span className="text-[6px] font-bold text-gold uppercase tracking-tighter">Soon</span>
+                    </div>
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="text-[8px] font-bold text-gold uppercase tracking-tighter">Soon</span>
+                    </div>
+                  </>
                 )}
               </div>
             ))}
           </div>
         </div>
       ))}
+
+      <div className="px-2 mt-4">
+        <button 
+          onClick={onLogout}
+          className="w-full py-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 font-bold flex items-center justify-center gap-3 hover:bg-red-500/20 transition-all active:scale-[0.98]"
+        >
+          <Icon name="x" className="w-5 h-5" />
+          Logout Account
+        </button>
+      </div>
 
       {/* Wheel Modal */}
       <AnimatePresence>
@@ -2055,7 +2081,7 @@ export default function App() {
           />
         );
       case 'mainnet': return <MainnetTab />;
-      case 'more': return <MoreTab userId={user?.id || ''} onBalanceUpdate={loadUserData} />;
+      case 'more': return <MoreTab userId={user?.id || ''} onBalanceUpdate={loadUserData} onLogout={handleLogout} />;
       default: 
         return (
           <Dashboard 
@@ -2077,16 +2103,6 @@ export default function App() {
       {/* Background Glows */}
       <div className="fixed top-[-10%] left-[-20%] w-[80%] h-[40%] bg-gold/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="fixed bottom-[-10%] right-[-20%] w-[80%] h-[40%] bg-gold/5 rounded-full blur-[120px] pointer-events-none" />
-
-      {/* Logout Button (Top Right) */}
-      <div className="absolute top-8 right-5 z-50">
-        <button 
-          onClick={handleLogout}
-          className="bg-white/5 border border-white/10 p-2 rounded-xl hover:bg-white/10 transition-all group"
-        >
-          <Icon name="x" className="w-5 h-5 text-gray-500 group-hover:text-gold" />
-        </button>
-      </div>
 
       <main className="flex-1 px-5 pt-8 overflow-y-auto no-scrollbar">
         <AnimatePresence mode="wait">
@@ -2222,6 +2238,12 @@ export default function App() {
           onClick={() => setActiveTab('tasks')} 
           icon={<Icon name="check-square" className="w-6 h-6" />} 
           label="Tasks" 
+        />
+        <NavButton 
+          active={activeTab === 'mainnet'} 
+          onClick={() => setActiveTab('mainnet')} 
+          icon={<Icon name="rocket" className="w-6 h-6" />} 
+          label="Mainnet" 
         />
         <NavButton 
           active={activeTab === 'more'} 
