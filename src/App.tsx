@@ -39,6 +39,10 @@ import {
   Instagram,
   Youtube,
   Twitter,
+  PlayCircle,
+  GraduationCap,
+  History,
+  CheckCircle2,
   TrendingUp as TrendingUpIcon,
   TrendingDown as TrendingDownIcon
 } from 'lucide-react';
@@ -1138,6 +1142,439 @@ const KYCPage = ({ data, onSync, onBack, hasLegacyUid }: {
   );
 };
 
+const AcademyPage = ({ 
+  user,
+  progress,
+  onUpdateProgress,
+  onBack
+}: { 
+  user: User, 
+  progress: { completed_question_ids: number[], total_score: number, is_eligible: boolean },
+  onUpdateProgress: (questionId: number, isCorrect: boolean) => void,
+  onBack: () => void 
+}) => {
+  const [selectedCourse, setSelectedCourse] = useState<number | null>(null);
+  
+  const COURSES = [
+    {
+      id: 1,
+      title: "Introduction to Athena Chain",
+      description: "Foundations of the high-performance decentralized infrastructure",
+      videoUrl: "https://www.youtube.com/embed/-hQ9WR81s7c",
+      questions: [
+        { id: 1, text: "What is the primary goal of Athena Chain?", options: ["High-performance decentralized infrastructure", "A simple social media platform", "A centralized cloud storage", "A gaming-only console"], correctIndex: 0 },
+        { id: 2, text: "What consensus mechanism does Athena use?", options: ["Proof of Work", "Proof of Stake (PoS)", "Proof of History", "Proof of Authority"], correctIndex: 1 },
+        { id: 3, text: "How many transactions per second (TPS) can Athena handle?", options: ["100 TPS", "1,000 TPS", "10,000 TPS", "100,000+ TPS"], correctIndex: 3 },
+        { id: 4, text: "What is the name of the native token?", options: ["GEM", "ATH", "PI", "BTC"], correctIndex: 1 },
+        { id: 5, text: "Is Athena compatible with EVM (Ethereum Virtual Machine)?", options: ["Yes", "No", "Only for NFTs", "Only for Staking"], correctIndex: 0 }
+      ]
+    },
+    {
+      id: 2,
+      title: "Mining & Rewards (ATH/GEM)",
+      description: "Learn how to maximize your earnings in the ecosystem",
+      videoUrl: "https://www.youtube.com/embed/Tr5HT6CE434",
+      questions: [
+        { id: 6, text: "How often can you claim mining rewards?", options: ["Every hour", "Every 12 hours", "Every 24 hours", "Once a week"], correctIndex: 2 },
+        { id: 7, text: "What is the secondary token earned during mining?", options: ["ATH", "GEM", "GLD", "USDT"], correctIndex: 1 },
+        { id: 8, text: "Can you boost your mining speed?", options: ["No, it's fixed", "Yes, via referrals and staking", "Only by paying monthly", "Only on weekends"], correctIndex: 1 },
+        { id: 9, text: "What happens to GEM tokens?", options: ["They are deleted", "They are converted to ATH monthly", "They are used for gas fees", "They are sold on exchanges"], correctIndex: 1 },
+        { id: 10, text: "Is mining battery-intensive on mobile?", options: ["Yes, very much", "No, it's cloud-based", "Only if the app is open", "Only on Android"], correctIndex: 1 }
+      ]
+    },
+    {
+      id: 3,
+      title: "KYC & Security",
+      description: "Ensuring compliance and protecting your assets",
+      videoUrl: "https://www.youtube.com/embed/2nsOyXE1r8w",
+      questions: [
+        { id: 11, text: "Why is KYC required for Mainnet?", options: ["To collect user data for ads", "To prevent sybil attacks and ensure compliance", "To charge users fees", "It is not actually required"], correctIndex: 1 },
+        { id: 12, text: "What are the stages of KYC in Athena?", options: ["Stage 1 only", "Stage 1 and 2", "Stage 1, 2, and 3", "Stage A and B"], correctIndex: 2 },
+        { id: 13, text: "What document is typically required for Stage 2?", options: ["Library card", "Government ID", "Utility bill", "Social media profile"], correctIndex: 1 },
+        { id: 14, text: "Can you trade tokens without KYC?", options: ["Yes, fully", "No, it's impossible", "Limited functionality", "Only on Tuesdays"], correctIndex: 2 },
+        { id: 15, text: "Is your data encrypted on Athena?", options: ["Yes", "No", "Only for VIPs", "Only on Mainnet"], correctIndex: 0 }
+      ]
+    },
+    {
+      id: 4,
+      title: "Tokenomics & Governance",
+      description: "Understanding the ATH supply and voting system",
+      videoUrl: "https://www.youtube.com/embed/MK-5WmMZ2v0",
+      questions: [
+        { id: 16, text: "What is the total supply of ATH?", options: ["100 Million", "560 Million", "1 Billion", "Infinite"], correctIndex: 1 },
+        { id: 17, text: "What percentage of tokens are allocated to the community?", options: ["10%", "30%", "50%", "70%"], correctIndex: 3 },
+        { id: 18, text: "How can you participate in governance?", options: ["By mining only", "By staking ATH", "By watching videos", "By inviting friends"], correctIndex: 1 },
+        { id: 19, text: "What is the 'Burn' mechanism?", options: ["Deleting inactive accounts", "A portion of fees is permanently removed from supply", "Selling tokens to users", "Increasing the total supply"], correctIndex: 1 },
+        { id: 20, text: "What is the utility of the GLD token?", options: ["Mining only", "Governance and ecosystem rewards", "Paying for gas fees", "Trading on Binance"], correctIndex: 1 }
+      ]
+    },
+    {
+      id: 5,
+      title: "Ecosystem & Partners",
+      description: "Exploring the wider network and utility",
+      videoUrl: "https://www.youtube.com/embed/A7FKSs6A-0g",
+      questions: [
+        { id: 21, text: "What is the Athena Launchpad?", options: ["A rocket launch site", "A platform for new projects to raise capital", "A place to buy ATH", "A news website"], correctIndex: 1 },
+        { id: 22, text: "Can you use ATH in the NFT Market?", options: ["Yes", "No", "Only for special NFTs", "Only on OpenSea"], correctIndex: 0 },
+        { id: 23, text: "Who are the primary partners of Athena?", options: ["Local banks", "Major crypto exchanges and tech firms", "Fast food chains", "Clothing brands"], correctIndex: 1 },
+        { id: 24, text: "What is the Athena Academy?", options: ["A physical school", "An educational platform for users", "A recruitment agency", "A library"], correctIndex: 1 },
+        { id: 25, text: "How do you join the Athena P2P market?", options: ["Just download the app", "Complete KYC and link a wallet", "Pay a subscription", "Invite 10 friends"], correctIndex: 1 }
+      ]
+    },
+    {
+      id: 6,
+      title: "Staking & Passive Income",
+      description: "How to lock your ATH and earn high-yield rewards",
+      videoUrl: "https://www.youtube.com/embed/_-8WvSPAMdk",
+      questions: [
+        { id: 26, text: "What is staking in Athena?", options: ["Selling your tokens", "Locking tokens to support the network and earn interest", "Sending tokens to friends", "Deleting your account"], correctIndex: 1 },
+        { id: 27, text: "What is the typical range for Staking APY?", options: ["1-2%", "10-20%+", "50-100%", "Zero"], correctIndex: 1 },
+        { id: 28, text: "What is the minimum staking period?", options: ["1 day", "7 days", "30 days", "Depends on the pool selected"], correctIndex: 3 },
+        { id: 29, text: "What happens if you unstake early?", options: ["You lose all tokens", "You may pay a small penalty fee", "Nothing happens", "You win a bonus"], correctIndex: 1 },
+        { id: 30, text: "Which token can be staked to earn more ATH?", options: ["Only BTC", "Only DOGE", "ATH tokens", "Only ETH"], correctIndex: 2 }
+      ]
+    },
+    {
+      id: 7,
+      title: "P2P Trading Safety",
+      description: "Secure peer-to-peer exchanges without a middleman",
+      videoUrl: "https://www.youtube.com/embed/RUQ2eCqqy9M",
+      questions: [
+        { id: 31, text: "What is P2P trading?", options: ["Professional to Professional", "Peer to Peer (Direct exchange between users)", "Protocol to Protocol", "Price to Price"], correctIndex: 1 },
+        { id: 32, text: "How does Athena protect P2P trades?", options: ["Via phone calls", "Using an Escrow system", "By watching the trade in person", "It doesn't protect them"], correctIndex: 1 },
+        { id: 33, text: "When should you release the crypto in a P2P trade?", options: ["As soon as the buyer says they paid", "After you receive and verify the payment in your bank/app", "Before the trade starts", "Never"], correctIndex: 1 },
+        { id: 34, text: "What should you do if a buyer asks to trade outside the app?", options: ["Do it for a discount", "Report them and stay within the Athena platform for safety", "Say yes immediately", "Ask for their phone number"], correctIndex: 1 },
+        { id: 35, text: "Is there a rating system for P2P traders?", options: ["Yes, to show trust and successful history", "No, it's anonymous", "Only for VIPs", "Only on Android"], correctIndex: 0 }
+      ]
+    },
+    {
+      id: 8,
+      title: "Athena Gaming Ecosystem",
+      description: "Play-to-Earn mechanics in the Athena metaverse",
+      videoUrl: "https://www.youtube.com/embed/_naISNlfCTU",
+      questions: [
+        { id: 36, text: "What is 'Play-to-Earn' (P2E)?", options: ["Paying to play games", "Earning real crypto rewards by playing games", "Watching others play", "Designing your own game"], correctIndex: 1 },
+        { id: 37, text: "Which tokens can be used for in-game purchases?", options: ["V-Bucks only", "ATH and GEM", "Only USD", "Only Credits"], correctIndex: 1 },
+        { id: 38, text: "Are in-game items stored as NFTs?", options: ["Yes, for true ownership", "No, they are centralized", "Only for the top 10 players", "Only on the website"], correctIndex: 0 },
+        { id: 39, text: "What is the Wheel of Fortune?", options: ["A math game", "A daily luck-based game to win ATH/GEM", "A steering wheel for a car", "A governance proposal"], correctIndex: 1 },
+        { id: 40, text: "Can you win real GLD from Athena Slots?", options: ["No, it's just for fun", "Yes, it is hooked to the ecosystem rewards", "Only if you win 100 times", "Only if you refer 5 people"], correctIndex: 1 }
+      ]
+    },
+    {
+      id: 9,
+      title: "AI Trading Bot Mechanics",
+      description: "Leverage artificial intelligence for smarter trades",
+      videoUrl: "https://www.youtube.com/embed/wPzXiHUOLyU",
+      questions: [
+        { id: 41, text: "What does the Athena AI Trading Bot do?", options: ["It buys pizza for you", "It analyzes market trends and executes automated trades", "It mines Bitcoin on your phone", "It deletes your bad trades"], correctIndex: 1 },
+        { id: 42, text: "Does the AI Bot guarantee 100% profit?", options: ["Yes, always", "No, trading always involves risk despite smart analysis", "Only for the first week", "Only on ETH"], correctIndex: 1 },
+        { id: 43, text: "Which data does the AI Bot use?", options: ["Yesterday's newspaper", "Real-time market data, volume, and sentiment", "Your browser history", "Random numbers"], correctIndex: 1 },
+        { id: 44, text: "Can you set your own 'Risk Level' on the bot?", options: ["No, it's automatic", "Yes, choose between Conservative, Balanced, or Aggressive", "Only if you pay a fee", "Only on weekends"], correctIndex: 1 },
+        { id: 45, text: "Is the AI Bot accessible to all KYC verified users?", options: ["Yes", "No, only for whales", "Only for the dev team", "Only for those with 1,000 referrals"], correctIndex: 0 }
+      ]
+    },
+    {
+      id: 10,
+      title: "Future Roadmap & Mainnet",
+      description: "The path to decentralization and ATH listing",
+      videoUrl: "https://www.youtube.com/embed/NNd_2ZlJ8EQ",
+      questions: [
+        { id: 46, text: "When is the scheduled ATH Listing?", options: ["It already happened", "Check the official Roadmap in the app for current Q3/Q4 dates", "Never", "In 10 years"], correctIndex: 1 },
+        { id: 47, text: "What is the 'Mainnet Launch'?", options: ["Launching a website", "The release of the independent, live Athena blockchain", "A new game launch", "A marketing event"], correctIndex: 1 },
+        { id: 48, text: "What will happen to your Testnet tokens during Mainnet?", options: ["They are deleted", "They are migrated/converted based on eligibility", "They become worth $1,000 each", "Nothing, they stay as Testnet"], correctIndex: 1 },
+        { id: 49, text: "What is the Mainnet Checklist?", options: ["A shopping list", "A set of requirements (KYC, Academy, etc.) to prepare for migration", "A list of developers", "A list of games"], correctIndex: 1 },
+        { id: 50, text: "Does Athena plan to expand to other countries?", options: ["No, it's local", "Yes, the goal is global financial inclusion", "Only in the US", "Only in Europe"], correctIndex: 1 }
+      ]
+    },
+    {
+      id: 11,
+      title: "P2P Trading Mastery",
+      description: "How to buy and sell safely using local payment methods",
+      videoUrl: "https://www.youtube.com/embed/aEEPHAexmMo",
+      questions: [
+        { id: 51, text: "What is the main benefit of Athena P2P?", options: ["Directly exchange crypto for local currency", "It's a way to play games", "A storage for photos", "A mining tool"], correctIndex: 0 },
+        { id: 52, text: "What is the purpose of the 'Merchant' role?", options: ["To delete accounts", "To provide liquidity and build trust", "To change the app theme", "To watch ads"], correctIndex: 1 },
+        { id: 53, text: "How do you choose a safe P2P seller?", options: ["By their username", "Look for high completion rates and positive feedback", "Random choice", "The one with the lowest balance"], correctIndex: 1 },
+        { id: 54, text: "Is it safe to trade before the crypto is in escrow?", options: ["Yes, always", "No, the platform ensures crypto is held until payment is confirmed", "Only with friends", "Only on Android"], correctIndex: 1 },
+        { id: 55, text: "What should you include in the payment description?", options: ["A long story", "Only what the seller specifies, usually a reference code", "Your password", "Nothing"], correctIndex: 1 }
+      ]
+    },
+    {
+      id: 12,
+      title: "Advanced KYC Verification",
+      description: "Navigating Stage 2 and biometric identity security",
+      videoUrl: "https://www.youtube.com/embed/tDthibUPQ8c",
+      questions: [
+        { id: 56, text: "What distinguishes KYC Stage 2 from Stage 1?", options: ["Stage 2 requires document and biometric verification", "Stage 1 is harder", "There is no difference", "Stage 2 is for robots"], correctIndex: 0 },
+        { id: 57, text: "Why is Stage 2 critical?", options: ["For changing your profile picture", "It is required for Mainnet withdrawal eligibility", "For playing games", "For mining faster"], correctIndex: 1 },
+        { id: 58, text: "What documents are generally accepted for Stage 2?", options: ["Library card", "Passport, National ID, or Driving License", "School ID", "Rent receipt"], correctIndex: 1 },
+        { id: 59, text: "How long does Stage 2 verification usually take?", options: ["1 second", "Usually 24-48 hours depending on volume", "1 month", "1 year"], correctIndex: 1 },
+        { id: 60, text: "What should you do if your KYC is rejected?", options: ["Delete the app", "Re-apply with clearer photos or contact support", "Give up", "Create a new account"], correctIndex: 1 }
+      ]
+    },
+    {
+      id: 13,
+      title: "Maximizing Mining Speed",
+      description: "Techniques to scale your daily GEM/ATH production",
+      videoUrl: "https://www.youtube.com/embed/Rm3HWTNrgp8",
+      questions: [
+        { id: 61, text: "What is the standard mining session duration?", options: ["1 hour", "12 hours", "24 hours", "48 hours"], correctIndex: 2 },
+        { id: 62, text: "How can you increase your GEM production effectively?", options: ["By closing the app", "By building a team and completing daily tasks", "By doing nothing", "By changing your email"], correctIndex: 1 },
+        { id: 63, text: "Does the Athena Premium Package affect mining?", options: ["No", "Yes, it provides a permanent speed multiplier", "Only for 1 day", "It slows it down"], correctIndex: 1 },
+        { id: 64, text: "What is the 'Boost Index'?", options: ["A weather report", "A score calculating your total contribution to network speed", "A game level", "Your battery percentage"], correctIndex: 1 },
+        { id: 65, text: "Can you lose your mining 'streak' bonus?", options: ["No", "Yes, if you don't claim within the specified grace period", "Only on iOS", "Only if you logout"], correctIndex: 1 }
+      ]
+    },
+    {
+      id: 14,
+      title: "Secure Wallet Configuration",
+      description: "Setting up your non-custodial Athena wallet",
+      videoUrl: "https://www.youtube.com/embed/RM9dbKFGPBQ",
+      questions: [
+        { id: 66, text: "What is the Athena Wallet?", options: ["A physical leather wallet", "A secure non-custodial digital wallet for ATH and GEM", "A bank account", "A marketplace"], correctIndex: 1 },
+        { id: 67, text: "What is the 'Secret Recovery Phrase'?", options: ["Your email address", "A set of 12-24 words used to recover your wallet assets", "Your phone number", "The app name"], correctIndex: 1 },
+        { id: 68, text: "Who should you share your secret phrase with?", options: ["Athena Support", "Your best friend", "Absolutely no one", "The police"], correctIndex: 2 },
+        { id: 69, text: "Can the Athena app recover your phrase if lost?", options: ["Yes, through email", "No, for security, only you hold the keys", "Only if you pay", "Only for admins"], correctIndex: 1 },
+        { id: 70, text: "What is the 'Receive' address used for?", options: ["Sending crypto", "Receiving tokens from other users or exchanges", "Logging in", "Buying NFTs"], correctIndex: 1 }
+      ]
+    },
+    {
+      id: 15,
+      title: "Mainnet Readiness & Migration",
+      description: "The final steps to bridge your assets to the live chain",
+      videoUrl: "https://www.youtube.com/embed/Fx7nluyaUR0",
+      questions: [
+        { id: 71, text: "What is the first step of the migration process?", options: ["Ensuring all Mainnet Checklist items are green/verified", "Buying a new phone", "Deleting the app", "Sending 1,000 referrals"], correctIndex: 0 },
+        { id: 72, text: "What happens to your mining status after Mainnet?", options: ["It stops forever", "You continue mining on the live, independent blockchain", "It becomes harder", "It's replaced by a quiz"], correctIndex: 1 },
+        { id: 73, text: "Are there any fees for the migration?", options: ["No, it's free", "Small network gas fees paid in native crypto", "A $50 flat fee", "It costs half your tokens"], correctIndex: 1 },
+        { id: 74, text: "Can you migrate multiple accounts per person?", options: ["Yes", "No, KYC limits only one verified account per person", "Up to 5", "Only if you are a Premium user"], correctIndex: 1 },
+        { id: 75, text: "What is the primary benefit of Mainnet ATH?", options: ["It's a different color", "Real market value and the ability to trade on exchanges", "Better graphics", "It lasts longer"], correctIndex: 1 }
+      ]
+    },
+    {
+      id: 16,
+      title: "Decentralized Node Hosting",
+      description: "Supporting the network infrastructure for rewards",
+      videoUrl: "https://www.youtube.com/embed/lq4Y0JXtIpY",
+      questions: [
+        { id: 76, text: "What is an Athena Node?", options: ["A physical computer that processes network transactions", "A type of crypto token", "A mobile phone battery", "A social media follower"], correctIndex: 0 },
+        { id: 77, text: "What is the benefit of running a node?", options: ["It makes your phone faster", "You earn a share of network fees and block rewards", "It gives you free premium", "Nothing, it's voluntary"], correctIndex: 1 },
+        { id: 78, text: "Do you need 24/7 uptime for a node?", options: ["No, just an hour a day", "Yes, high availability ensures network stability", "Only on weekends", "Only when you are awake"], correctIndex: 1 },
+        { id: 79, text: "What is 'Slashing'?", options: ["A discount on tokens", "A penalty for nodes that act maliciously or go offline", "Increasing user balance", "A marketing strategy"], correctIndex: 1 },
+        { id: 80, text: "Can a community pool run a node?", options: ["Yes, allowing many users to share one node's rewards", "No, only individuals", "Only for admins", "Only for the government"], correctIndex: 0 }
+      ]
+    },
+    {
+      id: 17,
+      title: "Cross-Chain Bridges",
+      description: "Moving your assets between Athena and other chains",
+      videoUrl: "https://www.youtube.com/embed/BaeCNJMwBKk",
+      questions: [
+        { id: 81, text: "What is a 'Bridge' in crypto?", options: ["A physical bridge", "A protocol that transfers assets between different blockchains", "A way to hack accounts", "A user chat room"], correctIndex: 1 },
+        { id: 82, text: "Which chains are compatible with Athena Bridge?", options: ["None", "Ethereum, BNB Chain, and others", "Only internal chains", "Only legacy systems"], correctIndex: 1 },
+        { id: 83, text: "Why would you move assets to Athena?", options: ["To pay more fees", "To access Athena's high speed and low-cost ecosystem", "To lose tokens", "To change your username"], correctIndex: 1 },
+        { id: 84, text: "Is bridging instant?", options: ["Yes, always", "It depends on the confirmation speed of the source chain", "It takes 1 year", "Only for premium users"], correctIndex: 1 },
+        { id: 85, text: "What is 'Wrapped ATH'?", options: ["ATH in a gift box", "An ATH-backed token on another blockchain (like ERC-20)", "A fake token", "A locked token"], correctIndex: 1 }
+      ]
+    },
+    {
+      id: 18,
+      title: "Community Staking Pools",
+      description: "Collaborative yield farming for higher efficiency",
+      videoUrl: "https://www.youtube.com/embed/DTHy9UW5iZU",
+      questions: [
+        { id: 86, text: "What is a Staking Pool?", options: ["A swimming pool for crypto", "A group of users combining tokens to increase rewards", "A place to buy GEM", "A mining rig"], correctIndex: 1 },
+        { id: 87, text: "Who manages a Staking Pool?", options: ["A Pool Operator", "The user with the least tokens", "A random robot", "No one"], correctIndex: 0 },
+        { id: 88, text: "What is the advantage of a pool for 'small' users?", options: ["They get less rewards", "They can earn staking yields without meeting high minimums", "They get free gifts", "There is no advantage"], correctIndex: 1 },
+        { id: 89, text: "Are rewards distributed automatically?", options: ["No, you must call support", "Yes, smart contracts handle distribution based on share", "Only once a year", "Only if you win a contest"], correctIndex: 1 },
+        { id: 90, text: "Can you leave a pool anytime?", options: ["Yes, though some have a short unbonding period", "No, you are locked forever", "Only if the admin says yes", "Only if you pay $100"], correctIndex: 0 }
+      ]
+    },
+    {
+      id: 19,
+      title: "Athena DEX & Liquidity",
+      description: "Swapping tokens and providing liquidity on-chain",
+      videoUrl: "https://www.youtube.com/embed/Fk8p8sj6cHA",
+      questions: [
+        { id: 91, text: "What is a DEX?", options: ["A Decentralized Exchange", "A Digital Expert", "A data storage unit", "A centralized bank"], correctIndex: 0 },
+        { id: 92, text: "What is an 'Automated Market Maker' (AMM)?", options: ["A person who trades for you", "An algorithm that provides instant liquidity for swaps", "A sales robot", "A mining machine"], correctIndex: 1 },
+        { id: 93, text: "What do you earn for providing liquidity?", options: ["Nothing", "A portion of every trade's swap fee", "Free ads", "Random NFTs"], correctIndex: 1 },
+        { id: 94, text: "What is 'Impermanent Loss'?", options: ["Losing your phone", "A potential loss relative to holding when prices diverge", "Fixed monthly fees", "Losing your password"], correctIndex: 1 },
+        { id: 95, text: "Is the Athena DEX non-custodial?", options: ["Yes, you keep control of your keys", "No, Athena holds your tokens", "Only on Mainnet", "Only during the day"], correctIndex: 0 }
+      ]
+    },
+    {
+      id: 20,
+      title: "Becoming an Athena Pioneer",
+      description: "Mainnet certification and the future of Athena",
+      videoUrl: "https://www.youtube.com/embed/Z8B6DhNlgKU",
+      questions: [
+        { id: 96, text: "What does completing the Academy signify?", options: ["You are a master of Athena knowledge and eligible for Mainnet benefits", "You are a new user", "You finished a game", "You are an admin"], correctIndex: 0 },
+        { id: 97, text: "What is the role of an 'Athena Pioneer'?", options: ["To help build, secure, and evangelize the network", "To watch ads only", "To design graphics", "To just wait for the price increase"], correctIndex: 0 },
+        { id: 98, text: "Does the Academy end here?", options: ["Yes, forever", "No, new modules will be added as the ecosystem evolves", "It resets every month", "Only for testnet"], correctIndex: 1 },
+        { id: 99, text: "How can you help the community?", options: ["By being rude", "By mentoring new users and sharing accurate knowledge", "By keeping secrets", "By doing nothing"], correctIndex: 1 },
+        { id: 100, text: "Are you ready for the Athena Mainnet?", options: ["Yes!", "No", "Maybe", "I'm not sure"], correctIndex: 0 }
+      ]
+    }
+  ];
+
+  const currentCourse = COURSES.find(c => c.id === selectedCourse);
+
+  const totalQuestions = 100;
+  const currentProgress = progress.total_score;
+  const isEligible = progress.is_eligible;
+
+  return (
+    <div className="flex flex-col gap-6 pb-24">
+      <header className="flex items-center gap-4">
+        <button onClick={onBack} className="p-2 rounded-full bg-white/5 text-gray-400 hover:text-white transition-colors">
+          <Icon name="chevron-left" className="w-6 h-6" />
+        </button>
+        <div>
+          <h1 className="text-2xl font-bold text-gold-gradient">Athena Academy</h1>
+          <p className="text-gray-400 text-sm">Educational path to Mainnet governance</p>
+        </div>
+      </header>
+
+      {/* Main Status Card */}
+      <div className="glass rounded-3xl p-6 relative overflow-hidden bg-gradient-to-br from-gold/10 to-transparent">
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Eligibility Progress</span>
+            <span className={`text-sm font-bold ${isEligible ? 'text-green-500' : 'text-gold'}`}>
+              {currentProgress}% / 100%
+            </span>
+          </div>
+          
+          <div className="h-3 bg-white/5 rounded-full overflow-hidden border border-white/5">
+            <motion.div 
+              className={`h-full ${isEligible ? 'bg-green-500' : 'bg-gold-gradient'}`}
+              initial={{ width: 0 }}
+              animate={{ width: `${currentProgress}%` }}
+              transition={{ duration: 1 }}
+            />
+          </div>
+
+          <div className="p-3 rounded-xl bg-gold/5 border border-gold/10 flex items-start gap-3">
+            <Icon name="help-circle" className="w-5 h-5 text-gold mt-0.5 flex-shrink-0" />
+            <p className="text-[11px] text-gray-400 leading-relaxed">
+              <span className="text-gold font-bold">Requirement:</span> You must answer 75% of the questions correctly; this is a requirement for the Mainnet Checklist.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {!selectedCourse ? (
+        <div className="grid grid-cols-1 gap-4">
+          {COURSES.map((course) => {
+            const courseQuestions = course.questions.map(q => q.id);
+            const completedInCourse = courseQuestions.filter(id => progress.completed_question_ids.includes(id)).length;
+            const isFullyCompleted = completedInCourse === 5;
+
+            return (
+              <div 
+                key={course.id}
+                onClick={() => setSelectedCourse(course.id)}
+                className={`glass p-5 rounded-2xl flex items-center justify-between group cursor-pointer transition-all hover:border-gold/30 ${isFullyCompleted ? 'border-green-500/30' : ''}`}
+              >
+                <div className="flex items-center gap-4">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${isFullyCompleted ? 'bg-green-500/10 text-green-500' : 'bg-white/5 text-gold group-hover:bg-gold/10'}`}>
+                    {isFullyCompleted ? <Icon name="check-mark" className="w-6 h-6" /> : <Icon name="play-circle" className="w-6 h-6" />}
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-sm text-white">{course.title}</h3>
+                    <p className="text-gray-500 text-[10px] uppercase font-bold tracking-tighter">{course.description}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <div className="h-1 w-20 bg-white/5 rounded-full overflow-hidden">
+                        <div 
+                          className={`h-full ${isFullyCompleted ? 'bg-green-500' : 'bg-gold'}`}
+                          style={{ width: `${(completedInCourse / 5) * 100}%` }}
+                        />
+                      </div>
+                      <span className="text-[9px] font-bold text-gray-500">{completedInCourse}/5 Steps</span>
+                    </div>
+                  </div>
+                </div>
+                <Icon name="chevron-right" className="w-5 h-5 text-gray-600 group-hover:text-gold transition-colors" />
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="flex flex-col gap-6">
+          <button 
+            onClick={() => setSelectedCourse(null)}
+            className="flex items-center gap-2 text-xs text-gray-400 hover:text-white transition-colors"
+          >
+            <Icon name="chevron-left" className="w-4 h-4" /> Back to Modules
+          </button>
+
+          <div className="aspect-video bg-black rounded-3xl border border-white/10 flex items-center justify-center overflow-hidden relative">
+             {currentCourse?.videoUrl ? (
+               <iframe 
+                 src={currentCourse.videoUrl}
+                 className="w-full h-full"
+                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                 allowFullScreen
+               />
+             ) : (
+               <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-8 text-center bg-black/60 z-10">
+                  <Icon name="youtube" className="w-12 h-12 text-red-600" />
+                  <div>
+                     <h4 className="font-bold text-white uppercase tracking-widest text-sm">Course Video</h4>
+                     <p className="text-xs text-gray-400 mt-1 italic">YouTube Links Coming Soon</p>
+                  </div>
+               </div>
+             )}
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <h3 className="text-lg font-bold text-white px-2">Knowledge Test</h3>
+            {currentCourse?.questions.map((q, idx) => {
+              const isCorrect = progress.completed_question_ids.includes(q.id);
+              
+              return (
+                <div key={q.id} className={`glass p-5 rounded-2xl flex flex-col gap-4 ${isCorrect ? 'border-green-500/20 bg-green-500/5' : ''}`}>
+                  <div className="flex items-start gap-4">
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${isCorrect ? 'bg-green-500 text-black' : 'bg-white/10 text-gray-400'}`}>
+                      {idx + 1}
+                    </div>
+                    <p className="text-sm font-medium text-white">{q.text}</p>
+                  </div>
+
+                  {isCorrect ? (
+                    <div className="flex items-center gap-2 text-green-500 text-[10px] font-bold uppercase ml-10">
+                      <Icon name="check-mark" className="w-4 h-4" /> Correct Answered
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 gap-2 ml-10">
+                      {q.options.map((opt, optIdx) => (
+                        <button 
+                          key={optIdx}
+                          onClick={() => {
+                            if (optIdx === q.correctIndex) {
+                              onUpdateProgress(q.id, true);
+                            } else {
+                              alert("Incorrect! Watch the video more carefully.");
+                            }
+                          }}
+                          className="text-left px-4 py-3 rounded-xl bg-white/5 border border-white/5 hover:border-gold/30 hover:bg-gold/5 text-xs text-gray-400 hover:text-white transition-all"
+                        >
+                          {opt}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: string; onBalanceUpdate: () => void; onLogout: () => void; onKYCClick: () => void }) => {
   const [showWheel, setShowWheel] = useState(false);
   const [showSlots, setShowSlots] = useState(false);
@@ -1184,6 +1621,7 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
         { name: "AI Trading Bot", icon: <Cpu className="w-5 h-5" /> },
         { name: "Launchpad", icon: <Rocket className="w-5 h-5" /> },
         { name: "NFT Market", icon: <Gamepad2 className="w-5 h-5" /> },
+        { name: "Academy", icon: <GraduationCap className="w-5 h-5" />, isActive: true },
         { name: "Academy", icon: <HelpCircle className="w-5 h-5" /> },
       ]
     },
@@ -1225,6 +1663,7 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
                 onClick={() => {
                   if (item.isInstall) setShowInstallGuide(true);
                   if (item.name === 'KYC') onKYCClick();
+                  if (item.name === 'Academy') (onKYCClick as any)('academy'); // Reuse onKYCClick or rename it
                   if (item.isGame) {
                     if (item.gameType === 'wheel') setShowWheel(true);
                     if (item.gameType === 'slots') setShowSlots(true);
@@ -1417,6 +1856,11 @@ export default function App() {
     phone: string | null;
     date: string | null;
   } | null>(null);
+  const [academyProgress, setAcademyProgress] = useState<{
+    completed_question_ids: number[];
+    total_score: number;
+    is_eligible: boolean;
+  }>({ completed_question_ids: [], total_score: 0, is_eligible: false });
 
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -1516,6 +1960,25 @@ export default function App() {
         phone: profile?.full_phone_number || null,
         date: profile?.kyc_stage2_date || null
       });
+
+      // 2. Load Academy Progress
+      const { data: academyData, error: academyError } = await supabase
+        .from('academy_progress')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      if (academyError && academyError.code !== 'PGRST116') {
+        console.error('Error loading academy progress:', academyError);
+      }
+
+      if (academyData) {
+        setAcademyProgress({
+          completed_question_ids: academyData.completed_question_ids || [],
+          total_score: academyData.total_score || 0,
+          is_eligible: academyData.is_eligible || false
+        });
+      }
 
       // --- Daily Tasks Reset Logic ---
       let tasks = profile?.completed_tasks || [];
@@ -2254,6 +2717,36 @@ export default function App() {
     }
   };
 
+  const handleUpdateAcademyProgress = async (questionId: number, isCorrect: boolean) => {
+    if (!user || !isCorrect || academyProgress.completed_question_ids.includes(questionId)) return;
+
+    const newCompletedIds = [...academyProgress.completed_question_ids, questionId];
+    const newScore = Math.floor((newCompletedIds.length / 100) * 100); // Each question is 1%
+    const newIsEligible = newScore >= 75;
+
+    try {
+      const { error } = await supabase
+        .from('academy_progress')
+        .upsert({
+          user_id: user.id,
+          completed_question_ids: newCompletedIds,
+          total_score: newScore,
+          is_eligible: newIsEligible,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'user_id' });
+
+      if (error) throw error;
+
+      setAcademyProgress({
+        completed_question_ids: newCompletedIds,
+        total_score: newScore,
+        is_eligible: newIsEligible
+      });
+    } catch (err) {
+      console.error('Error updating academy progress:', err);
+    }
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard': 
@@ -2295,8 +2788,17 @@ export default function App() {
             hasLegacyUid={!!legacyUid}
           />
         );
+      case 'academy' as any:
+        return (
+          <AcademyPage 
+            user={user!}
+            progress={academyProgress}
+            onUpdateProgress={handleUpdateAcademyProgress}
+            onBack={() => setActiveTab('more')}
+          />
+        );
       case 'mainnet': return <MainnetTab />;
-      case 'more': return <MoreTab userId={user?.id || ''} onBalanceUpdate={loadUserData} onLogout={handleLogout} onKYCClick={() => setActiveTab('kyc')} />;
+      case 'more': return <MoreTab userId={user?.id || ''} onBalanceUpdate={loadUserData} onLogout={handleLogout} onKYCClick={(tab?: string) => setActiveTab(tab === 'academy' ? 'academy' as any : 'kyc')} />;
       default: 
         return (
           <Dashboard 
