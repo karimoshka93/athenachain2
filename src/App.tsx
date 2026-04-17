@@ -2100,8 +2100,8 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
       items: [
         { name: t('common.wheel') || 'Wheel of Fortune', internalName: 'Wheel of Fortune', icon: <Zap className="w-5 h-5" />, isGame: true, gameType: 'wheel' },
         { name: t('common.slots') || 'Athena Slots', internalName: 'Athena Slots', icon: <Trophy className="w-5 h-5" />, isGame: true, gameType: 'slots' },
+        { name: 'PEPE CAVE', internalName: 'PEPE CAVE', icon: <Gamepad2 className="w-5 h-5 text-green-400" />, isGame: true, gameType: 'pepe-cave' },
         { name: t('common.crash') || 'Crash Game', internalName: 'Crash Game', icon: <TrendingUp className="w-5 h-5" /> },
-        { name: t('common.dice') || 'Dice', internalName: 'Dice', icon: <Gamepad2 className="w-5 h-5" /> },
       ]
     },
     {
@@ -2158,6 +2158,7 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
                   if (item.isGame) {
                     if (item.gameType === 'wheel') setShowWheel(true);
                     if (item.gameType === 'slots') setShowSlots(true);
+                    if (item.gameType === 'pepe-cave') setShowPepeCave(true);
                   }
                 }}
                 className={`flex flex-col items-center gap-2 p-3 rounded-2xl bg-white/5 border border-white/5 relative group cursor-pointer ${(item.isInstall || item.isGame || item.isActive) ? '' : 'opacity-60 grayscale'}`}
@@ -2226,6 +2227,26 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
                 userId={userId} 
                 onBalanceUpdate={onBalanceUpdate} 
                 onClose={() => setShowSlots(false)} 
+              />
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* PEPE CAVE Modal */}
+      <AnimatePresence>
+        {showPepeCave && (
+          <div className="fixed inset-0 bg-black/95 z-[200] flex items-center justify-center p-4 backdrop-blur-md overflow-y-auto">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full max-w-lg min-h-screen py-8"
+            >
+              <PepeCaveGame 
+                userId={userId} 
+                onClose={() => setShowPepeCave(false)} 
+                onBalanceUpdate={onBalanceUpdate}
               />
             </motion.div>
           </div>
@@ -3545,9 +3566,282 @@ export default function App() {
   );
 }
 
-interface NavButtonProps {
-  active: boolean;
-  onClick: () => void;
+const PepeCaveGame = ({ userId, onClose, onBalanceUpdate }: { userId: string; onClose: () => void; onBalanceUpdate: () => void }) => {
+  const [roundData, setRoundData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [gameState, setGameState] = useState<'puzzle' | 'cave'>('puzzle');
+  const [isBroken, setIsBroken] = useState(false);
+  const [revealedCell, setRevealedCell] = useState<number | null>(null);
+  const [claiming, setClaiming] = useState(false);
+  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [nextRound, setNextRound] = useState<string>('');
+
+  // Entry Puzzle State
+  const [puzzleCards, setPuzzleCards] = useState<any[]>([]);
+  const [flipped, setFlipped] = useState<number[]>([]);
+  const [solved, setSolved] = useState<number[]>([]);
+
+  useEffect(() => {
+    fetchCaveData();
+    initPuzzle();
+  }, []);
+
+  const fetchCaveData = async () => {
+    try {
+      const { data, error } = await supabase.rpc('get_or_create_pepe_cave');
+      if (error) throw error;
+      setRoundData(data[0]);
+      
+      // Calculate next round countdown
+      const now = new Date();
+      const nextHour = Math.ceil((now.getUTCHours() + 0.1) / 4) * 4;
+      const nextDate = new Date();
+      nextDate.setUTCHours(nextHour % 24, 0, 0, 0);
+      if (nextHour >= 24) nextDate.setUTCDate(nextDate.getUTCDate() + 1);
+      
+      const updateCountdown = () => {
+        const diff = nextDate.getTime() - new Date().getTime();
+        const h = Math.floor(diff / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        setNextRound(`${h}h ${m}m ${s}s`);
+      };
+      updateCountdown();
+      const interval = setInterval(updateCountdown, 1000);
+      return () => clearInterval(interval);
+
+    } catch (err: any) {
+      console.error('Cave Fetch Error:', err);
+      setMessage({ type: 'error', text: 'Error connecting to the cave. Please try again.' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const initPuzzle = () => {
+    const icons = ['gem', 'zap', 'flame', 'star', 'heart', 'moon'];
+    const pairs = [...icons, ...icons]
+      .sort(() => Math.random() - 0.5)
+      .map((icon, id) => ({ id, icon }));
+    setPuzzleCards(pairs);
+    setFlipped([]);
+    setSolved([]);
+  };
+
+  const handleCardClick = (id: number) => {
+    if (flipped.length === 2 || flipped.includes(id) || solved.includes(id)) return;
+
+    if (flipped.length === 1) {
+      const firstId = flipped[0];
+      setFlipped([firstId, id]);
+      if (puzzleCards[firstId].icon === puzzleCards[id].icon) {
+        setSolved(prev => [...prev, firstId, id]);
+        setFlipped([]);
+        if (solved.length + 2 === puzzleCards.length) {
+          setTimeout(() => setGameState('cave'), 1000);
+        }
+      } else {
+        setTimeout(() => setFlipped([]), 1000);
+      }
+    } else {
+      setFlipped([id]);
+    }
+  };
+
+  const handleCaveClick = async (cellId: number) => {
+    if (revealedCell !== null || claiming || roundData.cells[cellId].claimed_by) return;
+
+    // Check if user already claimed this round
+    const hasClaimed = roundData.cells.some((c: any) => c.claimed_by === userId);
+    if (hasClaimed) {
+      setMessage({ type: 'error', text: 'You have already explored a cell in this round! Wait for the next cave opening.' });
+      return;
+    }
+
+    setClaiming(true);
+    try {
+      const amount = roundData.cells[cellId].amount;
+      
+      // Update Supabase via RPC to ensure atomicity
+      const { data, error } = await supabase.rpc('claim_pepe_cave_cell', { 
+        round_id: roundData.id, 
+        cell_idx: cellId 
+      });
+
+      if (error) throw error;
+
+      // Local update for UI
+      const newCells = [...roundData.cells];
+      newCells[cellId].claimed_by = userId;
+      setRoundData({ ...roundData, cells: newCells });
+      
+      setRevealedCell(cellId);
+      onBalanceUpdate();
+      setMessage({ type: 'success', text: `Success! You found ${amount} PEPE coins in this corner of the cave!` });
+    } catch (err: any) {
+      console.error('Claim Error:', err);
+      setMessage({ type: 'error', text: err.message || 'Error digging in the cave.' });
+    } finally {
+      setClaiming(false);
+    }
+  };
+
+  if (loading) return (
+    <div className="flex flex-col items-center justify-center p-12 gap-4">
+      <Loader2 className="w-12 h-12 text-gold animate-spin" />
+      <p className="text-gold font-bold animate-pulse">Entering Cave...</p>
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col gap-6 relative p-2">
+      <header className="flex items-center justify-between px-2">
+        <div className="flex flex-col">
+          <h2 className="text-2xl font-black text-green-500 tracking-tighter flex items-center gap-2">
+            <Icon name="gamepad-2" className="w-6 h-6" /> PEPE CAVE
+          </h2>
+          <div className="flex items-center gap-2 text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+            <span className="flex items-center gap-1 text-gold"><Icon name="refresh-cw" className="w-2.5 h-2.5" /> Next: {nextRound}</span>
+          </div>
+        </div>
+        <button onClick={onClose} className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-500 hover:text-white transition-all">
+          <Icon name="x" className="w-6 h-6" />
+        </button>
+      </header>
+
+      <div className="glass rounded-[32px] p-4 border-green-500/20 overflow-hidden relative">
+        <AnimatePresence mode="wait">
+          {gameState === 'puzzle' ? (
+            <motion.div 
+              key="puzzle"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="flex flex-col items-center gap-8 py-8"
+            >
+              <div className="text-center">
+                <h3 className="text-xl font-bold text-white mb-2">Gate Locked</h3>
+                <p className="text-gray-400 text-xs px-8">Match 6 pairs of ancient symbols to unlock the PEPE Cave entrance.</p>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                {puzzleCards.map((card) => (
+                  <button 
+                    key={card.id}
+                    onClick={() => handleCardClick(card.id)}
+                    className="w-20 h-20 rounded-2xl relative preserve-3d transition-all duration-500"
+                    style={{ 
+                      transform: flipped.includes(card.id) || solved.includes(card.id) ? 'rotateY(180deg)' : 'none'
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center backface-hidden">
+                      <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-gold/30">
+                        ?
+                      </div>
+                    </div>
+                    <div className="absolute inset-0 bg-gold/20 border border-gold/50 rounded-2xl flex items-center justify-center backface-hidden rotate-y-180">
+                      <Icon name={card.icon} className="w-8 h-8 text-gold" />
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div 
+              key="cave"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex flex-col gap-6"
+            >
+              <div className="flex items-center justify-between px-2 bg-green-500/5 p-3 rounded-2xl border border-green-500/10">
+                <div className="flex flex-col">
+                  <span className="text-[10px] text-gray-500 uppercase font-bold">Today's Reward</span>
+                  <span className="text-lg font-black text-green-400">10,000 PEPE</span>
+                </div>
+                <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center p-1 border border-green-500/30">
+                  <img src="https://coin-images.coingecko.com/coins/images/29850/large/pepe-token.jpeg" alt="PEPE" className="w-full h-full rounded-full" />
+                </div>
+              </div>
+
+              {/* Honeycomb Grid */}
+              <div className="relative overflow-x-auto pb-4 custom-scrollbar">
+                <div 
+                  className="grid grid-cols-10 gap-x-1 gap-y-[10px] min-w-[500px] py-4"
+                  style={{ transform: 'translateX(-10px)' }}
+                >
+                  {roundData.cells.map((cell: any, i: number) => {
+                    const row = Math.floor(i / 10);
+                    const isEvenRow = row % 2 !== 0;
+                    const isClaimed = cell.claimed_by !== null;
+                    const isMine = cell.claimed_by === userId;
+
+                    return (
+                      <button
+                        key={i}
+                        disabled={isClaimed || claiming}
+                        onClick={() => handleCaveClick(i)}
+                        className={`w-12 h-14 relative transition-all duration-300 transform ${isEvenRow ? 'translate-x-6' : ''} ${isRevealedCell(i) ? 'rotate-y-180 scale-110 z-10' : 'hover:scale-105'} flex items-center justify-center`}
+                        style={{
+                          clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'
+                        }}
+                      >
+                        <div className={`absolute inset-0 preserve-3d transition-all duration-500 ${revealedCell === i ? 'rotate-y-180' : ''}`}>
+                          {/* Face Up (Rock) */}
+                          <div className={`absolute inset-0 backface-hidden flex items-center justify-center border transition-all ${isClaimed ? 'bg-black/40 border-white/5 opacity-30' : 'bg-[#2a303c] border-white/10 shadow-lg shadow-black/50'}`}>
+                            {isClaimed ? (
+                              <Icon name="x" className="w-4 h-4 text-red-500/50" />
+                            ) : (
+                              <div className="flex flex-col items-center gap-0.5 opacity-50">
+                                <Icon name="mountain" className="w-4 h-4 text-gray-500" />
+                              </div>
+                            )}
+                          </div>
+                          {/* Face Down (Reward) */}
+                          <div className="absolute inset-0 backface-hidden rotate-y-180 bg-green-500/20 border border-green-500 flex flex-col items-center justify-center">
+                            <img src="https://coin-images.coingecko.com/coins/images/29850/large/pepe-token.jpeg" alt="P" className="w-5 h-5 rounded-full mb-0.5" />
+                            <span className="text-[10px] font-black text-green-400 leading-none">{cell.amount}</span>
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {message && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`p-4 rounded-2xl text-[11px] font-bold text-center border ${
+                    message.type === 'success' ? 'bg-green-500/10 border-green-500/20 text-green-400' : 'bg-red-500/10 border-red-500/20 text-red-400'
+                  }`}
+                >
+                  {message.text}
+                </motion.div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      <div className="flex flex-col gap-2 p-4 glass rounded-3xl border-white/5">
+        <h4 className="text-[10px] font-bold uppercase text-gray-500 flex items-center gap-2">
+          <Icon name="shield-check" className="w-3 h-3" /> Cave Exploration Rules
+        </h4>
+        <ul className="text-[11px] text-gray-400 flex flex-col gap-1.5 list-disc pl-4 leading-relaxed">
+          <li>New cave formations appear every <span className="text-white">4 hours GMT</span> (0, 4, 8, 12, 16, 20:00).</li>
+          <li>Each cave contains exactly <span className="text-green-400">10,000 PEPE</span> spread across 100 cells.</li>
+          <li>Users can claim only <span className="text-white">ONE cell per round</span>. Be quick!</li>
+          <li>You must solve the security puzzle to enter the cave each time.</li>
+        </ul>
+      </div>
+    </div>
+  );
+
+  function isRevealedCell(i: number) {
+    return revealedCell === i;
+  }
+};
   icon: ReactNode;
   label: string;
 }
