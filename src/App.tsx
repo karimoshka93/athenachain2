@@ -3596,8 +3596,23 @@ const PepeCaveGame = ({ userId, onClose, onBalanceUpdate }: { userId: string; on
   const [solved, setSolved] = useState<number[]>([]);
 
   useEffect(() => {
+    // Inject Ad Script for PEPE CAVE
+    const script = document.createElement('script');
+    script.src = "//guidepaparazzisurface.com/in.js";
+    script.async = true;
+    script.setAttribute('data-cfasync', 'false');
+    script.setAttribute('data-clipid', '2109924');
+    document.body.appendChild(script);
+
     fetchCaveData();
     initPuzzle();
+
+    return () => {
+      // Cleanup script on game close
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+    };
   }, []);
 
   const fetchCaveData = async () => {
