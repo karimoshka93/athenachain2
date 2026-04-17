@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect, ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { 
   LayoutDashboard, 
   Wallet, 
@@ -149,7 +150,7 @@ const Icon = ({ name, className }: { name: string; className?: string }) => {
 };
 
 // --- Types ---
-type Tab = 'dashboard' | 'wallet' | 'tasks' | 'mainnet' | 'more' | 'profile' | 'academy';
+type Tab = 'dashboard' | 'wallet' | 'tasks' | 'mainnet' | 'more' | 'profile' | 'academy' | 'settings';
 
 interface Coin {
   id: string;
@@ -1031,6 +1032,327 @@ const MainnetTab = () => {
 
 // --- Main App ---
 
+const SettingsPage = ({ 
+  user,
+  onBack,
+  onLogout
+}: { 
+  user: User;
+  onBack: () => void;
+  onLogout: () => void;
+}) => {
+  const { t, i18n } = useTranslation();
+  const [showLanguage, setShowLanguage] = useState(false);
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteText, setDeleteText] = useState('');
+  const [message, setMessage] = useState<{ type: 'error' | 'success', text: string } | null>(null);
+  const [processing, setProcessing] = useState(false);
+
+  // Form states
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const languages = [
+    { code: 'en', name: 'English' },
+    { code: 'fr', name: 'Français' },
+    { code: 'ru', name: 'Русский' },
+    { code: 'es', name: 'Español' },
+    { code: 'id', name: 'Bahasa Indonesia' },
+    { code: 'vi', name: 'Tiếng Việt' },
+    { code: 'zh', name: '中文' },
+    { code: 'ko', name: '한국어' },
+    { code: 'ja', name: '日本語' },
+    { code: 'th', name: 'ไทย' },
+    { code: 'tr', name: 'Türkçe' },
+    { code: 'fa', name: 'فارسی' },
+    { code: 'ar', name: 'العربية' }
+  ];
+
+  const handleLanguageChange = (code: string) => {
+    i18n.changeLanguage(code);
+    setShowLanguage(false);
+  };
+
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      setMessage({ type: 'error', text: 'Passwords do not match' });
+      return;
+    }
+
+    setProcessing(true);
+    try {
+      // 1. Re-authenticate in background
+      const { error: loginError } = await supabase.auth.signInWithPassword({
+        email: user.email!,
+        password: oldPassword,
+      });
+
+      if (loginError) throw new Error('Incorrect old password');
+
+      // 2. Update password
+      const { error: updateError } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+
+      if (updateError) throw updateError;
+
+      setMessage({ type: 'success', text: 'Password updated successfully' });
+      setOldPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      setShowPasswordForm(false);
+    } catch (err: any) {
+      setMessage({ type: 'error', text: err.message });
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (deleteText !== 'DELETE') return;
+    
+    setProcessing(true);
+    try {
+      // Soft delete: Mark profile as deleted and logout
+      const { error } = await supabase
+        .from('profiles')
+        .update({ is_deleted: true, deleted_at: new Date().toISOString() })
+        .eq('id', user.id);
+
+      if (error) throw error;
+      
+      onLogout();
+    } catch (err: any) {
+      setMessage({ type: 'error', text: err.message });
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const triggerForgotPassword = async () => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(user.email!, {
+        redirectTo: window.location.origin,
+      });
+      if (error) throw error;
+      setMessage({ type: 'success', text: 'Reset link sent to your email' });
+    } catch (err: any) {
+      setMessage({ type: 'error', text: err.message });
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-6 pb-24">
+      <header className="flex items-center gap-4">
+        <button onClick={onBack} className="p-2 rounded-xl bg-white/5 border border-white/10 text-gray-400">
+          <Icon name="chevron-left" className="w-5 h-5" />
+        </button>
+        <div>
+          <h1 className="text-2xl font-bold text-gold-gradient">{t('settings.title')}</h1>
+          <p className="text-gray-400 text-sm">App preferences & security</p>
+        </div>
+      </header>
+
+      {message && (
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={`p-4 rounded-2xl text-xs font-bold text-center ${
+            message.type === 'success' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'
+          }`}
+        >
+          {message.text}
+        </motion.div>
+      )}
+
+      <div className="flex flex-col gap-4">
+        {/* Language Selection */}
+        <div className="glass rounded-3xl overflow-hidden border-white/5">
+          <button 
+            onClick={() => setShowLanguage(!showLanguage)}
+            className="w-full p-6 flex items-center justify-between hover:bg-white/5 transition-colors"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center text-gold">
+                <Icon name="search" className="w-5 h-5" />
+              </div>
+              <div className="text-left">
+                <h3 className="text-sm font-bold text-white">{t('settings.language')}</h3>
+                <p className="text-[10px] text-gray-500 uppercase tracking-widest">
+                  {languages.find(l => l.code === i18n.language.split('-')[0])?.name || 'English'}
+                </p>
+              </div>
+            </div>
+            <Icon name="chevron-right" className={`w-5 h-5 text-gray-500 transition-transform ${showLanguage ? 'rotate-90' : ''}`} />
+          </button>
+          
+          <AnimatePresence>
+            {showLanguage && (
+              <motion.div 
+                initial={{ height: 0 }}
+                animate={{ height: 'auto' }}
+                exit={{ height: 0 }}
+                className="overflow-hidden bg-white/5"
+              >
+                <div className="grid grid-cols-2 p-4 gap-2 border-t border-white/5">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => handleLanguageChange(lang.code)}
+                      className={`p-3 rounded-xl text-xs font-bold transition-all ${
+                        i18n.language.startsWith(lang.code) 
+                          ? 'bg-gold text-black' 
+                          : 'bg-white/5 text-gray-400 hover:bg-white/10'
+                      }`}
+                    >
+                      {lang.name}
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Change Password */}
+        <div className="glass rounded-3xl overflow-hidden border-white/5">
+          <button 
+            onClick={() => setShowPasswordForm(!showPasswordForm)}
+            className="w-full p-6 flex items-center justify-between hover:bg-white/5 transition-colors"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center text-gold">
+                <Icon name="lock" className="w-5 h-5" />
+              </div>
+              <div className="text-left">
+                <h3 className="text-sm font-bold text-white">{t('settings.changePassword')}</h3>
+                <p className="text-[10px] text-gray-500 uppercase tracking-widest">Update your login security</p>
+              </div>
+            </div>
+            <Icon name="chevron-right" className={`w-5 h-5 text-gray-500 transition-transform ${showPasswordForm ? 'rotate-90' : ''}`} />
+          </button>
+
+          <AnimatePresence>
+            {showPasswordForm && (
+              <motion.div 
+                initial={{ height: 0 }}
+                animate={{ height: 'auto' }}
+                exit={{ height: 0 }}
+                className="overflow-hidden bg-white/5"
+              >
+                <form onSubmit={handleUpdatePassword} className="p-6 flex flex-col gap-4 border-t border-white/5">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">{t('settings.oldPassword')}</label>
+                    <input 
+                      type="password" 
+                      value={oldPassword}
+                      onChange={(e) => setOldPassword(e.target.value)}
+                      required
+                      className="bg-black/20 border border-white/10 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-gold/50"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">{t('settings.newPassword')}</label>
+                    <input 
+                      type="password" 
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      required
+                      className="bg-black/20 border border-white/10 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-gold/50"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">{t('settings.confirmPassword')}</label>
+                    <input 
+                      type="password" 
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                      className="bg-black/20 border border-white/10 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-gold/50"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between mt-2">
+                    <button 
+                      type="button"
+                      onClick={triggerForgotPassword}
+                      className="text-gold text-xs font-bold hover:underline"
+                    >
+                      {t('settings.forgotPassword')}
+                    </button>
+                    <button 
+                      type="submit"
+                      disabled={processing}
+                      className="bg-gold text-black px-6 py-2.5 rounded-xl font-bold text-xs gold-glow disabled:opacity-50"
+                    >
+                      {processing ? <Loader2 className="w-4 h-4 animate-spin font-bold" /> : t('common.confirm')}
+                    </button>
+                  </div>
+                </form>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Delete Account */}
+        <div className="glass rounded-3xl overflow-hidden border-red-500/10 bg-red-500/5">
+          <button 
+            onClick={() => setShowDeleteConfirm(!showDeleteConfirm)}
+            className="w-full p-6 flex items-center justify-between hover:bg-red-500/10 transition-colors"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center text-red-500">
+                <Icon name="x" className="w-5 h-5" />
+              </div>
+              <div className="text-left">
+                <h3 className="text-sm font-bold text-red-500">{t('settings.deleteAccount')}</h3>
+                <p className="text-[10px] text-red-500/50 uppercase tracking-widest">Remove all data permanently</p>
+              </div>
+            </div>
+            <Icon name="chevron-right" className={`w-5 h-5 text-red-500/30 transition-transform ${showDeleteConfirm ? 'rotate-90' : ''}`} />
+          </button>
+
+          <AnimatePresence>
+            {showDeleteConfirm && (
+              <motion.div 
+                initial={{ height: 0 }}
+                animate={{ height: 'auto' }}
+                exit={{ height: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="p-6 flex flex-col gap-4 border-t border-red-500/20">
+                  <p className="text-xs text-red-400 font-medium leading-relaxed">
+                    {t('settings.deleteWarning')} All your coins, balances, and history will be lost forever.
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[10px] uppercase font-bold text-red-500/50">{t('settings.deleteConfirmText')}</label>
+                    <input 
+                      type="text" 
+                      value={deleteText}
+                      onChange={(e) => setDeleteText(e.target.value.toUpperCase())}
+                      placeholder="DELETE"
+                      className="bg-red-500/10 border border-red-500/30 rounded-xl py-3 px-4 text-sm text-red-500 placeholder:text-red-500/30 focus:outline-none"
+                    />
+                  </div>
+                  <button 
+                    onClick={handleDeleteAccount}
+                    disabled={deleteText !== 'DELETE' || processing}
+                    className="w-full bg-red-500 text-white font-black py-4 rounded-xl text-xs hover:bg-red-600 transition-all disabled:opacity-30 disabled:grayscale"
+                  >
+                    {processing ? <Loader2 className="w-5 h-5 animate-spin mx-auto text-white" /> : t('settings.deleteButton')}
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const ProfilePage = ({ 
   user,
   username,
@@ -1743,7 +2065,7 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
       title: "Account",
       items: [
         { name: "Profile", icon: <UserIcon className="w-5 h-5" />, isActive: true },
-        { name: "Settings", icon: <Settings className="w-5 h-5" /> },
+        { name: "Settings", icon: <Settings className="w-5 h-5" />, isActive: true },
         { name: "KYC", icon: <ShieldCheck className="w-5 h-5" />, isActive: true },
         { name: "Referral", icon: <Users className="w-5 h-5" /> },
       ]
@@ -1824,6 +2146,7 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
                   if (item.isInstall) setShowInstallGuide(true);
                   if (item.name === 'KYC') onKYCClick();
                   if (item.name === 'Profile') (onKYCClick as any)('profile');
+                  if (item.name === 'Settings') (onKYCClick as any)('settings');
                   if (item.name === 'Academy') (onKYCClick as any)('academy'); // Reuse onKYCClick or rename it
                   if (item.isGame) {
                     if (item.gameType === 'wheel') setShowWheel(true);
@@ -2104,12 +2427,17 @@ export default function App() {
       // 1. Load profile to check sync status, mining time, and tasks
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
-        .select('last_mining_time, completed_tasks, legacy_uid, kyc_status, real_name, full_phone_number, kyc_stage2_date, username')
+        .select('last_mining_time, completed_tasks, legacy_uid, kyc_status, real_name, full_phone_number, kyc_stage2_date, username, is_deleted')
         .eq('id', user.id)
         .single();
 
       if (profileError && profileError.code !== 'PGRST116') {
         console.error('Error loading profile:', profileError);
+      }
+
+      if (profile?.is_deleted) {
+        handleLogout();
+        return;
       }
 
       // Set defaults if profile is missing or fields are null
@@ -2993,6 +3321,14 @@ export default function App() {
             onBack={() => setActiveTab('more')}
           />
         );
+      case 'settings':
+        return (
+          <SettingsPage 
+            user={user!}
+            onBack={() => setActiveTab('more')}
+            onLogout={handleLogout}
+          />
+        );
       case 'academy':
         return (
           <AcademyPage 
@@ -3003,7 +3339,7 @@ export default function App() {
           />
         );
       case 'mainnet': return <MainnetTab />;
-      case 'more': return <MoreTab userId={user?.id || ''} onBalanceUpdate={loadUserData} onLogout={handleLogout} onKYCClick={(tab?: string) => setActiveTab(tab === 'academy' ? 'academy' : tab === 'profile' ? 'profile' : 'kyc')} />;
+      case 'more': return <MoreTab userId={user?.id || ''} onBalanceUpdate={loadUserData} onLogout={handleLogout} onKYCClick={(tab?: string) => setActiveTab(tab === 'academy' ? 'academy' : tab === 'profile' ? 'profile' : tab === 'settings' ? 'settings' : 'kyc')} />;
       default: 
         return (
           <Dashboard 

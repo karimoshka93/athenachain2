@@ -1,0 +1,32 @@
+{
+  "common": {
+    "dashboard": "Home",
+    "wallet": "Wallet",
+    "tasks": "Tasks",
+    "mainnet": "Mainnet",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout Account",
+    "comingSoon": "Soon",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "back": "Back",
+    "loading": "Loading...",
+    "success": "Success",
+    "error": "Error"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "changePassword": "Change Password",
+    "deleteAccount": "Delete Account",
+    "oldPassword": "Old Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm New Password",
+    "forgotPassword": "Forgot Password?",
+    "deleteWarning": "This action is permanent and cannot be undone.",
+    "deleteConfirmText": "Type 'DELETE' to confirm",
+    "deleteButton": "PERMANENTLY DELETE ACCOUNT"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "common": {
+    "dashboard": "Accueil",
+    "wallet": "Portefeuille",
+    "tasks": "Tâches",
+    "mainnet": "Réseau principal",
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "logout": "Déconnexion",
+    "comingSoon": "Bientôt",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "back": "Retour",
+    "loading": "Chargement...",
+    "success": "Succès",
+    "error": "Erreur"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "language": "Langue",
+    "changePassword": "Changer le mot de passe",
+    "deleteAccount": "Supprimer le compte",
+    "oldPassword": "Ancien mot de passe",
+    "newPassword": "Nouveau mot de passe",
+    "confirmPassword": "Confirmer le nouveau mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "deleteWarning": "Cette action est permanente et ne peut être annulée.",
+    "deleteConfirmText": "Tapez 'DELETE' pour confirmer",
+    "deleteButton": "SUPPRIMER DÉFINITIVEMENT LE COMPTE"
+  }
+}

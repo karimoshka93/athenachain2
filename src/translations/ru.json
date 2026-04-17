@@ -1,0 +1,32 @@
+{
+  "common": {
+    "dashboard": "Главная",
+    "wallet": "Кошелек",
+    "tasks": "Задания",
+    "mainnet": "Основная сеть",
+    "profile": "Профиль",
+    "settings": "Настройки",
+    "logout": "Выйти из аккаунта",
+    "comingSoon": "Скоро",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "confirm": "Подтвердить",
+    "back": "Назад",
+    "loading": "Загрузка...",
+    "success": "Успех",
+    "error": "Ошибка"
+  },
+  "settings": {
+    "title": "Настройки",
+    "language": "Язык",
+    "changePassword": "Сменить пароль",
+    "deleteAccount": "Удалить аккаунт",
+    "oldPassword": "Старый пароль",
+    "newPassword": "Новый пароль",
+    "confirmPassword": "Подтвердите новый пароль",
+    "forgotPassword": "Забыли пароль?",
+    "deleteWarning": "Это действие является постоянным и не может быть отменено.",
+    "deleteConfirmText": "Введите 'DELETE' для подтверждения",
+    "deleteButton": "УДАЛИТЬ АККАУНТ НАВСЕГДА"
+  }
+}

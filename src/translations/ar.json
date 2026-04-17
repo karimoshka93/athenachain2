@@ -1,0 +1,32 @@
+{
+  "common": {
+    "dashboard": "الرئيسية",
+    "wallet": "المحفظة",
+    "tasks": "المهام",
+    "mainnet": "الشبكة الرئيسية",
+    "profile": "الملف الشخصي",
+    "settings": "الإعدادات",
+    "logout": "تسجيل الخروج",
+    "comingSoon": "قريباً",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "back": "رجوع",
+    "loading": "جاري التحميل...",
+    "success": "نجاح",
+    "error": "خطأ"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "language": "اللغة",
+    "changePassword": "تغيير كلمة المرور",
+    "deleteAccount": "حذف الحساب",
+    "oldPassword": "كلمة المرور القديمة",
+    "newPassword": "كلمة المرور الجديدة",
+    "confirmPassword": "تأكيد كلمة المرور الجديدة",
+    "forgotPassword": "هل نسيت كلمة المرور؟",
+    "deleteWarning": "هذا الإجراء دائم ولا يمكن التراجع عنه.",
+    "deleteConfirmText": "اكتب 'DELETE' للتأكيد",
+    "deleteButton": "حذف الحساب نهائياً"
+  }
+}
