@@ -1083,7 +1083,7 @@ const ProfilePage = ({
                 type="text" 
                 value={newUsername}
                 onChange={(e) => setNewUsername(e.target.value.toLowerCase())}
-                placeholder="e.g. karimoshka2"
+                placeholder="e.g. Vladimir22"
                 className="flex-1 bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-gold/50 transition-colors"
                 autoFocus
               />
@@ -1098,12 +1098,14 @@ const ProfilePage = ({
           ) : (
             <div className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl py-3 px-4">
               <span className="text-sm font-medium text-white">{username || 'Not set'}</span>
-              <button 
-                onClick={() => setEditing(true)}
-                className="text-gold text-xs font-bold hover:underline"
-              >
-                Change
-              </button>
+              {!username && (
+                <button 
+                  onClick={() => setEditing(true)}
+                  className="text-gold text-xs font-bold hover:underline"
+                >
+                  Set Unique Username
+                </button>
+              )}
             </div>
           )}
           {message && (
