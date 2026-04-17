@@ -13,24 +13,55 @@
     "cancel": "إلغاء",
     "confirm": "تأكيد",
     "back": "رجوع",
-    "loading": "جاري التحميل...",
-    "success": "نجاح",
+    "loading": "جارٍ التحميل...",
+    "success": "تم بنجاح",
     "error": "خطأ",
-    "verifySync": "التحقق والمزامنة",
+    "verifySync": "تحقق ومزامنة",
     "syncing": "جاري المزامنة...",
-    "athenaChain": "أثينا شين",
-    "futureOfDigitalGold": "مستقبل الذهب الرقمي"
+    "athenaChain": "Athena Chain",
+    "futureOfDigitalGold": "مستقبل الذهب الرقمي",
+    "liveVideo": "فيديو مباشر",
+    "referrals": "الإحالات"
   },
   "dashboard": {
     "welcome": "مرحباً بعودتك",
     "balance": "إجمالي الرصيد",
-    "mining": "التعدين",
+    "mining": "تعدين",
     "claim": "مطالبة",
-    "startMining": "بدء التعدين",
+    "startMining": "ابدأ التعدين",
     "market": "السوق",
     "viewAll": "عرض الكل",
     "miningSpeed": "سرعة التعدين",
-    "activeMiners": "المعدنون النشطون"
+    "activeMiners": "المعدنون النشطون",
+    "pioneerNode": "عقدة رائدة",
+    "installApp": "تثبيت تطبيق أثينا",
+    "installDesc": "أضف إلى الشاشة الرئيسية للوصول السريع",
+    "install": "تثبيت",
+    "sessionComplete": "اكتملت الجلسة",
+    "currentSession": "أرباح الجلسة الحالية",
+    "timeRemaining": "الوقت المتبقي",
+    "mining_active": "تعدين...",
+    "finished": "مكتمل",
+    "claimReward": "المطالبة بالمكافأة"
+  },
+  "profile": {
+    "subtitle": "التفاصيل الشخصية والأمان",
+    "username": "اسم المستخدم",
+    "email": "البريد الإلكتروني",
+    "notSet": "لم يتم التعيين",
+    "setUsername": "تعيين اسم مستخدم فريد",
+    "accountIntegrity": "سلامة الحساب",
+    "securityAnalysis": "تحليل الأمن والثقة",
+    "checking": "جارٍ التحقق",
+    "integrityDesc": "\"نحن نتحقق حاليًا من سجل حسابك لضمان الامتثال لبروتوكولات الأمان الخاصة بنا. هذه العملية تلقائية.\""
+  },
+  "more": {
+    "title": "المزيد من الخدمات",
+    "description": "استكشف نظام أثينا البيئي"
+  },
+  "mainnet": {
+    "title": "خارطة طريق الشبكة الرئيسية",
+    "description": "تتبع مراحل إطلاق Athena Chain"
   },
   "wallet": {
     "assets": "الأصول",
@@ -38,22 +69,32 @@
     "history": "سجل المعاملات",
     "send": "إرسال",
     "receive": "استلام",
-    "swap": "تبديل"
+    "swap": "تبديل",
+    "migrationDetected": "تم اكتشاف الهجرة",
+    "walletVerified": "تم التحقق من المحفظة",
+    "migrationFound": "تم العثور على أصول Digital Gold V1",
+    "legacySynced": "تمت مزامنة الأصول بنجاح",
+    "syncLegacy": "مزامنة الأصول القديمة",
+    "portfolio": "المحفظة الاستثمارية",
+    "portfolioDesc": "إدارة أصولك العالمية",
+    "realTimeDisclaimer": "أسعار السوق في الوقت الفعلي (GLD ثابت حتى الإدراج)"
   },
   "tasks": {
+    "title": "المهام والمكافآت",
+    "description": "اربح GLD من خلال دعم الشبكة",
     "daily": "المهام اليومية",
     "mission": "مركز المهام",
     "complete": "إكمال",
     "completed": "مكتمل"
   },
   "kyc": {
-    "title": "توثيق الحساب (KYC)",
-    "verified": "موثق",
+    "title": "تحقق KYC",
+    "verified": "تم التحقق",
     "pending": "قيد الانتظار",
-    "failed": "فشل",
+    "failed": "فشل التحقق",
     "realName": "الاسم الحقيقي",
     "phone": "رقم الهاتف",
-    "date": "تاريخ التوثيق"
+    "date": "تاريخ التحقق"
   },
   "settings": {
     "title": "الإعدادات",

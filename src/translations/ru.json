@@ -19,7 +19,9 @@
     "verifySync": "Проверить и синхронизировать",
     "syncing": "Синхронизация...",
     "athenaChain": "Athena Chain",
-    "futureOfDigitalGold": "Будущее цифрового золота"
+    "futureOfDigitalGold": "Будущее цифрового золота",
+    "liveVideo": "Живое видео",
+    "referrals": "Рефералы"
   },
   "dashboard": {
     "welcome": "С возвращением",
@@ -30,7 +32,36 @@
     "market": "Рынок",
     "viewAll": "Посмотреть все",
     "miningSpeed": "Скорость майнинга",
-    "activeMiners": "Активные майнеры"
+    "activeMiners": "Активные майнеры",
+    "pioneerNode": "Пионерская нода",
+    "installApp": "Установить приложение Athena",
+    "installDesc": "Добавьте на главный экран для быстрого доступа",
+    "install": "Установить",
+    "sessionComplete": "Сессия завершена",
+    "currentSession": "Текущий доход за сессию",
+    "timeRemaining": "Оставшееся время",
+    "mining_active": "Майнинг...",
+    "finished": "ГОТОВО",
+    "claimReward": "ПОЛУЧИТЬ НАГРАДУ"
+  },
+  "profile": {
+    "subtitle": "Персональные данные и Безопасность",
+    "username": "Имя пользователя",
+    "email": "Электронная почта",
+    "notSet": "Не установлено",
+    "setUsername": "Установить уникальное имя",
+    "accountIntegrity": "Целостность аккаунта",
+    "securityAnalysis": "Анализ безопасности и доверия",
+    "checking": "Проверка",
+    "integrityDesc": "\"В настоящее время мы проверяем историю вашего аккаунта для обеспечения соответствия нашим протоколам безопасности. Этот процесс автоматизирован.\""
+  },
+  "more": {
+    "title": "Дополнительные услуги",
+    "description": "Исследуйте экосистему Athena"
+  },
+  "mainnet": {
+    "title": "Дорожная карта основной сети",
+    "description": "Следите за фазами запуска Athena Chain"
   },
   "wallet": {
     "assets": "Активы",
@@ -38,9 +69,19 @@
     "history": "История транзакций",
     "send": "Отправить",
     "receive": "Получить",
-    "swap": "Обменять"
+    "swap": "Обменять",
+    "migrationDetected": "Обнаружена миграция",
+    "walletVerified": "Кошелек подтвержден",
+    "migrationFound": "Найдены активы Digital Gold V1",
+    "legacySynced": "Legacy активы успешно синхронизированы",
+    "syncLegacy": "Синхронизировать Legacy активы",
+    "portfolio": "Портфель",
+    "portfolioDesc": "Управляйте вашими глобальными активами",
+    "realTimeDisclaimer": "Рыночные цены в реальном времени (GLD фиксирован до листинга)"
   },
   "tasks": {
+    "title": "Задания и награды",
+    "description": "Зарабатывайте GLD, поддерживая сеть",
     "daily": "Ежедневные задания",
     "mission": "Центр миссий",
     "complete": "Выполнить",

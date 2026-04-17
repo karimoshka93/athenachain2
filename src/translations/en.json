@@ -60,7 +60,14 @@
     "timeRemaining": "Time Remaining",
     "mining_active": "MINING...",
     "finished": "FINISHED",
-    "claimReward": "CLAIM REWARD"
+    "claimReward": "CLAIM REWARD",
+    "pioneerNode": "Pioneer Node",
+    "installApp": "Install Athena App",
+    "installDesc": "Add to home screen for quick access",
+    "install": "Install",
+    "sessionComplete": "Session Complete",
+    "currentSession": "Current Session Earnings",
+    "timeRemaining": "Time Remaining"
   },
   "profile": {
     "subtitle": "Personal details & Security",
@@ -87,9 +94,19 @@
     "history": "Transaction History",
     "send": "Send",
     "receive": "Receive",
-    "swap": "Swap"
+    "swap": "Swap",
+    "migrationDetected": "Migration detected",
+    "walletVerified": "Wallet Verified",
+    "migrationFound": "Digital Gold V1 assets found",
+    "legacySynced": "Legacy assets successfully synced",
+    "syncLegacy": "Sync Legacy Assets",
+    "portfolio": "Portfolio",
+    "portfolioDesc": "Manage your global assets",
+    "realTimeDisclaimer": "Real-time market prices (GLD fixed until listing)"
   },
   "tasks": {
+    "title": "Tasks & Rewards",
+    "description": "Earn GLD by supporting the network",
     "daily": "Daily Tasks",
     "mission": "Mission Center",
     "complete": "Complete",

@@ -3,7 +3,7 @@
     "dashboard": "Accueil",
     "wallet": "Portefeuille",
     "tasks": "Tâches",
-    "mainnet": "Réseau principal",
+    "mainnet": "Mainnet",
     "profile": "Profil",
     "account": "Compte",
     "settings": "Paramètres",
@@ -16,35 +16,68 @@
     "loading": "Chargement...",
     "success": "Succès",
     "error": "Erreur",
-    "verifySync": "Vérifier et Synchro",
+    "verifySync": "Vérifier & Synchroniser",
     "syncing": "Synchronisation...",
-    "athenaChain": "Chaîne Athéna",
-    "futureOfDigitalGold": "L'avenir de l'or numérique"
+    "athenaChain": "Athena Chain",
+    "futureOfDigitalGold": "L'avenir de l'or numérique",
+    "liveVideo": "Vidéo en direct",
+    "referrals": "Parrainages"
   },
   "dashboard": {
-    "welcome": "Content de vous revoir",
+    "welcome": "Bon retour",
     "balance": "Solde total",
     "mining": "Minage",
-    "claim": "Récupérer",
+    "claim": "Réclamer",
     "startMining": "Démarrer le minage",
     "market": "Marché",
     "viewAll": "Voir tout",
     "miningSpeed": "Vitesse de minage",
-    "activeMiners": "Mineurs actifs"
+    "activeMiners": "Mineurs actifs",
+    "pioneerNode": "Nœud pionnier",
+    "installApp": "Installer l'app Athena",
+    "installDesc": "Ajouter à l'écran d'accueil",
+    "install": "Installer",
+    "sessionComplete": "Session terminée",
+    "currentSession": "Gains de la session",
+    "timeRemaining": "Temps restant",
+    "mining_active": "MINAGE...",
+    "finished": "TERMINÉ",
+    "claimReward": "RÉCLAMER RÉCOMPENSE"
+  },
+  "profile": {
+    "subtitle": "Détails personnels & Sécurité",
+    "username": "Nom d'utilisateur",
+    "email": "Adresse e-mail",
+    "notSet": "Non défini",
+    "setUsername": "Définir le nom d'utilisateur",
+    "accountIntegrity": "Intégrité du compte",
+    "securityAnalysis": "Analyse de sécurité & confiance",
+    "checking": "Vérification",
+    "integrityDesc": "\"Nous vérifions l'historique de votre compte pour assurer la conformité. Ce processus est automatique.\""
   },
   "wallet": {
     "assets": "Actifs",
-    "bridgeToAthena": "Pont vers Athéna",
+    "bridgeToAthena": "Pont vers Athena",
     "history": "Historique des transactions",
     "send": "Envoyer",
     "receive": "Recevoir",
-    "swap": "Échanger"
+    "swap": "Échanger",
+    "migrationDetected": "Migration détectée",
+    "walletVerified": "Portefeuille vérifié",
+    "migrationFound": "Actifs Digital Gold V1 trouvés",
+    "legacySynced": "Actifs hérités synchronisés",
+    "syncLegacy": "Synchroniser les actifs hérités",
+    "portfolio": "Portefeuille",
+    "portfolioDesc": "Gérez vos actifs mondiaux",
+    "realTimeDisclaimer": "Prix du marché en temps réel (GLD fixe jusqu'à l'inscription)"
   },
   "tasks": {
+    "title": "Tâches & Récompenses",
+    "description": "Gagnez des GLD en soutenant le réseau",
     "daily": "Tâches quotidiennes",
     "mission": "Centre de mission",
     "complete": "Terminer",
-    "completed": "Terminée"
+    "completed": "Terminé"
   },
   "kyc": {
     "title": "Vérification KYC",
@@ -62,9 +95,9 @@
     "deleteAccount": "Supprimer le compte",
     "oldPassword": "Ancien mot de passe",
     "newPassword": "Nouveau mot de passe",
-    "confirmPassword": "Confirmer le nouveau mot de passe",
+    "confirmPassword": "Confirmer nouveau mot de passe",
     "forgotPassword": "Mot de passe oublié ?",
-    "deleteWarning": "Cette action est permanente et ne peut être annulée.",
+    "deleteWarning": "Cette action est permanente et irréversible.",
     "deleteConfirmText": "Tapez 'DELETE' pour confirmer",
     "deleteButton": "SUPPRIMER DÉFINITIVEMENT LE COMPTE"
   }

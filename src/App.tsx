@@ -621,18 +621,19 @@ const Dashboard = ({
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => {
-              if (!isMining && !isFinished) onStartMining();
+              if (isFinished) handleClaim();
+              else if (!isMining) onStartMining();
             }}
-            disabled={isMining || isFinished}
+            disabled={isMining}
             className={`w-44 h-44 rounded-full flex flex-col items-center justify-center gap-2 border-4 transition-all duration-500 ripple ${
               isMining 
               ? 'border-gold bg-gold/10 gold-glow' 
               : isFinished
-              ? 'border-green-500 bg-green-500/10'
+              ? 'border-green-500 bg-green-500/10 gold-glow'
               : 'border-gray-700 bg-gray-800/50 hover:border-gold/50'
             }`}
           >
-            <Zap className={`w-14 h-14 ${isMining ? 'text-gold fill-gold animate-pulse' : isFinished ? 'text-green-500' : 'text-gray-500'}`} />
+            <Zap className={`w-14 h-14 ${isMining ? 'text-gold fill-gold animate-pulse' : isFinished ? 'text-green-500 fill-green-500 gold-glow' : 'text-gray-500'}`} />
             <span className={`font-bold text-sm tracking-widest ${isMining ? 'text-gold' : isFinished ? 'text-green-500' : 'text-gray-500'}`}>
               {isMining ? (t('dashboard.mining_active') || 'MINING...') : isFinished ? (t('dashboard.finished') || 'FINISHED') : (t('dashboard.startMining') || 'START MINING')}
             </span>

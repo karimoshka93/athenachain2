@@ -15,7 +15,13 @@
     "back": "Volver",
     "loading": "Cargando...",
     "success": "Éxito",
-    "error": "Error"
+    "error": "Error",
+    "verifySync": "Verificar y Sincronizar",
+    "syncing": "Sincronizando...",
+    "athenaChain": "Athena Chain",
+    "futureOfDigitalGold": "El futuro del oro digital",
+    "liveVideo": "Video en Vivo",
+    "referrals": "Referidos"
   },
   "dashboard": {
     "welcome": "Bienvenido de nuevo",
@@ -24,12 +30,75 @@
     "claim": "Reclamar",
     "startMining": "Empezar Minería",
     "market": "Mercado",
-    "viewAll": "Ver todo"
+    "viewAll": "Ver todo",
+    "miningSpeed": "Velocidad de Minería",
+    "activeMiners": "Mineros Activos",
+    "pioneerNode": "Nodo Pionero",
+    "installApp": "Instalar App Athena",
+    "installDesc": "Añadir a la pantalla de inicio",
+    "install": "Instalar",
+    "sessionComplete": "Sesión Completada",
+    "currentSession": "Ganancias de la Sesión",
+    "timeRemaining": "Tiempo Restante",
+    "mining_active": "MINANDO...",
+    "finished": "FINALIZADO",
+    "claimReward": "RECLAMAR RECOMPENSA"
+  },
+  "profile": {
+    "subtitle": "Detalles personales y Seguridad",
+    "username": "Nombre de usuario",
+    "email": "Correo electrónico",
+    "notSet": "No establecido",
+    "setUsername": "Establecer nombre de usuario",
+    "accountIntegrity": "Integridad de la cuenta",
+    "securityAnalysis": "Análisis de seguridad y confianza",
+    "checking": "Verificando",
+    "integrityDesc": "\"Estamos verificando el historial de su cuenta para asegurar el cumplimiento. Este proceso es automático.\""
+  },
+  "wallet": {
+    "assets": "Activos",
+    "bridgeToAthena": "Puente a Athena",
+    "history": "Historial de transacciones",
+    "send": "Enviar",
+    "receive": "Recibir",
+    "swap": "Intercambiar",
+    "migrationDetected": "Migración detectada",
+    "walletVerified": "Billetera Verificada",
+    "migrationFound": "Activos de Digital Gold V1 encontrados",
+    "legacySynced": "Activos antiguos sincronizados con éxito",
+    "syncLegacy": "Sincronizar activos antiguos",
+    "portfolio": "Portafolio",
+    "portfolioDesc": "Gestiona tus activos globales",
+    "realTimeDisclaimer": "Precios de mercado en tiempo real (GLD fijo hasta listado)"
+  },
+  "tasks": {
+    "title": "Tareas y Recompensas",
+    "description": "Gana GLD apoyando la red",
+    "daily": "Tareas diarias",
+    "mission": "Centro de misiones",
+    "complete": "Completar",
+    "completed": "Completado"
+  },
+  "kyc": {
+    "title": "Verificación KYC",
+    "verified": "Verificado",
+    "pending": "Pendiente",
+    "failed": "Fallido",
+    "realName": "Nombre real",
+    "phone": "Número de teléfono",
+    "date": "Fecha de verificación"
   },
   "settings": {
     "title": "Ajustes",
     "language": "Idioma",
     "changePassword": "Cambiar contraseña",
-    "deleteAccount": "Eliminar cuenta"
+    "deleteAccount": "Eliminar cuenta",
+    "oldPassword": "Contraseña antigua",
+    "newPassword": "Nueva contraseña",
+    "confirmPassword": "Confirmar nueva contraseña",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "deleteWarning": "Esta acción es permanente y no se puede deshacer.",
+    "deleteConfirmText": "Escribe 'DELETE' para confirmar",
+    "deleteButton": "ELIMINAR CUENTA PERMANENTEMENTE"
   }
 }
