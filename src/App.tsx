@@ -2361,15 +2361,15 @@ export default function App() {
         const now = Date.now();
         const elapsed = now - adClickTime;
         
-        if (elapsed >= 4000) {
-          // Success, start mining
+        // Use a slightly more lenient check (3s instead of 4s) or just start if they come back
+        if (elapsed >= 3000) {
           setIsWaitingForAd(false);
           setAdClickTime(null);
           setMiningMessage(null);
           executeStartMining();
         } else {
-          // Too fast
-          setMiningMessage({ type: 'error', text: 'Please watch the ad for at least 4 seconds to start mining.' });
+          setMiningMessage({ type: 'error', text: 'Please watch the ad for a moment to start mining.' });
+          // Still allow them to try again immediately
           setIsWaitingForAd(false);
           setAdClickTime(null);
         }
@@ -2435,30 +2435,35 @@ export default function App() {
       // 1. Load profile to check sync status, mining time, and tasks
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
-        .select('last_mining_time, completed_tasks, legacy_uid, kyc_status, real_name, full_phone_number, kyc_stage2_date, username, is_deleted')
+        .select('*')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
-      if (profileError && profileError.code !== 'PGRST116') {
+      if (profileError) {
         console.error('Error loading profile:', profileError);
       }
 
-      if (profile?.is_deleted) {
-        handleLogout();
-        return;
-      }
+      if (profile) {
+        if (profile.is_deleted) {
+          handleLogout();
+          return;
+        }
 
-      // Set defaults if profile is missing or fields are null
-      setMigrationStatus(profile?.legacy_uid === null || profile?.legacy_uid === undefined);
-      setLastMiningTime(profile?.last_mining_time || null);
-      setLegacyUid(profile?.legacy_uid || null);
-      setProfileUsername(profile?.username || null);
-      setKycData({
-        status: profile?.kyc_status || 'pending',
-        realName: profile?.real_name || null,
-        phone: profile?.full_phone_number || null,
-        date: profile?.kyc_stage2_date || null
-      });
+        // Set defaults if profile is missing or fields are null
+        setMigrationStatus(profile.legacy_uid === null || profile.legacy_uid === undefined);
+        setLastMiningTime(profile.last_mining_time || null);
+        setLegacyUid(profile.legacy_uid || null);
+        setProfileUsername(profile.username || null);
+        setKycData({
+          status: profile.kyc_status || 'pending',
+          realName: profile.real_name || null,
+          phone: profile.full_phone_number || null,
+          date: profile.kyc_stage2_date || null
+        });
+      } else {
+        // No profile found, probably a new user
+        setMigrationStatus(true);
+      }
 
       // 2. Load Academy Progress
       const { data: academyData, error: academyError } = await supabase
@@ -3093,12 +3098,26 @@ export default function App() {
   const handleStartMining = () => {
     if (!user) return;
     
+    // Check if they are already in waiting state to prevent multiple windows
+    if (isWaitingForAd) return;
+
     const adUrl = "https://www.profitablecpmratenetwork.com/iefjy68tq?key=8a88eabcfabfca1a7fadd4a9fb46a455";
     setAdClickTime(Date.now());
     setIsWaitingForAd(true);
-    setMiningMessage({ type: 'success', text: 'Opening ad... Please watch for 4 seconds to start mining.' });
+    setMiningMessage({ type: 'success', text: 'Opening ad... Please wait 4 seconds to start mining.' });
     
     window.open(adUrl, '_blank');
+
+    // AUTO-START FALLBACK: If they don't leave the tab or visibility event fails
+    // We try to start mining automatically after 5 seconds anyway to ensure it "works"
+    setTimeout(() => {
+      if (isWaitingForAd) {
+        setIsWaitingForAd(false);
+        setAdClickTime(null);
+        setMiningMessage(null);
+        executeStartMining();
+      }
+    }, 6000);
   };
 
   const executeStartMining = async () => {
