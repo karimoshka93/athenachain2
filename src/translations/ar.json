@@ -5,6 +5,7 @@
     "tasks": "المهام",
     "mainnet": "الشبكة الرئيسية",
     "profile": "الملف الشخصي",
+    "account": "الحساب",
     "settings": "الإعدادات",
     "logout": "تسجيل الخروج",
     "comingSoon": "قريباً",
@@ -14,7 +15,45 @@
     "back": "رجوع",
     "loading": "جاري التحميل...",
     "success": "نجاح",
-    "error": "خطأ"
+    "error": "خطأ",
+    "verifySync": "التحقق والمزامنة",
+    "syncing": "جاري المزامنة...",
+    "athenaChain": "أثينا شين",
+    "futureOfDigitalGold": "مستقبل الذهب الرقمي"
+  },
+  "dashboard": {
+    "welcome": "مرحباً بعودتك",
+    "balance": "إجمالي الرصيد",
+    "mining": "التعدين",
+    "claim": "مطالبة",
+    "startMining": "بدء التعدين",
+    "market": "السوق",
+    "viewAll": "عرض الكل",
+    "miningSpeed": "سرعة التعدين",
+    "activeMiners": "المعدنون النشطون"
+  },
+  "wallet": {
+    "assets": "الأصول",
+    "bridgeToAthena": "جسر إلى أثينا",
+    "history": "سجل المعاملات",
+    "send": "إرسال",
+    "receive": "استلام",
+    "swap": "تبديل"
+  },
+  "tasks": {
+    "daily": "المهام اليومية",
+    "mission": "مركز المهام",
+    "complete": "إكمال",
+    "completed": "مكتمل"
+  },
+  "kyc": {
+    "title": "توثيق الحساب (KYC)",
+    "verified": "موثق",
+    "pending": "قيد الانتظار",
+    "failed": "فشل",
+    "realName": "الاسم الحقيقي",
+    "phone": "رقم الهاتف",
+    "date": "تاريخ التوثيق"
   },
   "settings": {
     "title": "الإعدادات",

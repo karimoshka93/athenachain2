@@ -411,6 +411,7 @@ const Dashboard = ({
   miningMessage: { type: 'success' | 'error', text: string } | null,
   onProfileClick: () => void
 }) => {
+  const { t } = useTranslation();
   const [minedAmount, setMinedAmount] = useState(0);
   const [marketData, setMarketData] = useState<MarketCoin[]>([]);
   const [loading, setLoading] = useState(true);
@@ -547,8 +548,8 @@ const Dashboard = ({
               <Icon name="users" className="w-5 h-5 text-gold" />
             </div>
             <div className="flex flex-col">
-              <h1 className="text-xl font-bold text-gold-gradient">Athena Chain</h1>
-              <p className="text-gray-400 text-[10px] uppercase tracking-widest">Pioneer Node</p>
+              <h1 className="text-xl font-bold text-gold-gradient">{t('common.athenaChain')}</h1>
+              <p className="text-gray-400 text-[10px] uppercase tracking-widest">{t('dashboard.pioneerNode') || 'Pioneer Node'}</p>
             </div>
           </div>
           <div className="flex items-center gap-2 bg-gold/10 px-3 py-1 rounded-full border border-gold/20">
@@ -569,15 +570,15 @@ const Dashboard = ({
               <Icon name="rocket" className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-sm font-bold text-white">Install Athena App</p>
-              <p className="text-[10px] text-gray-400">Add to home screen for quick access</p>
+              <p className="text-sm font-bold text-white">{t('dashboard.installApp') || 'Install Athena App'}</p>
+              <p className="text-[10px] text-gray-400">{t('dashboard.installDesc') || 'Add to home screen for quick access'}</p>
             </div>
           </div>
           <button 
             onClick={onInstall}
             className="bg-gold text-black font-bold text-xs px-4 py-2 rounded-lg hover:brightness-110 active:scale-95 transition-all"
           >
-            Install
+            {t('dashboard.install') || 'Install'}
           </button>
         </motion.div>
       )}
@@ -595,12 +596,12 @@ const Dashboard = ({
         
         <div className="text-center">
           <p className="text-gray-400 text-xs uppercase tracking-widest mb-1">
-            {isFinished ? 'Session Complete' : 'Current Session Earnings'}
+            {isFinished ? (t('dashboard.sessionComplete') || 'Session Complete') : (t('dashboard.currentSession') || 'Current Session Earnings')}
           </p>
           <h2 className="text-4xl font-mono font-bold text-gold">{minedAmount.toFixed(6)} GLD</h2>
           {isMining && timeLeft !== null && (
             <p className="text-gray-500 text-[10px] mt-1 font-mono uppercase tracking-tighter">
-              Time Remaining: {formatTime(timeLeft)}
+              {t('dashboard.timeRemaining') || 'Time Remaining'}: {formatTime(timeLeft)}
             </p>
           )}
         </div>
@@ -633,7 +634,7 @@ const Dashboard = ({
           >
             <Zap className={`w-14 h-14 ${isMining ? 'text-gold fill-gold animate-pulse' : isFinished ? 'text-green-500' : 'text-gray-500'}`} />
             <span className={`font-bold text-sm tracking-widest ${isMining ? 'text-gold' : isFinished ? 'text-green-500' : 'text-gray-500'}`}>
-              {isMining ? 'MINING...' : isFinished ? 'FINISHED' : 'START MINING'}
+              {isMining ? (t('dashboard.mining_active') || 'MINING...') : isFinished ? (t('dashboard.finished') || 'FINISHED') : (t('dashboard.startMining') || 'START MINING')}
             </span>
           </motion.button>
 
@@ -644,7 +645,7 @@ const Dashboard = ({
               onClick={handleClaim}
               className="bg-gold-gradient text-black font-extrabold px-8 py-2 rounded-full gold-glow hover:brightness-110 active:scale-95 transition-all text-sm"
             >
-              CLAIM REWARD
+              {t('dashboard.claimReward') || 'CLAIM REWARD'}
             </motion.button>
           )}
         </div>
@@ -731,6 +732,7 @@ const WalletTab = ({
   userAssets: Record<string, number>,
   marketPrices: Record<string, number>
 }) => {
+  const { t } = useTranslation();
   // Use marketPrices if available, otherwise fallback to MOCK_COINS or 0
   const totalBalance = Object.entries(userAssets).reduce((acc, [symbol, balance]) => {
     const upperSymbol = symbol.toUpperCase();
@@ -742,8 +744,8 @@ const WalletTab = ({
     <div className="flex flex-col gap-6 pb-24">
       <header className="flex items-center justify-between">
         <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-bold text-gold-gradient">Portfolio</h1>
-          <p className="text-gray-400 text-sm">Manage your global assets</p>
+          <h1 className="text-2xl font-bold text-gold-gradient">{t('wallet.portfolio') || 'Portfolio'}</h1>
+          <p className="text-gray-400 text-sm">{t('wallet.portfolioDesc') || 'Manage your global assets'}</p>
         </div>
         <button 
           onClick={onExtraSync}
@@ -762,10 +764,10 @@ const WalletTab = ({
           </div>
           <div>
             <h4 className={`font-bold ${migrationStatus ? 'text-gold' : 'text-green-400'}`}>
-              {migrationStatus ? 'Migration detected' : 'Wallet Verified'}
+              {migrationStatus ? (t('wallet.migrationDetected') || 'Migration detected') : (t('wallet.walletVerified') || 'Wallet Verified')}
             </h4>
             <p className="text-gray-400 text-xs">
-              {migrationStatus ? 'Digital Gold V1 assets found' : 'Legacy assets successfully synced'}
+              {migrationStatus ? (t('wallet.migrationFound') || 'Digital Gold V1 assets found') : (t('wallet.legacySynced') || 'Legacy assets successfully synced')}
             </p>
           </div>
         </div>
@@ -778,7 +780,7 @@ const WalletTab = ({
             : 'bg-white/5 text-gray-500 cursor-default'
           }`}
         >
-          {migrationStatus ? <><Icon name="refresh-cw" className="w-5 h-5" /> Sync Legacy Assets</> : 'Wallet Verified'}
+          {migrationStatus ? <><Icon name="refresh-cw" className="w-5 h-5" /> {t('wallet.syncLegacy') || 'Sync Legacy Assets'}</> : (t('wallet.walletVerified') || 'Wallet Verified')}
         </button>
       </div>
 
@@ -787,17 +789,17 @@ const WalletTab = ({
         <div className="absolute -top-10 -right-10 w-32 h-32 bg-gold/5 rounded-full blur-3xl" />
         
         <div className="flex flex-col gap-1 mb-1">
-          <p className="text-gray-400 text-xs uppercase tracking-widest">Total Estimated Balance</p>
-          <p className="text-[10px] text-gold/60 font-medium italic">* Real-time market prices (GLD fixed until listing)</p>
+          <p className="text-gray-400 text-xs uppercase tracking-widest">{t('dashboard.balance') || 'Total Estimated Balance'}</p>
+          <p className="text-[10px] text-gold/60 font-medium italic">* {t('wallet.realTimeDisclaimer') || 'Real-time market prices (GLD fixed until listing)'}</p>
         </div>
         <h2 className="text-3xl font-bold mb-6">${totalBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h2>
         
         <div className="flex gap-3">
           <button className="flex-1 bg-white/10 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-white/20 transition-colors border border-white/5">
-            <Icon name="arrow-up-right" className="w-4 h-4" /> Send
+            <Icon name="arrow-up-right" className="w-4 h-4" /> {t('wallet.send')}
           </button>
           <button className="flex-1 bg-white/10 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-white/20 transition-colors border border-white/5">
-            <Icon name="arrow-down-left" className="w-4 h-4" /> Receive
+            <Icon name="arrow-down-left" className="w-4 h-4" /> {t('wallet.receive')}
           </button>
         </div>
       </div>
@@ -859,6 +861,7 @@ const TasksTab = ({
   completedTasks: number[], 
   onCompleteTask: (taskId: number, reward: number) => void 
 }) => {
+  const { t } = useTranslation();
   const [taskCodes, setTaskCodes] = useState<Record<number, string>>({});
   const [errorMessages, setErrorMessages] = useState<Record<number, string>>({});
   const [visitedTasks, setVisitedTasks] = useState<number[]>([]);
@@ -888,8 +891,8 @@ const TasksTab = ({
   return (
     <div className="flex flex-col gap-6 pb-24">
       <header className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold text-gold-gradient">Tasks & Rewards</h1>
-        <p className="text-gray-400 text-sm">Earn GLD by supporting the network</p>
+        <h1 className="text-2xl font-bold text-gold-gradient">{t('tasks.title') || 'Tasks & Rewards'}</h1>
+        <p className="text-gray-400 text-sm">{t('tasks.description') || 'Earn GLD by supporting the network'}</p>
       </header>
 
       <div className="flex flex-col gap-3">
@@ -985,11 +988,12 @@ const TasksTab = ({
 };
 
 const MainnetTab = () => {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col gap-6 pb-24">
       <header className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold text-gold-gradient">Mainnet Roadmap</h1>
-        <p className="text-gray-400 text-sm">Track the Athena Chain launch phases</p>
+        <h1 className="text-2xl font-bold text-gold-gradient">{t('mainnet.title') || 'Mainnet Roadmap'}</h1>
+        <p className="text-gray-400 text-sm">{t('mainnet.description') || 'Track the Athena Chain launch phases'}</p>
       </header>
 
       <div className="relative pl-8 flex flex-col gap-8 before:content-[''] before:absolute before:left-[15px] before:top-2 before:bottom-2 before:w-[2px] before:bg-white/10">
@@ -1366,6 +1370,7 @@ const ProfilePage = ({
   onUpdateUsername: (newUsername: string) => Promise<{ success: boolean; message: string }>;
   onBack: () => void;
 }) => {
+  const { t } = useTranslation();
   const [editing, setEditing] = useState(false);
   const [newUsername, setNewUsername] = useState(username || '');
   const [message, setMessage] = useState<{ type: 'error' | 'success', text: string } | null>(null);
@@ -1390,15 +1395,15 @@ const ProfilePage = ({
           <Icon name="chevron-left" className="w-5 h-5" />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-gold-gradient">Account Profile</h1>
-          <p className="text-gray-400 text-sm">Personal details & Security</p>
+          <h1 className="text-2xl font-bold text-gold-gradient">{t('common.profile')}</h1>
+          <p className="text-gray-400 text-sm">{t('profile.subtitle') || 'Personal details & Security'}</p>
         </div>
       </header>
 
       <div className="glass rounded-3xl p-6 flex flex-col gap-6 border-white/5">
         {/* Username Section */}
         <div className="flex flex-col gap-2">
-          <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">Username</label>
+          <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">{t('profile.username') || 'Username'}</label>
           {editing ? (
             <div className="flex gap-2">
               <input 
@@ -1414,18 +1419,18 @@ const ProfilePage = ({
                 disabled={processing}
                 className="bg-gold text-black px-4 rounded-xl font-bold text-xs disabled:opacity-50"
               >
-                {processing ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save'}
+                {processing ? <Loader2 className="w-4 h-4 animate-spin" /> : t('common.save')}
               </button>
             </div>
           ) : (
             <div className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl py-3 px-4">
-              <span className="text-sm font-medium text-white">{username || 'Not set'}</span>
+              <span className="text-sm font-medium text-white">{username || (t('profile.notSet') || 'Not set')}</span>
               {!username && (
                 <button 
                   onClick={() => setEditing(true)}
                   className="text-gold text-xs font-bold hover:underline"
                 >
-                  Set Unique Username
+                  {t('profile.setUsername') || 'Set Unique Username'}
                 </button>
               )}
             </div>
@@ -1440,22 +1445,22 @@ const ProfilePage = ({
         {/* User Stats Card */}
         <div className="grid grid-cols-1 gap-4">
           <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex flex-col gap-1">
-            <span className="text-[10px] text-gray-500 uppercase font-bold">Email Address</span>
+            <span className="text-[10px] text-gray-500 uppercase font-bold">{t('profile.email') || 'Email Address'}</span>
             <span className="text-sm font-medium text-white truncate">{user.email}</span>
           </div>
           <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex flex-col gap-1">
-            <span className="text-[10px] text-gray-500 uppercase font-bold">Full Name</span>
+            <span className="text-[10px] text-gray-500 uppercase font-bold">{t('kyc.realName')}</span>
             <span className="text-sm font-medium text-white">{kycData?.realName || '---'}</span>
           </div>
           <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex flex-col gap-1">
-            <span className="text-[10px] text-gray-500 uppercase font-bold">Phone Number</span>
+            <span className="text-[10px] text-gray-500 uppercase font-bold">{t('kyc.phone')}</span>
             <span className="text-sm font-medium text-white">{kycData?.phone || '---'}</span>
           </div>
           <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between">
             <div className="flex flex-col gap-1">
-              <span className="text-[10px] text-gray-500 uppercase font-bold">KYC Status</span>
+              <span className="text-[10px] text-gray-500 uppercase font-bold">{t('kyc.status') || 'KYC Status'}</span>
               <span className={`text-sm font-bold uppercase ${kycData?.status === 'verified' ? 'text-green-500' : 'text-gold'}`}>
-                {kycData?.status || 'Pending'}
+                {kycData?.status ? t(`kyc.${kycData.status}`) : t('kyc.pending')}
               </span>
             </div>
             {kycData?.status === 'verified' && <Icon name="shield-check" className="w-6 h-6 text-green-500" />}
@@ -1471,18 +1476,18 @@ const ProfilePage = ({
               <Icon name="shield-check" className="w-5 h-5 animate-pulse" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-white">Account Integrity</h3>
-              <p className="text-[10px] text-gray-400">Security & Trust Analysis</p>
+              <h3 className="text-sm font-bold text-white">{t('profile.accountIntegrity') || 'Account Integrity'}</h3>
+              <p className="text-[10px] text-gray-400">{t('profile.securityAnalysis') || 'Security & Trust Analysis'}</p>
             </div>
           </div>
           <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20">
             <Loader2 className="w-3 h-3 text-blue-400 animate-spin" />
-            <span className="text-[10px] font-bold text-blue-400 uppercase">Checking</span>
+            <span className="text-[10px] font-bold text-blue-400 uppercase">{t('profile.checking') || 'Checking'}</span>
           </div>
         </div>
         <div className="p-3 rounded-xl bg-white/5 border border-white/5">
           <p className="text-[10px] text-gray-400 leading-relaxed italic text-center">
-            "We are currently verifying your account history to ensure compliance with our security protocols. This process is automatic."
+            {t('profile.integrityDesc') || '"We are currently verifying your account history to ensure compliance with our security protocols. This process is automatic."'}
           </p>
         </div>
       </div>
@@ -1494,8 +1499,8 @@ const ProfilePage = ({
             <Icon name="video" className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-xs font-bold text-white mb-1">Live Video</h4>
-            <span className="text-[8px] bg-gold/10 text-gold px-1.5 py-0.5 rounded border border-gold/20 uppercase font-bold tracking-tighter">Soon</span>
+            <h4 className="text-xs font-bold text-white mb-1">{t('common.liveVideo') || 'Live Video'}</h4>
+            <span className="text-[8px] bg-gold/10 text-gold px-1.5 py-0.5 rounded border border-gold/20 uppercase font-bold tracking-tighter">{t('common.comingSoon')}</span>
           </div>
         </div>
         
@@ -1504,8 +1509,8 @@ const ProfilePage = ({
             <Icon name="users" className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-xs font-bold text-white mb-1">Referrals</h4>
-            <span className="text-[8px] bg-gold/10 text-gold px-1.5 py-0.5 rounded border border-gold/20 uppercase font-bold tracking-tighter">Soon</span>
+            <h4 className="text-xs font-bold text-white mb-1">{t('common.referrals') || 'Referrals'}</h4>
+            <span className="text-[8px] bg-gold/10 text-gold px-1.5 py-0.5 rounded border border-gold/20 uppercase font-bold tracking-tighter">{t('common.comingSoon')}</span>
           </div>
         </div>
       </div>
@@ -2058,60 +2063,61 @@ const AcademyPage = ({
 };
 
 const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: string; onBalanceUpdate: () => void; onLogout: () => void; onKYCClick: () => void }) => {
+  const { t } = useTranslation();
   const [showWheel, setShowWheel] = useState(false);
   const [showSlots, setShowSlots] = useState(false);
   const sections = [
     {
-      title: "Account",
+      title: t('common.account'),
       items: [
-        { name: "Profile", icon: <UserIcon className="w-5 h-5" />, isActive: true },
-        { name: "Settings", icon: <Settings className="w-5 h-5" />, isActive: true },
-        { name: "KYC", icon: <ShieldCheck className="w-5 h-5" />, isActive: true },
-        { name: "Referral", icon: <Users className="w-5 h-5" /> },
+        { name: t('common.profile'), internalName: 'Profile', icon: <UserIcon className="w-5 h-5" />, isActive: true },
+        { name: t('common.settings'), internalName: 'Settings', icon: <Settings className="w-5 h-5" />, isActive: true },
+        { name: t('kyc.title'), internalName: 'KYC', icon: <ShieldCheck className="w-5 h-5" />, isActive: true },
+        { name: t('common.referral'), internalName: 'Referral', icon: <Users className="w-5 h-5" /> },
       ]
     },
     {
-      title: "Trading",
+      title: t('common.trading') || 'Trading',
       items: [
-        { name: "Spot Trading", icon: <BarChart2 className="w-5 h-5" /> },
-        { name: "Futures", icon: <TrendingUp className="w-5 h-5" /> },
-        { name: "P2P Trading", icon: <ArrowRightLeft className="w-5 h-5" /> },
-        { name: "Convert", icon: <RefreshCw className="w-5 h-5" /> },
+        { name: t('common.spotTrading') || 'Spot Trading', internalName: 'Spot Trading', icon: <BarChart2 className="w-5 h-5" /> },
+        { name: t('common.futures') || 'Futures', internalName: 'Futures', icon: <TrendingUp className="w-5 h-5" /> },
+        { name: t('common.p2p') || 'P2P Trading', internalName: 'P2P Trading', icon: <ArrowRightLeft className="w-5 h-5" /> },
+        { name: t('common.convert') || 'Convert', internalName: 'Convert', icon: <RefreshCw className="w-5 h-5" /> },
       ]
     },
     {
-      title: "Finance",
+      title: t('common.finance') || 'Finance',
       items: [
-        { name: "Staking", icon: <PieChart className="w-5 h-5" /> },
-        { name: "Athena Earn", icon: <Zap className="w-5 h-5" /> },
-        { name: "Crypto Card", icon: <CreditCard className="w-5 h-5" /> },
-        { name: "Loans", icon: <ShieldCheck className="w-5 h-5" /> },
+        { name: t('common.staking') || 'Staking', internalName: 'Staking', icon: <PieChart className="w-5 h-5" /> },
+        { name: t('common.earn') || 'Athena Earn', internalName: 'Athena Earn', icon: <Zap className="w-5 h-5" /> },
+        { name: t('common.card') || 'Crypto Card', internalName: 'Crypto Card', icon: <CreditCard className="w-5 h-5" /> },
+        { name: t('common.loans') || 'Loans', internalName: 'Loans', icon: <ShieldCheck className="w-5 h-5" /> },
       ]
     },
     {
-      title: "Games",
+      title: t('common.games') || 'Games',
       items: [
-        { name: "Wheel of Fortune", icon: <Zap className="w-5 h-5" />, isGame: true, gameType: 'wheel' },
-        { name: "Athena Slots", icon: <Trophy className="w-5 h-5" />, isGame: true, gameType: 'slots' },
-        { name: "Crash Game", icon: <TrendingUp className="w-5 h-5" /> },
-        { name: "Dice", icon: <Gamepad2 className="w-5 h-5" /> },
+        { name: t('common.wheel') || 'Wheel of Fortune', internalName: 'Wheel of Fortune', icon: <Zap className="w-5 h-5" />, isGame: true, gameType: 'wheel' },
+        { name: t('common.slots') || 'Athena Slots', internalName: 'Athena Slots', icon: <Trophy className="w-5 h-5" />, isGame: true, gameType: 'slots' },
+        { name: t('common.crash') || 'Crash Game', internalName: 'Crash Game', icon: <TrendingUp className="w-5 h-5" /> },
+        { name: t('common.dice') || 'Dice', internalName: 'Dice', icon: <Gamepad2 className="w-5 h-5" /> },
       ]
     },
     {
       title: "AI & Innovation",
       items: [
-        { name: "AI Trading Bot", icon: <Cpu className="w-5 h-5" /> },
-        { name: "Launchpad", icon: <Rocket className="w-5 h-5" /> },
-        { name: "NFT Market", icon: <Gamepad2 className="w-5 h-5" /> },
-        { name: "Academy", icon: <GraduationCap className="w-5 h-5" />, isActive: true },
-        { name: "Academy", icon: <HelpCircle className="w-5 h-5" /> },
+        { name: "AI Trading Bot", internalName: 'AI Trading Bot', icon: <Cpu className="w-5 h-5" /> },
+        { name: "Launchpad", internalName: 'Launchpad', icon: <Rocket className="w-5 h-5" /> },
+        { name: "NFT Market", internalName: 'NFT Market', icon: <Gamepad2 className="w-5 h-5" /> },
+        { name: "Academy", internalName: 'Academy', icon: <GraduationCap className="w-5 h-5" />, isActive: true },
+        { name: "Academy", internalName: 'Academy', icon: <HelpCircle className="w-5 h-5" /> },
       ]
     },
     {
-      title: "Support",
+      title: t('common.support') || 'Support',
       items: [
-        { name: "Install App", icon: <Download className="w-5 h-5" />, isInstall: true },
-        { name: "Help Center", icon: <HelpCircle className="w-5 h-5" /> },
+        { name: t('common.installApp') || 'Install App', internalName: 'Install App', icon: <Download className="w-5 h-5" />, isInstall: true },
+        { name: t('common.helpCenter') || 'Help Center', internalName: 'Help Center', icon: <HelpCircle className="w-5 h-5" /> },
       ]
     }
   ];
@@ -2131,8 +2137,8 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
   return (
     <div className="flex flex-col gap-8 pb-24">
       <header className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold text-gold-gradient">More Services</h1>
-        <p className="text-gray-400 text-sm">Explore the Athena ecosystem</p>
+        <h1 className="text-2xl font-bold text-gold-gradient">{t('more.title') || 'More Services'}</h1>
+        <p className="text-gray-400 text-sm">{t('more.description') || 'Explore the Athena ecosystem'}</p>
       </header>
 
       {sections.map((section, idx) => (
@@ -2144,10 +2150,10 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
                 key={itemIdx} 
                 onClick={() => {
                   if (item.isInstall) setShowInstallGuide(true);
-                  if (item.name === 'KYC') onKYCClick();
-                  if (item.name === 'Profile') (onKYCClick as any)('profile');
-                  if (item.name === 'Settings') (onKYCClick as any)('settings');
-                  if (item.name === 'Academy') (onKYCClick as any)('academy'); // Reuse onKYCClick or rename it
+                  if (item.internalName === 'KYC') onKYCClick();
+                  if (item.internalName === 'Profile') (onKYCClick as any)('profile');
+                  if (item.internalName === 'Settings') (onKYCClick as any)('settings');
+                  if (item.internalName === 'Academy') (onKYCClick as any)('academy'); // Reuse onKYCClick or rename it
                   if (item.isGame) {
                     if (item.gameType === 'wheel') setShowWheel(true);
                     if (item.gameType === 'slots') setShowSlots(true);
@@ -2307,6 +2313,7 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
 };
 
 export default function App() {
+  const { t } = useTranslation();
   const [user, setUser] = useState<User | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [authMode, setAuthMode] = useState<'login' | 'signup' | 'forgot-password' | 'update-password'>('login');
@@ -3483,25 +3490,25 @@ export default function App() {
           active={activeTab === 'dashboard'} 
           onClick={() => setActiveTab('dashboard')} 
           icon={<Icon name="layout-dashboard" className="w-6 h-6" />} 
-          label="Home" 
+          label={t('common.dashboard')} 
         />
         <NavButton 
           active={activeTab === 'wallet'} 
           onClick={() => setActiveTab('wallet')} 
           icon={<Icon name="wallet" className="w-6 h-6" />} 
-          label="Wallet" 
+          label={t('common.wallet')} 
         />
         <NavButton 
           active={activeTab === 'tasks'} 
           onClick={() => setActiveTab('tasks')} 
           icon={<Icon name="check-square" className="w-6 h-6" />} 
-          label="Tasks" 
+          label={t('common.tasks')} 
         />
         <NavButton 
           active={activeTab === 'mainnet'} 
           onClick={() => setActiveTab('mainnet')} 
           icon={<Icon name="rocket" className="w-6 h-6" />} 
-          label="Mainnet" 
+          label={t('common.mainnet')} 
         />
         <NavButton 
           active={activeTab === 'more'} 
@@ -3511,7 +3518,7 @@ export default function App() {
               <Icon name="users" className={`w-4 h-4 ${activeTab === 'more' ? 'text-gold' : 'text-gold/70'}`} />
             </div>
           } 
-          label="Profile" 
+          label={t('common.profile')} 
         />
       </nav>
     </div>

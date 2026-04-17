@@ -5,6 +5,7 @@
     "tasks": "Задания",
     "mainnet": "Основная сеть",
     "profile": "Профиль",
+    "account": "Аккаунт",
     "settings": "Настройки",
     "logout": "Выйти из аккаунта",
     "comingSoon": "Скоро",
@@ -14,7 +15,45 @@
     "back": "Назад",
     "loading": "Загрузка...",
     "success": "Успех",
-    "error": "Ошибка"
+    "error": "Ошибка",
+    "verifySync": "Проверить и синхронизировать",
+    "syncing": "Синхронизация...",
+    "athenaChain": "Athena Chain",
+    "futureOfDigitalGold": "Будущее цифрового золота"
+  },
+  "dashboard": {
+    "welcome": "С возвращением",
+    "balance": "Общий баланс",
+    "mining": "Майнинг",
+    "claim": "Получить",
+    "startMining": "Начать майнинг",
+    "market": "Рынок",
+    "viewAll": "Посмотреть все",
+    "miningSpeed": "Скорость майнинга",
+    "activeMiners": "Активные майнеры"
+  },
+  "wallet": {
+    "assets": "Активы",
+    "bridgeToAthena": "Мост в Athena",
+    "history": "История транзакций",
+    "send": "Отправить",
+    "receive": "Получить",
+    "swap": "Обменять"
+  },
+  "tasks": {
+    "daily": "Ежедневные задания",
+    "mission": "Центр миссий",
+    "complete": "Выполнить",
+    "completed": "Выполнено"
+  },
+  "kyc": {
+    "title": "Верификация KYC",
+    "verified": "Подтверждено",
+    "pending": "Ожидание",
+    "failed": "Ошибка",
+    "realName": "Настоящее имя",
+    "phone": "Номер телефона",
+    "date": "Дата верификации"
   },
   "settings": {
     "title": "Настройки",

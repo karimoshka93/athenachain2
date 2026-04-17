@@ -1,0 +1,35 @@
+{
+  "common": {
+    "dashboard": "Inicio",
+    "wallet": "Billetera",
+    "tasks": "Tareas",
+    "mainnet": "Mainnet",
+    "profile": "Perfil",
+    "account": "Cuenta",
+    "settings": "Ajustes",
+    "logout": "Cerrar sesión",
+    "comingSoon": "Próximamente",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "back": "Volver",
+    "loading": "Cargando...",
+    "success": "Éxito",
+    "error": "Error"
+  },
+  "dashboard": {
+    "welcome": "Bienvenido de nuevo",
+    "balance": "Saldo Total",
+    "mining": "Minería",
+    "claim": "Reclamar",
+    "startMining": "Empezar Minería",
+    "market": "Mercado",
+    "viewAll": "Ver todo"
+  },
+  "settings": {
+    "title": "Ajustes",
+    "language": "Idioma",
+    "changePassword": "Cambiar contraseña",
+    "deleteAccount": "Eliminar cuenta"
+  }
+}

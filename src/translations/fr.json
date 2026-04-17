@@ -5,6 +5,7 @@
     "tasks": "Tâches",
     "mainnet": "Réseau principal",
     "profile": "Profil",
+    "account": "Compte",
     "settings": "Paramètres",
     "logout": "Déconnexion",
     "comingSoon": "Bientôt",
@@ -14,7 +15,45 @@
     "back": "Retour",
     "loading": "Chargement...",
     "success": "Succès",
-    "error": "Erreur"
+    "error": "Erreur",
+    "verifySync": "Vérifier et Synchro",
+    "syncing": "Synchronisation...",
+    "athenaChain": "Chaîne Athéna",
+    "futureOfDigitalGold": "L'avenir de l'or numérique"
+  },
+  "dashboard": {
+    "welcome": "Content de vous revoir",
+    "balance": "Solde total",
+    "mining": "Minage",
+    "claim": "Récupérer",
+    "startMining": "Démarrer le minage",
+    "market": "Marché",
+    "viewAll": "Voir tout",
+    "miningSpeed": "Vitesse de minage",
+    "activeMiners": "Mineurs actifs"
+  },
+  "wallet": {
+    "assets": "Actifs",
+    "bridgeToAthena": "Pont vers Athéna",
+    "history": "Historique des transactions",
+    "send": "Envoyer",
+    "receive": "Recevoir",
+    "swap": "Échanger"
+  },
+  "tasks": {
+    "daily": "Tâches quotidiennes",
+    "mission": "Centre de mission",
+    "complete": "Terminer",
+    "completed": "Terminée"
+  },
+  "kyc": {
+    "title": "Vérification KYC",
+    "verified": "Vérifié",
+    "pending": "En attente",
+    "failed": "Échoué",
+    "realName": "Nom réel",
+    "phone": "Numéro de téléphone",
+    "date": "Date de vérification"
   },
   "settings": {
     "title": "Paramètres",
