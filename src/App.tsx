@@ -45,7 +45,13 @@ import {
   History,
   CheckCircle2,
   TrendingUp as TrendingUpIcon,
-  TrendingDown as TrendingDownIcon
+  TrendingDown as TrendingDownIcon,
+  Gem,
+  Flame,
+  Star,
+  Heart,
+  Moon,
+  Mountain
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { supabase } from './lib/supabase';
@@ -137,7 +143,13 @@ const Icon = ({ name, className }: { name: string; className?: string }) => {
     'instagram': Instagram,
     'youtube': Youtube,
     'twitter': Twitter,
-    'video': Video
+    'video': Video,
+    'gem': Gem,
+    'flame': Flame,
+    'star': Star,
+    'heart': Heart,
+    'moon': Moon,
+    'mountain': Mountain
   };
 
   const LucideIcon = iconMap[name];
