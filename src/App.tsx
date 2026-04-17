@@ -149,7 +149,7 @@ const Icon = ({ name, className }: { name: string; className?: string }) => {
 };
 
 // --- Types ---
-type Tab = 'dashboard' | 'wallet' | 'tasks' | 'mainnet' | 'more';
+type Tab = 'dashboard' | 'wallet' | 'tasks' | 'mainnet' | 'more' | 'profile' | 'academy';
 
 interface Coin {
   id: string;
@@ -1031,6 +1031,164 @@ const MainnetTab = () => {
 
 // --- Main App ---
 
+const ProfilePage = ({ 
+  user,
+  username,
+  kycData,
+  onUpdateUsername,
+  onBack
+}: { 
+  user: User;
+  username: string | null;
+  kycData: { status: string; realName: string | null; phone: string | null; date: string | null } | null;
+  onUpdateUsername: (newUsername: string) => Promise<{ success: boolean; message: string }>;
+  onBack: () => void;
+}) => {
+  const [editing, setEditing] = useState(false);
+  const [newUsername, setNewUsername] = useState(username || '');
+  const [message, setMessage] = useState<{ type: 'error' | 'success', text: string } | null>(null);
+  const [processing, setProcessing] = useState(false);
+
+  const handleSave = async () => {
+    if (!newUsername.match(/^[a-zA-Z0-9]+$/)) {
+      setMessage({ type: 'error', text: 'Username must contain only letters and numbers' });
+      return;
+    }
+    setProcessing(true);
+    const result = await onUpdateUsername(newUsername);
+    setProcessing(false);
+    setMessage({ type: result.success ? 'success' : 'error', text: result.message });
+    if (result.success) setEditing(false);
+  };
+
+  return (
+    <div className="flex flex-col gap-6 pb-24">
+      <header className="flex items-center gap-4">
+        <button onClick={onBack} className="p-2 rounded-xl bg-white/5 border border-white/10 text-gray-400">
+          <Icon name="chevron-left" className="w-5 h-5" />
+        </button>
+        <div>
+          <h1 className="text-2xl font-bold text-gold-gradient">Account Profile</h1>
+          <p className="text-gray-400 text-sm">Personal details & Security</p>
+        </div>
+      </header>
+
+      <div className="glass rounded-3xl p-6 flex flex-col gap-6 border-white/5">
+        {/* Username Section */}
+        <div className="flex flex-col gap-2">
+          <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">Username</label>
+          {editing ? (
+            <div className="flex gap-2">
+              <input 
+                type="text" 
+                value={newUsername}
+                onChange={(e) => setNewUsername(e.target.value.toLowerCase())}
+                placeholder="e.g. karimoshka2"
+                className="flex-1 bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-gold/50 transition-colors"
+                autoFocus
+              />
+              <button 
+                onClick={handleSave}
+                disabled={processing}
+                className="bg-gold text-black px-4 rounded-xl font-bold text-xs disabled:opacity-50"
+              >
+                {processing ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save'}
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl py-3 px-4">
+              <span className="text-sm font-medium text-white">{username || 'Not set'}</span>
+              <button 
+                onClick={() => setEditing(true)}
+                className="text-gold text-xs font-bold hover:underline"
+              >
+                Change
+              </button>
+            </div>
+          )}
+          {message && (
+            <p className={`text-[10px] font-medium ml-1 ${message.type === 'success' ? 'text-green-500' : 'text-red-500'}`}>
+              {message.text}
+            </p>
+          )}
+        </div>
+
+        {/* User Stats Card */}
+        <div className="grid grid-cols-1 gap-4">
+          <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex flex-col gap-1">
+            <span className="text-[10px] text-gray-500 uppercase font-bold">Email Address</span>
+            <span className="text-sm font-medium text-white truncate">{user.email}</span>
+          </div>
+          <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex flex-col gap-1">
+            <span className="text-[10px] text-gray-500 uppercase font-bold">Full Name</span>
+            <span className="text-sm font-medium text-white">{kycData?.realName || '---'}</span>
+          </div>
+          <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex flex-col gap-1">
+            <span className="text-[10px] text-gray-500 uppercase font-bold">Phone Number</span>
+            <span className="text-sm font-medium text-white">{kycData?.phone || '---'}</span>
+          </div>
+          <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between">
+            <div className="flex flex-col gap-1">
+              <span className="text-[10px] text-gray-500 uppercase font-bold">KYC Status</span>
+              <span className={`text-sm font-bold uppercase ${kycData?.status === 'verified' ? 'text-green-500' : 'text-gold'}`}>
+                {kycData?.status || 'Pending'}
+              </span>
+            </div>
+            {kycData?.status === 'verified' && <Icon name="shield-check" className="w-6 h-6 text-green-500" />}
+          </div>
+        </div>
+      </div>
+
+      {/* Account Integrity Section */}
+      <div className="glass rounded-3xl p-6 border-white/5 bg-gradient-to-br from-blue-500/5 to-transparent">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400">
+              <Icon name="shield-check" className="w-5 h-5 animate-pulse" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-white">Account Integrity</h3>
+              <p className="text-[10px] text-gray-400">Security & Trust Analysis</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20">
+            <Loader2 className="w-3 h-3 text-blue-400 animate-spin" />
+            <span className="text-[10px] font-bold text-blue-400 uppercase">Checking</span>
+          </div>
+        </div>
+        <div className="p-3 rounded-xl bg-white/5 border border-white/5">
+          <p className="text-[10px] text-gray-400 leading-relaxed italic text-center">
+            "We are currently verifying your account history to ensure compliance with our security protocols. This process is automatic."
+          </p>
+        </div>
+      </div>
+
+      {/* Coming Soon Features */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="glass p-5 rounded-2xl border-white/5 flex flex-col gap-3 group opacity-80">
+          <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-500 group-hover:text-gold transition-colors">
+            <Icon name="video" className="w-5 h-5" />
+          </div>
+          <div>
+            <h4 className="text-xs font-bold text-white mb-1">Live Video</h4>
+            <span className="text-[8px] bg-gold/10 text-gold px-1.5 py-0.5 rounded border border-gold/20 uppercase font-bold tracking-tighter">Soon</span>
+          </div>
+        </div>
+        
+        <div className="glass p-5 rounded-2xl border-white/5 flex flex-col gap-3 group opacity-80">
+          <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-500 group-hover:text-gold transition-colors">
+            <Icon name="users" className="w-5 h-5" />
+          </div>
+          <div>
+            <h4 className="text-xs font-bold text-white mb-1">Referrals</h4>
+            <span className="text-[8px] bg-gold/10 text-gold px-1.5 py-0.5 rounded border border-gold/20 uppercase font-bold tracking-tighter">Soon</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const KYCPage = ({ data, onSync, onBack, hasLegacyUid }: { 
   data: { status: string; realName: string | null; phone: string | null; date: string | null } | null,
   onSync: () => Promise<void>,
@@ -1582,7 +1740,7 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
     {
       title: "Account",
       items: [
-        { name: "Profile", icon: <UserIcon className="w-5 h-5" /> },
+        { name: "Profile", icon: <UserIcon className="w-5 h-5" />, isActive: true },
         { name: "Settings", icon: <Settings className="w-5 h-5" /> },
         { name: "KYC", icon: <ShieldCheck className="w-5 h-5" />, isActive: true },
         { name: "Referral", icon: <Users className="w-5 h-5" /> },
@@ -1663,6 +1821,7 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
                 onClick={() => {
                   if (item.isInstall) setShowInstallGuide(true);
                   if (item.name === 'KYC') onKYCClick();
+                  if (item.name === 'Profile') (onKYCClick as any)('profile');
                   if (item.name === 'Academy') (onKYCClick as any)('academy'); // Reuse onKYCClick or rename it
                   if (item.isGame) {
                     if (item.gameType === 'wheel') setShowWheel(true);
@@ -1856,6 +2015,7 @@ export default function App() {
     phone: string | null;
     date: string | null;
   } | null>(null);
+  const [profileUsername, setProfileUsername] = useState<string | null>(null);
   const [academyProgress, setAcademyProgress] = useState<{
     completed_question_ids: number[];
     total_score: number;
@@ -1942,7 +2102,7 @@ export default function App() {
       // 1. Load profile to check sync status, mining time, and tasks
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
-        .select('last_mining_time, completed_tasks, legacy_uid, kyc_status, real_name, full_phone_number, kyc_stage2_date')
+        .select('last_mining_time, completed_tasks, legacy_uid, kyc_status, real_name, full_phone_number, kyc_stage2_date, username')
         .eq('id', user.id)
         .single();
 
@@ -1954,6 +2114,7 @@ export default function App() {
       setMigrationStatus(profile?.legacy_uid === null || profile?.legacy_uid === undefined);
       setLastMiningTime(profile?.last_mining_time || null);
       setLegacyUid(profile?.legacy_uid || null);
+      setProfileUsername(profile?.username || null);
       setKycData({
         status: profile?.kyc_status || 'pending',
         realName: profile?.real_name || null,
@@ -2747,6 +2908,38 @@ export default function App() {
     }
   };
 
+  const handleUpdateUsername = async (newUsername: string) => {
+    if (!user) return { success: false, message: 'Not authenticated' };
+    
+    try {
+      // 1. Check if unique
+      const { data: existing, error: checkError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('username', newUsername)
+        .maybeSingle();
+      
+      if (checkError) throw checkError;
+      if (existing && existing.id !== user.id) {
+        return { success: false, message: 'Username already taken' };
+      }
+
+      // 2. Update Supabase
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ username: newUsername })
+        .eq('id', user.id);
+
+      if (updateError) throw updateError;
+
+      setProfileUsername(newUsername);
+      return { success: true, message: 'Username updated successfully' };
+    } catch (err: any) {
+      console.error('Error updating username:', err);
+      return { success: false, message: err.message };
+    }
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard': 
@@ -2788,7 +2981,17 @@ export default function App() {
             hasLegacyUid={!!legacyUid}
           />
         );
-      case 'academy' as any:
+      case 'profile':
+        return (
+          <ProfilePage 
+            user={user!}
+            username={profileUsername}
+            kycData={kycData}
+            onUpdateUsername={handleUpdateUsername}
+            onBack={() => setActiveTab('more')}
+          />
+        );
+      case 'academy':
         return (
           <AcademyPage 
             user={user!}
@@ -2798,7 +3001,7 @@ export default function App() {
           />
         );
       case 'mainnet': return <MainnetTab />;
-      case 'more': return <MoreTab userId={user?.id || ''} onBalanceUpdate={loadUserData} onLogout={handleLogout} onKYCClick={(tab?: string) => setActiveTab(tab === 'academy' ? 'academy' as any : 'kyc')} />;
+      case 'more': return <MoreTab userId={user?.id || ''} onBalanceUpdate={loadUserData} onLogout={handleLogout} onKYCClick={(tab?: string) => setActiveTab(tab === 'academy' ? 'academy' : tab === 'profile' ? 'profile' : 'kyc')} />;
       default: 
         return (
           <Dashboard 
