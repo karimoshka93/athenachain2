@@ -6,6 +6,8 @@ import fr from '../translations/fr.json';
 import ar from '../translations/ar.json';
 import ru from '../translations/ru.json';
 import es from '../translations/es.json';
+import vi from '../translations/vi.json';
+import id from '../translations/id.json';
 
 i18n
   .use(LanguageDetector)
@@ -16,7 +18,9 @@ i18n
       fr: { translation: fr },
       ar: { translation: ar },
       ru: { translation: ru },
-      es: { translation: es }
+      es: { translation: es },
+      vi: { translation: vi },
+      id: { translation: id }
     },
     fallbackLng: 'en',
     interpolation: {

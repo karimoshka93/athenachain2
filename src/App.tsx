@@ -2067,6 +2067,7 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
   const { t } = useTranslation();
   const [showWheel, setShowWheel] = useState(false);
   const [showSlots, setShowSlots] = useState(false);
+  const [showPepeCave, setShowPepeCave] = useState(false);
   const sections = [
     {
       title: t('common.account'),
@@ -3567,6 +3568,7 @@ export default function App() {
 }
 
 const PepeCaveGame = ({ userId, onClose, onBalanceUpdate }: { userId: string; onClose: () => void; onBalanceUpdate: () => void }) => {
+  const { t } = useTranslation();
   const [roundData, setRoundData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [gameState, setGameState] = useState<'puzzle' | 'cave'>('puzzle');
@@ -3612,7 +3614,7 @@ const PepeCaveGame = ({ userId, onClose, onBalanceUpdate }: { userId: string; on
 
     } catch (err: any) {
       console.error('Cave Fetch Error:', err);
-      setMessage({ type: 'error', text: 'Error connecting to the cave. Please try again.' });
+      setMessage({ type: 'error', text: t('common.error') });
     } finally {
       setLoading(false);
     }
@@ -3654,7 +3656,7 @@ const PepeCaveGame = ({ userId, onClose, onBalanceUpdate }: { userId: string; on
     // Check if user already claimed this round
     const hasClaimed = roundData.cells.some((c: any) => c.claimed_by === userId);
     if (hasClaimed) {
-      setMessage({ type: 'error', text: 'You have already explored a cell in this round! Wait for the next cave opening.' });
+      setMessage({ type: 'error', text: t('pepe.alreadyExplored') });
       return;
     }
 
@@ -3677,10 +3679,10 @@ const PepeCaveGame = ({ userId, onClose, onBalanceUpdate }: { userId: string; on
       
       setRevealedCell(cellId);
       onBalanceUpdate();
-      setMessage({ type: 'success', text: `Success! You found ${amount} PEPE coins in this corner of the cave!` });
+      setMessage({ type: 'success', text: t('pepe.revealSuccess', { amount }) });
     } catch (err: any) {
       console.error('Claim Error:', err);
-      setMessage({ type: 'error', text: err.message || 'Error digging in the cave.' });
+      setMessage({ type: 'error', text: err.message || t('common.error') });
     } finally {
       setClaiming(false);
     }
@@ -3689,7 +3691,7 @@ const PepeCaveGame = ({ userId, onClose, onBalanceUpdate }: { userId: string; on
   if (loading) return (
     <div className="flex flex-col items-center justify-center p-12 gap-4">
       <Loader2 className="w-12 h-12 text-gold animate-spin" />
-      <p className="text-gold font-bold animate-pulse">Entering Cave...</p>
+      <p className="text-gold font-bold animate-pulse">{t('pepe.entering')}</p>
     </div>
   );
 
@@ -3698,10 +3700,10 @@ const PepeCaveGame = ({ userId, onClose, onBalanceUpdate }: { userId: string; on
       <header className="flex items-center justify-between px-2">
         <div className="flex flex-col">
           <h2 className="text-2xl font-black text-green-500 tracking-tighter flex items-center gap-2">
-            <Icon name="gamepad-2" className="w-6 h-6" /> PEPE CAVE
+            <Icon name="gamepad-2" className="w-6 h-6" /> {t('pepe.title')}
           </h2>
           <div className="flex items-center gap-2 text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-            <span className="flex items-center gap-1 text-gold"><Icon name="refresh-cw" className="w-2.5 h-2.5" /> Next: {nextRound}</span>
+            <span className="flex items-center gap-1 text-gold"><Icon name="refresh-cw" className="w-2.5 h-2.5" /> {t('pepe.nextRound')}: {nextRound}</span>
           </div>
         </div>
         <button onClick={onClose} className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-500 hover:text-white transition-all">
@@ -3720,8 +3722,8 @@ const PepeCaveGame = ({ userId, onClose, onBalanceUpdate }: { userId: string; on
               className="flex flex-col items-center gap-8 py-8"
             >
               <div className="text-center">
-                <h3 className="text-xl font-bold text-white mb-2">Gate Locked</h3>
-                <p className="text-gray-400 text-xs px-8">Match 6 pairs of ancient symbols to unlock the PEPE Cave entrance.</p>
+                <h3 className="text-xl font-bold text-white mb-2">{t('pepe.gateLocked')}</h3>
+                <p className="text-gray-400 text-xs px-8">{t('pepe.gateDesc')}</p>
               </div>
 
               <div className="grid grid-cols-3 gap-3">
@@ -3755,7 +3757,7 @@ const PepeCaveGame = ({ userId, onClose, onBalanceUpdate }: { userId: string; on
             >
               <div className="flex items-center justify-between px-2 bg-green-500/5 p-3 rounded-2xl border border-green-500/10">
                 <div className="flex flex-col">
-                  <span className="text-[10px] text-gray-500 uppercase font-bold">Today's Reward</span>
+                  <span className="text-[10px] text-gray-500 uppercase font-bold">{t('pepe.rewardTitle')}</span>
                   <span className="text-lg font-black text-green-400">10,000 PEPE</span>
                 </div>
                 <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center p-1 border border-green-500/30">
@@ -3826,13 +3828,13 @@ const PepeCaveGame = ({ userId, onClose, onBalanceUpdate }: { userId: string; on
 
       <div className="flex flex-col gap-2 p-4 glass rounded-3xl border-white/5">
         <h4 className="text-[10px] font-bold uppercase text-gray-500 flex items-center gap-2">
-          <Icon name="shield-check" className="w-3 h-3" /> Cave Exploration Rules
+          <Icon name="shield-check" className="w-3 h-3" /> {t('pepe.rulesTitle')}
         </h4>
         <ul className="text-[11px] text-gray-400 flex flex-col gap-1.5 list-disc pl-4 leading-relaxed">
-          <li>New cave formations appear every <span className="text-white">4 hours GMT</span> (0, 4, 8, 12, 16, 20:00).</li>
-          <li>Each cave contains exactly <span className="text-green-400">10,000 PEPE</span> spread across 100 cells.</li>
-          <li>Users can claim only <span className="text-white">ONE cell per round</span>. Be quick!</li>
-          <li>You must solve the security puzzle to enter the cave each time.</li>
+          <li>{t('pepe.rule1')}</li>
+          <li>{t('pepe.rule2')}</li>
+          <li>{t('pepe.rule3')}</li>
+          <li>{t('pepe.rule4')}</li>
         </ul>
       </div>
     </div>
@@ -3842,6 +3844,9 @@ const PepeCaveGame = ({ userId, onClose, onBalanceUpdate }: { userId: string; on
     return revealedCell === i;
   }
 };
+interface NavButtonProps {
+  active: boolean;
+  onClick: () => void;
   icon: ReactNode;
   label: string;
 }

@@ -133,5 +133,21 @@
     "deleteWarning": "This action is permanent and cannot be undone.",
     "deleteConfirmText": "Type 'DELETE' to confirm",
     "deleteButton": "PERMANENTLY DELETE ACCOUNT"
+  },
+  "pepe": {
+    "title": "PEPE CAVE",
+    "entering": "Entering Cave...",
+    "gateLocked": "Gate Locked",
+    "gateDesc": "Match 6 pairs of ancient symbols to unlock the PEPE Cave entrance.",
+    "revealSuccess": "Success! You found {{amount}} PEPE coins in this corner of the cave!",
+    "alreadyExplored": "You have already explored a cell in this round! Wait for the next cave opening.",
+    "alreadyClaimed": "This specific corner has already been cleared by another explorer!",
+    "rewardTitle": "Today's Reward",
+    "nextRound": "Next",
+    "rulesTitle": "Cave Exploration Rules",
+    "rule1": "New cave formations appear every 4 hours GMT (0, 4, 8, 12, 16, 20:00).",
+    "rule2": "Each cave contains exactly 10,000 PEPE spread across 100 cells.",
+    "rule3": "Users can claim only ONE cell per round. Be quick!",
+    "rule4": "You must solve the security puzzle to enter the cave each time."
   }
 }
