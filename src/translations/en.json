@@ -148,6 +148,7 @@
     "rule1": "New cave formations appear every 4 hours GMT (0, 4, 8, 12, 16, 20:00).",
     "rule2": "Each cave contains exactly 10,000 PEPE spread across 100 cells.",
     "rule3": "Users can claim only ONE cell per round. Be quick!",
-    "rule4": "You must solve the security puzzle to enter the cave each time."
+    "rule4": "You must solve the security puzzle to enter the cave each time.",
+    "goBack": "Go Back"
   }
 }

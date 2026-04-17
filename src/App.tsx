@@ -3724,18 +3724,18 @@ const PepeCaveGame = ({ userId, onClose, onBalanceUpdate }: { userId: string; on
 
   return (
     <div className="flex flex-col gap-6 relative p-2">
-      <header className="flex items-center justify-between px-2">
+      <header className="flex items-center gap-4 px-2">
+        <button onClick={onClose} className="p-2 rounded-xl bg-white/5 border border-white/10 text-gray-400 hover:text-white transition-all">
+          <Icon name="arrow-left" className="w-5 h-5" />
+        </button>
         <div className="flex flex-col">
-          <h2 className="text-2xl font-black text-green-500 tracking-tighter flex items-center gap-2">
-            <Icon name="gamepad-2" className="w-6 h-6" /> {t('pepe.title')}
+          <h2 className="text-xl font-black text-green-500 tracking-tighter flex items-center gap-2">
+            <Icon name="gamepad-2" className="w-5 h-5" /> {t('pepe.title')}
           </h2>
           <div className="flex items-center gap-2 text-[10px] text-gray-400 font-bold uppercase tracking-widest">
             <span className="flex items-center gap-1 text-gold"><Icon name="refresh-cw" className="w-2.5 h-2.5" /> {t('pepe.nextRound')}: {nextRound}</span>
           </div>
         </div>
-        <button onClick={onClose} className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-500 hover:text-white transition-all">
-          <Icon name="x" className="w-6 h-6" />
-        </button>
       </header>
 
       <div className="glass rounded-[32px] p-4 border-green-500/20 overflow-hidden relative">
@@ -3864,6 +3864,14 @@ const PepeCaveGame = ({ userId, onClose, onBalanceUpdate }: { userId: string; on
           <li>{t('pepe.rule4')}</li>
         </ul>
       </div>
+
+      <button 
+        onClick={onClose}
+        className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-bold text-sm flex items-center justify-center gap-2 hover:bg-white/10 transition-all active:scale-[0.98]"
+      >
+        <Icon name="arrow-left" className="w-4 h-4" />
+        {t('pepe.goBack')}
+      </button>
     </div>
   );
 

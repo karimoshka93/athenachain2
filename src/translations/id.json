@@ -141,6 +141,7 @@
     "rule1": "Formasi gua baru muncul setiap 4 jam GMT (0, 4, 8, 12, 16, 20:00).",
     "rule2": "Setiap gua berisi tepat 10.000 PEPE yang tersebar di 100 sel.",
     "rule3": "Pengguna hanya dapat mengklaim SATU sel per babak. Ayo cepat!",
-    "rule4": "Anda harus menyelesaikan teka-teki keamanan untuk memasuki gua setiap kali."
+    "rule4": "Anda harus menyelesaikan teka-teki keamanan untuk memasuki gua setiap kali.",
+    "goBack": "Kembali"
   }
 }

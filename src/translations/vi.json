@@ -141,6 +141,7 @@
     "rule1": "Các hang động mới xuất hiện sau mỗi 4 giờ GMT (0, 4, 8, 12, 16, 20:00).",
     "rule2": "Mỗi hang chứa đúng 10,000 PEPE chia cho 100 ô.",
     "rule3": "Người dùng chỉ có thể nhận MỘT ô mỗi vòng. Hãy nhanh chân lên!",
-    "rule4": "Bạn phải giải câu đố bảo mật để vào hang mỗi lần."
+    "rule4": "Bạn phải giải câu đố bảo mật để vào hang mỗi lần.",
+    "goBack": "Quay lại"
   }
 }
