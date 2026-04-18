@@ -67,7 +67,10 @@
     "pending": "Pending",
     "setupRequired": "Referral Identity Required",
     "setupDesc": "Please set a unique username in your Profile to activate your Referral Link and start earning.",
-    "goToProfile": "Set Username Now"
+    "goToProfile": "Set Username Now",
+    "inviteFriends": "Invite Friends Now",
+    "copyCode": "Copy Code",
+    "copyLink": "Copy Link"
   },
   "dashboard": {
     "welcome": "Welcome back",

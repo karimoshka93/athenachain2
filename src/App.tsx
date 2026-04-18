@@ -1696,17 +1696,26 @@ const ReferralPage = ({
   username: string | null;
 }) => {
   const { t } = useTranslation();
-  const [copying, setCopying] = useState(false);
+  const [copyingCode, setCopyingCode] = useState(false);
+  const [copyingLink, setCopyingLink] = useState(false);
   const [sharing, setSharing] = useState(false);
 
   const effectiveCode = stats?.referral_code || username;
   const hasUsername = effectiveCode && effectiveCode !== '';
   const referralLink = hasUsername ? `${window.location.origin}?ref=${effectiveCode}` : '';
 
-  const handleCopy = () => {
+  const handleCopyCode = (e: React.MouseEvent) => {
+    e.stopPropagation();
     navigator.clipboard.writeText(effectiveCode || '');
-    setCopying(true);
-    setTimeout(() => setCopying(false), 2000);
+    setCopyingCode(true);
+    setTimeout(() => setCopyingCode(false), 2000);
+  };
+
+  const handleCopyLink = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(referralLink);
+    setCopyingLink(true);
+    setTimeout(() => setCopyingLink(false), 2000);
   };
 
   const handleShare = async () => {
@@ -1723,9 +1732,7 @@ const ReferralPage = ({
       }
       setSharing(false);
     } else {
-      navigator.clipboard.writeText(referralLink);
-      setSharing(true);
-      setTimeout(() => setSharing(false), 2000);
+      handleCopyLink({ stopPropagation: () => {} } as any);
     }
   };
 
@@ -1739,70 +1746,110 @@ const ReferralPage = ({
   };
 
   return (
-    <div className="flex flex-col gap-6 pb-24">
+    <div className="flex flex-col gap-6 pb-32">
       <header className="flex items-center gap-4">
-        <button onClick={onBack} className="p-2 rounded-xl bg-white/5 border border-white/10 text-gray-400">
-          <Icon name="chevron-left" className="w-5 h-5" />
+        <button onClick={onBack} className="p-3 rounded-2xl bg-white/5 border border-white/10 text-gray-400 hover:text-white transition-all active:scale-90">
+          <Icon name="chevron-left" className="w-6 h-6" />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-gold-gradient">{t('referral.title')}</h1>
-          <p className="text-gray-400 text-sm">Invite friends and earn together</p>
+          <h1 className="text-3xl font-black text-gold-gradient tracking-tight">{t('referral.title')}</h1>
+          <p className="text-gray-400 text-xs font-medium uppercase tracking-widest opacity-60">Invite friends • Earn together</p>
         </div>
       </header>
 
-      {/* Referral Code & link */}
-      <div className="glass rounded-3xl p-6 border-white/5 flex flex-col gap-6 ">
-        {!hasUsername ? (
-          <div className="bg-gold/10 border border-gold/20 rounded-2xl p-5 flex flex-col gap-4 text-center">
-            <div className="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center text-gold mx-auto">
-              <Icon name="user-check" className="w-6 h-6" />
-            </div>
-            <div>
-              <p className="text-sm font-bold text-white mb-1">{t('referral.setupRequired') || 'Referral Identity Required'}</p>
-              <p className="text-xs text-gray-400 leading-relaxed">
-                {t('referral.setupDesc') || 'Please set a unique username in your Profile to activate your Referral Link and start earning.'}
-              </p>
-            </div>
-            <button 
-              onClick={onGoToProfile}
-              className="w-full bg-gold text-black font-bold py-3 rounded-xl hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-gold/20 flex items-center justify-center gap-2"
-            >
-              <Icon name="user" className="w-4 h-4" />
-              {t('referral.goToProfile') || 'Set Username Now'}
-            </button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex flex-col gap-2">
-              <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">{t('referral.referralCode')}</label>
-              <div className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl py-3 px-4">
-                <span className="text-sm font-mono font-bold text-gold truncate mr-2">{effectiveCode}</span>
-                <button onClick={handleCopy} className="text-gray-400 hover:text-white transition-colors">
-                  <Icon name={copying ? "check" : "copy"} className={`w-4 h-4 ${copying ? 'text-green-500' : ''}`} />
-                </button>
+      {/* Primary Referral Card */}
+      <div className="relative group">
+        <div className="absolute -inset-1 bg-gradient-to-r from-gold/50 via-gold-dark/30 to-gold/50 rounded-[2.5rem] blur opacity-25 group-hover:opacity-40 transition-opacity duration-1000" />
+        <div className="relative glass rounded-[2rem] p-8 border-white/10 flex flex-col gap-8 bg-[#0a0a0a]">
+          {!hasUsername ? (
+            <div className="py-6 flex flex-col gap-6 text-center">
+              <div className="w-16 h-16 rounded-3xl bg-gold/10 flex items-center justify-center text-gold mx-auto ring-1 ring-gold/20 shadow-2xl shadow-gold/20">
+                <Icon name="user-check" className="w-8 h-8" />
               </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">{t('referral.referralLink')}</label>
-              <div className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl py-3 px-4">
-                <span className="text-xs text-gray-400 truncate mr-2">Click to Share</span>
-                <button onClick={handleShare} className="text-gray-400 hover:text-white transition-colors">
-                  <Icon name={sharing ? "check" : "share-2"} className={`w-4 h-4 ${sharing ? 'text-blue-500' : ''}`} />
-                </button>
+              <div className="flex flex-col gap-2 px-4">
+                <h3 className="text-xl font-black text-white">{t('referral.setupRequired') || 'Referral Identity Required'}</h3>
+                <p className="text-sm text-gray-400 leading-relaxed font-medium">
+                  {t('referral.setupDesc') || 'Please set a unique username in your Profile to activate your Referral Link and start earning.'}
+                </p>
               </div>
+              <button 
+                onClick={onGoToProfile}
+                className="w-full bg-gold text-black font-black py-4 rounded-2xl hover:brightness-110 active:scale-95 transition-all shadow-xl shadow-gold/30 flex items-center justify-center gap-3 text-sm uppercase tracking-wider"
+              >
+                <Icon name="user" className="w-5 h-5" />
+                {t('referral.goToProfile') || 'Set Username Now'}
+              </button>
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="flex flex-col gap-8">
+              {/* Identity Section */}
+              <div className="flex flex-col items-center gap-4 text-center">
+                <span className="text-[10px] uppercase font-black text-gold/60 tracking-[0.2em]">{t('referral.referralCode')}</span>
+                <div 
+                  onClick={handleCopyCode}
+                  className="flex items-center gap-4 px-8 py-5 bg-white/5 border border-white/10 rounded-2xl cursor-pointer hover:bg-gold/5 hover:border-gold/30 transition-all active:scale-95 group/code shadow-inner"
+                >
+                  <div className="flex flex-col items-start gap-1 truncate">
+                    <span className="text-3xl font-black text-white tracking-tight truncate">{effectiveCode}</span>
+                    <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest group-hover/code:text-gold transition-colors">
+                      {copyingCode ? "Copied!" : (t('referral.copyCode') || 'Tap to copy code')}
+                    </span>
+                  </div>
+                  <div className={`p-3 rounded-xl ml-auto transition-transform ${copyingCode ? 'bg-green-500/20 text-green-500' : 'bg-gold/10 text-gold group-hover/code:scale-110'}`}>
+                    <Icon name={copyingCode ? "check" : "copy"} className="w-6 h-6" />
+                  </div>
+                </div>
+                {copyingCode && (
+                  <motion.span 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-[10px] font-black text-green-500 uppercase"
+                  >
+                    Code Copied!
+                  </motion.span>
+                )}
+              </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex flex-col items-center gap-1 text-center">
-            <span className="text-2xl font-black text-white">{stats?.referrals?.length || 0}</span>
-            <span className="text-[10px] text-gray-500 uppercase font-bold">{t('referral.totalReferrals')}</span>
-          </div>
-          <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex flex-col items-center gap-1 text-center">
-            <span className="text-2xl font-black text-green-500">{stats?.user_active_count || 0}</span>
-            <span className="text-[10px] text-gray-500 uppercase font-bold">{t('referral.activeReferrals')}</span>
-          </div>
+              {/* Action Buttons */}
+              <div className="grid grid-cols-1 gap-4">
+                <button 
+                  onClick={handleShare}
+                  className="w-full bg-gradient-to-r from-gold via-gold-dark to-gold bg-[length:200%_auto] hover:bg-right text-black font-black py-5 rounded-2xl transition-all active:scale-[0.98] shadow-2xl shadow-gold/20 flex items-center justify-center gap-3 text-sm uppercase tracking-wider group/share"
+                >
+                  <Icon name="share-2" className="w-5 h-5 group-hover/share:rotate-12 transition-transform" />
+                  {t('referral.inviteFriends') || 'Invite Friends Now'}
+                </button>
+
+                <div 
+                  onClick={handleCopyLink}
+                  className="flex items-center justify-between p-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl cursor-pointer transition-all active:scale-[0.98] group/link shadow-sm"
+                >
+                  <div className="flex flex-col gap-1 truncate">
+                    <div className="flex items-center gap-2">
+                       <Icon name="link" className="w-4 h-4 text-gold shrink-0" />
+                       <span className="text-xs font-black text-white tracking-widest uppercase truncate">{t('referral.copyLink') || 'Copy Invitation Link'}</span>
+                    </div>
+                    <span className="text-[10px] font-medium text-gray-500 truncate tracking-tight">{referralLink}</span>
+                  </div>
+                  <div className={`p-2 rounded-lg shrink-0 transition-colors ${copyingLink ? 'bg-green-500/20 text-green-500' : 'bg-white/5 text-gray-500 group-hover/link:text-white'}`}>
+                    <Icon name={copyingLink ? "check" : "copy"} className="w-5 h-5" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Mini Stats */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="glass p-5 rounded-[1.5rem] border-white/5 flex flex-col items-center gap-2 text-center bg-white/2">
+                  <span className="text-3xl font-black text-white">{stats?.referrals?.length || 0}</span>
+                  <span className="text-[9px] text-gray-500 uppercase font-black tracking-widest">{t('referral.totalReferrals')}</span>
+                </div>
+                <div className="glass p-5 rounded-[1.5rem] border-white/5 flex flex-col items-center gap-2 text-center bg-white/2">
+                  <span className="text-3xl font-black text-green-500">{stats?.user_active_count || 0}</span>
+                  <span className="text-[9px] text-gray-500 uppercase font-black tracking-widest">{t('referral.activeReferrals')}</span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
