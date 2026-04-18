@@ -880,22 +880,6 @@ const TasksTab = ({
   const [visitedTasks, setVisitedTasks] = useState<number[]>([]);
   const [completingTaskId, setCompletingTaskId] = useState<number | null>(null);
 
-  useEffect(() => {
-    // Inject Ad Script for Tasks Page
-    const script = document.createElement('script');
-    script.src = "https://dcbbwymp1bhlf.cloudfront.net/?wbbcd=1253723";
-    script.async = true;
-    script.setAttribute('data-cfasync', 'false');
-    document.body.appendChild(script);
-
-    return () => {
-      // Cleanup script on tab leave
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
-      }
-    };
-  }, []);
-
   const handleVerify = async (task: any) => {
     const inputCode = taskCodes[task.id]?.trim().toLowerCase();
     const requiredCode = task.requiredCode?.trim().toLowerCase();
