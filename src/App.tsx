@@ -1686,16 +1686,19 @@ const ProfilePage = ({
 
 const ReferralPage = ({ 
   stats, 
-  onBack 
+  onBack,
+  onGoToProfile
 }: { 
   stats: any; 
   onBack: () => void;
+  onGoToProfile: () => void;
 }) => {
   const { t } = useTranslation();
   const [copying, setCopying] = useState(false);
   const [sharing, setSharing] = useState(false);
 
-  const referralLink = `${window.location.origin}?ref=${stats?.referral_code || ''}`;
+  const hasUsername = stats?.referral_code && stats?.referral_code !== '';
+  const referralLink = hasUsername ? `${window.location.origin}?ref=${stats.referral_code}` : '';
 
   const handleCopy = () => {
     navigator.clipboard.writeText(stats?.referral_code || '');
@@ -1746,26 +1749,47 @@ const ReferralPage = ({
 
       {/* Referral Code & link */}
       <div className="glass rounded-3xl p-6 border-white/5 flex flex-col gap-6 ">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="flex flex-col gap-2">
-            <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">{t('referral.referralCode')}</label>
-            <div className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl py-3 px-4">
-              <span className="text-sm font-mono font-bold text-gold truncate mr-2">{stats?.referral_code || '------'}</span>
-              <button onClick={handleCopy} className="text-gray-400 hover:text-white transition-colors">
-                <Icon name={copying ? "check" : "copy"} className={`w-4 h-4 ${copying ? 'text-green-500' : ''}`} />
-              </button>
+        {!hasUsername ? (
+          <div className="bg-gold/10 border border-gold/20 rounded-2xl p-5 flex flex-col gap-4 text-center">
+            <div className="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center text-gold mx-auto">
+              <Icon name="user-check" className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-white mb-1">{t('referral.setupRequired') || 'Referral Identity Required'}</p>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                {t('referral.setupDesc') || 'Please set a unique username in your Profile to activate your Referral Link and start earning.'}
+              </p>
+            </div>
+            <button 
+              onClick={onGoToProfile}
+              className="w-full bg-gold text-black font-bold py-3 rounded-xl hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-gold/20 flex items-center justify-center gap-2"
+            >
+              <Icon name="user" className="w-4 h-4" />
+              {t('referral.goToProfile') || 'Set Username Now'}
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col gap-2">
+              <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">{t('referral.referralCode')}</label>
+              <div className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl py-3 px-4">
+                <span className="text-sm font-mono font-bold text-gold truncate mr-2">{stats?.referral_code}</span>
+                <button onClick={handleCopy} className="text-gray-400 hover:text-white transition-colors">
+                  <Icon name={copying ? "check" : "copy"} className={`w-4 h-4 ${copying ? 'text-green-500' : ''}`} />
+                </button>
+              </div>
+            </div>
+            <div className="flex flex-col gap-2">
+              <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">{t('referral.referralLink')}</label>
+              <div className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl py-3 px-4">
+                <span className="text-xs text-gray-400 truncate mr-2">Click to Share</span>
+                <button onClick={handleShare} className="text-gray-400 hover:text-white transition-colors">
+                  <Icon name={sharing ? "check" : "share-2"} className={`w-4 h-4 ${sharing ? 'text-blue-500' : ''}`} />
+                </button>
+              </div>
             </div>
           </div>
-          <div className="flex flex-col gap-2">
-            <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">{t('referral.referralLink')}</label>
-            <div className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl py-3 px-4">
-              <span className="text-xs text-gray-400 truncate mr-2">Click to Share</span>
-              <button onClick={handleShare} className="text-gray-400 hover:text-white transition-colors">
-                <Icon name={sharing ? "check" : "share-2"} className={`w-4 h-4 ${sharing ? 'text-blue-500' : ''}`} />
-              </button>
-            </div>
-          </div>
-        </div>
+        )}
 
         <div className="grid grid-cols-2 gap-4">
           <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex flex-col items-center gap-1 text-center">
@@ -3063,12 +3087,10 @@ export default function App() {
           const referralCode = localStorage.getItem('referral_code');
           let referredBy = null;
           if (referralCode) {
-            const { data: refUser } = await supabase
-              .from('profiles')
-              .select('id')
-              .eq('referral_code', referralCode)
-              .maybeSingle();
-            referredBy = refUser?.id;
+            const { data: refUserId } = await supabase.rpc('resolve_referral_by_username', { 
+              p_username: referralCode 
+            });
+            referredBy = refUserId;
           }
 
           // Create profile record
@@ -3757,12 +3779,13 @@ export default function App() {
       // 2. Update Supabase
       const { error: updateError } = await supabase
         .from('profiles')
-        .update({ username: newUsername })
+        .update({ username: newUsername, referral_code: newUsername })
         .eq('id', user.id);
 
       if (updateError) throw updateError;
 
       setProfileUsername(newUsername);
+      await loadUserData(); // Refresh stats including referral_code
       return { success: true, message: 'Username updated successfully' };
     } catch (err: any) {
       console.error('Error updating username:', err);
@@ -3898,6 +3921,7 @@ export default function App() {
           <ReferralPage 
             stats={referralStats}
             onBack={() => setActiveTab('more')}
+            onGoToProfile={() => setActiveTab('profile')}
           />
         );
       case 'mainnet': return <MainnetTab />;
