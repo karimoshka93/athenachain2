@@ -1374,20 +1374,34 @@ const ProfilePage = ({
   user,
   username,
   kycData,
+  streakCount,
+  lastStreakDate,
+  lastMiningTime,
   onUpdateUsername,
+  onUpdateProfileInfo,
+  onClaimStrike,
   onBack
 }: { 
   user: User;
   username: string | null;
   kycData: { status: string; realName: string | null; phone: string | null; date: string | null } | null;
+  streakCount: number;
+  lastStreakDate: string | null;
+  lastMiningTime: string | null;
   onUpdateUsername: (newUsername: string) => Promise<{ success: boolean; message: string }>;
+  onUpdateProfileInfo: (realName: string, phone: string) => Promise<{ success: boolean; message: string }>;
+  onClaimStrike: () => Promise<{ success: boolean; message: string; reward?: number; streakDay?: number }>;
   onBack: () => void;
 }) => {
   const { t } = useTranslation();
   const [editing, setEditing] = useState(false);
   const [newUsername, setNewUsername] = useState(username || '');
+  const [manualName, setManualName] = useState('');
+  const [manualPhone, setManualPhone] = useState('');
   const [message, setMessage] = useState<{ type: 'error' | 'success', text: string } | null>(null);
   const [processing, setProcessing] = useState(false);
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [strikeProcessing, setStrikeProcessing] = useState(false);
 
   const handleSave = async () => {
     if (!newUsername.match(/^[a-zA-Z0-9]+$/)) {
@@ -1399,6 +1413,42 @@ const ProfilePage = ({
     setProcessing(false);
     setMessage({ type: result.success ? 'success' : 'error', text: result.message });
     if (result.success) setEditing(false);
+  };
+
+  const handleSaveManualInfo = async () => {
+    if (!manualName.trim() || !manualPhone.trim()) {
+      setMessage({ type: 'error', text: 'Please enter both your name and phone number' });
+      return;
+    }
+    setProfileSaving(true);
+    const result = await onUpdateProfileInfo(manualName.trim(), manualPhone.trim());
+    setProfileSaving(false);
+    setMessage({ type: result.success ? 'success' : 'error', text: result.message });
+  };
+
+  const handleStrike = async () => {
+    setStrikeProcessing(true);
+    const result = await onClaimStrike();
+    setStrikeProcessing(false);
+    setMessage({ type: result.success ? 'success' : 'error', text: result.message });
+  };
+
+  const isMinedToday = () => {
+    if (!lastMiningTime) return false;
+    const miningDate = new Date(lastMiningTime).toISOString().split('T')[0];
+    const today = new Date().toISOString().split('T')[0];
+    return miningDate === today;
+  };
+
+  const hasClaimedToday = () => {
+    if (!lastStreakDate) return false;
+    const today = new Date().toISOString().split('T')[0];
+    return lastStreakDate === today;
+  };
+
+  const nextReward = (day: number) => {
+    const rewards = [0.01, 0.02, 0.04, 0.08, 0.16, 0.32, 1.00];
+    return rewards[day] || 0.01;
   };
 
   return (
@@ -1463,12 +1513,51 @@ const ProfilePage = ({
           </div>
           <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex flex-col gap-1">
             <span className="text-[10px] text-gray-500 uppercase font-bold">{t('kyc.realName')}</span>
-            <span className="text-sm font-medium text-white">{kycData?.realName || '---'}</span>
+            {kycData?.realName ? (
+              <span className="text-sm font-medium text-white">{kycData.realName}</span>
+            ) : (
+              <input 
+                type="text"
+                placeholder="Full Name (for KYC)"
+                value={manualName}
+                onChange={(e) => setManualName(e.target.value)}
+                className="bg-transparent border-none text-sm font-medium text-white focus:outline-none placeholder:text-gray-600"
+              />
+            )}
           </div>
           <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex flex-col gap-1">
             <span className="text-[10px] text-gray-500 uppercase font-bold">{t('kyc.phone')}</span>
-            <span className="text-sm font-medium text-white">{kycData?.phone || '---'}</span>
+            {kycData?.phone ? (
+              <span className="text-sm font-medium text-white">{kycData.phone}</span>
+            ) : (
+              <input 
+                type="tel"
+                placeholder="+249... or email"
+                value={manualPhone}
+                onChange={(e) => setManualPhone(e.target.value)}
+                className="bg-transparent border-none text-sm font-medium text-white focus:outline-none placeholder:text-gray-600"
+              />
+            )}
           </div>
+
+          {/* Save Profile Info Button (if missing) */}
+          {(!kycData?.realName || !kycData?.phone) && (
+            <div className="flex flex-col gap-3 mt-2">
+              <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20">
+                <p className="text-[9px] text-red-400 font-medium leading-relaxed">
+                  <span className="font-bold">⚠️ IMPORTANT:</span> This information cannot be changed once saved. Ensure it exactly matches your official identification document. Your next KYC must match these details to pass.
+                </p>
+              </div>
+              <button
+                onClick={handleSaveManualInfo}
+                disabled={profileSaving || !manualName.trim() || !manualPhone.trim()}
+                className="w-full py-3 rounded-xl bg-gold text-black font-bold text-xs gold-glow transition-all active:scale-[0.98] disabled:opacity-50"
+              >
+                {profileSaving ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'SAVE & LOCK INFORMATION'}
+              </button>
+            </div>
+          )}
+
           <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between">
             <div className="flex flex-col gap-1">
               <span className="text-[10px] text-gray-500 uppercase font-bold">{t('kyc.status') || 'KYC Status'}</span>
@@ -1478,6 +1567,66 @@ const ProfilePage = ({
             </div>
             {kycData?.status === 'verified' && <Icon name="shield-check" className="w-6 h-6 text-green-500" />}
           </div>
+        </div>
+
+        {/* Weekly Strike Section */}
+        <div className="p-4 rounded-2xl bg-gold/5 border border-gold/10 flex flex-col gap-4">
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-0.5">
+              <span className="text-[10px] text-gold uppercase font-bold tracking-wider">Weekly Strike</span>
+              <span className="text-xs font-bold text-white">Day {streakCount} of 7</span>
+            </div>
+            <div className="px-3 py-1 bg-gold/20 rounded-lg border border-gold/30">
+              <span className="text-[10px] font-bold text-gold uppercase">Streak: {streakCount}</span>
+            </div>
+          </div>
+
+          <div className="flex justify-between gap-1">
+            {[1, 2, 3, 4, 5, 6, 7].map((day) => (
+              <div 
+                key={day}
+                className={`flex-1 flex flex-col items-center gap-1.5 p-2 rounded-xl border transition-all ${
+                  day <= streakCount 
+                    ? 'bg-gold/20 border-gold/40 text-gold' 
+                    : 'bg-white/5 border-white/10 text-gray-500'
+                }`}
+              >
+                <span className="text-[8px] font-black uppercase">D{day}</span>
+                <div className={`w-5 h-5 rounded-full flex items-center justify-center ${day <= streakCount ? 'bg-gold text-black' : 'bg-white/10'}`}>
+                  {day <= streakCount ? <Icon name="check" className="w-3 h-3 stroke-[4]" /> : <Icon name="zap" className="w-3 h-3" />}
+                </div>
+                <span className="text-[8px] font-bold">+{nextReward(day - 1)}</span>
+              </div>
+            ))}
+          </div>
+
+          <button
+            onClick={handleStrike}
+            disabled={strikeProcessing || hasClaimedToday() || !isMinedToday()}
+            className={`w-full py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${
+              hasClaimedToday()
+                ? 'bg-green-500/20 text-green-500 border border-green-500/30'
+                : !isMinedToday()
+                ? 'bg-white/5 text-gray-500 border border-white/10 cursor-not-allowed'
+                : 'bg-gold text-black gold-glow active:scale-[0.98]'
+            }`}
+          >
+            {strikeProcessing ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : hasClaimedToday() ? (
+              <><Icon name="check-circle" className="w-4 h-4" /> Claimed Today</>
+            ) : !isMinedToday() ? (
+              'Start Mining First'
+            ) : (
+              `Claim Day ${streakCount + 1 === 8 ? 1 : streakCount + 1} Strike`
+            )}
+          </button>
+          
+          {!isMinedToday() && !hasClaimedToday() && (
+            <p className="text-[8px] text-gray-500 text-center italic">
+              * Strike only activates if you have started mining today.
+            </p>
+          )}
         </div>
       </div>
 
@@ -2383,6 +2532,8 @@ export default function App() {
     date: string | null;
   } | null>(null);
   const [profileUsername, setProfileUsername] = useState<string | null>(null);
+  const [streakCount, setStreakCount] = useState(0);
+  const [lastStreakDate, setLastStreakDate] = useState<string | null>(null);
   const [academyProgress, setAcademyProgress] = useState<{
     completed_question_ids: number[];
     total_score: number;
@@ -2488,6 +2639,8 @@ export default function App() {
         setLastMiningTime(profile.last_mining_time || null);
         setLegacyUid(profile.legacy_uid || null);
         setProfileUsername(profile.username || null);
+        setStreakCount(profile.streak_count || 0);
+        setLastStreakDate(profile.last_streak_date || null);
         setKycData({
           status: profile.kyc_status || 'pending',
           realName: profile.real_name || null,
@@ -2573,6 +2726,8 @@ export default function App() {
     if (!user) {
       setUserAssets({});
       setMigrationStatus(true);
+      setStreakCount(0);
+      setLastStreakDate(null);
       return;
     }
 
@@ -3331,6 +3486,55 @@ export default function App() {
     }
   };
 
+  const handleClaimStrike = async () => {
+    if (!user) return { success: false, message: 'Not logged in' };
+    try {
+      const { data, error } = await supabase.rpc('claim_daily_strike', { p_user_id: user.id });
+      if (error) throw error;
+      
+      if (data.success) {
+        await loadUserData(); // Refresh balances and streak info
+        return { success: true, message: data.message, reward: data.reward, streakDay: data.streak_day };
+      } else {
+        return { success: false, message: data.message };
+      }
+    } catch (err: any) {
+      console.error('Error claiming strike:', err);
+      // Try to parse error message if it's a Supabase error
+      const msg = err.message || 'An unexpected error occurred';
+      return { success: false, message: msg };
+    }
+  };
+
+  const handleUpdateProfileInfo = async (realName: string, phone: string) => {
+    if (!user) return { success: false, message: 'Not authenticated' };
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ 
+          real_name: realName, 
+          full_phone_number: phone,
+          kyc_status: 'pending' // Still pending, but now has data
+        })
+        .eq('id', user.id);
+
+      if (error) throw error;
+      
+      // Refresh local state
+      setKycData(prev => ({
+        ...prev!,
+        realName,
+        phone,
+        status: 'pending'
+      }));
+      
+      return { success: true, message: 'Information locked successfully' };
+    } catch (err: any) {
+      console.error('Error updating profile info:', err);
+      return { success: false, message: err.message };
+    }
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard': 
@@ -3378,7 +3582,12 @@ export default function App() {
             user={user!}
             username={profileUsername}
             kycData={kycData}
+            streakCount={streakCount}
+            lastStreakDate={lastStreakDate}
+            lastMiningTime={lastMiningTime}
             onUpdateUsername={handleUpdateUsername}
+            onUpdateProfileInfo={handleUpdateProfileInfo}
+            onClaimStrike={handleClaimStrike}
             onBack={() => setActiveTab('more')}
           />
         );
