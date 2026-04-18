@@ -64,7 +64,10 @@
     "email": "Email",
     "status": "Status",
     "active": "Active",
-    "pending": "Pending"
+    "pending": "Pending",
+    "setupRequired": "Referral Identity Required",
+    "setupDesc": "Please set a unique username in your Profile to activate your Referral Link and start earning.",
+    "goToProfile": "Set Username Now"
   },
   "dashboard": {
     "welcome": "Welcome back",

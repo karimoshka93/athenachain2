@@ -1687,21 +1687,24 @@ const ProfilePage = ({
 const ReferralPage = ({ 
   stats, 
   onBack,
-  onGoToProfile
+  onGoToProfile,
+  username
 }: { 
   stats: any; 
   onBack: () => void;
   onGoToProfile: () => void;
+  username: string | null;
 }) => {
   const { t } = useTranslation();
   const [copying, setCopying] = useState(false);
   const [sharing, setSharing] = useState(false);
 
-  const hasUsername = stats?.referral_code && stats?.referral_code !== '';
-  const referralLink = hasUsername ? `${window.location.origin}?ref=${stats.referral_code}` : '';
+  const effectiveCode = stats?.referral_code || username;
+  const hasUsername = effectiveCode && effectiveCode !== '';
+  const referralLink = hasUsername ? `${window.location.origin}?ref=${effectiveCode}` : '';
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(stats?.referral_code || '');
+    navigator.clipboard.writeText(effectiveCode || '');
     setCopying(true);
     setTimeout(() => setCopying(false), 2000);
   };
@@ -1773,7 +1776,7 @@ const ReferralPage = ({
             <div className="flex flex-col gap-2">
               <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">{t('referral.referralCode')}</label>
               <div className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl py-3 px-4">
-                <span className="text-sm font-mono font-bold text-gold truncate mr-2">{stats?.referral_code}</span>
+                <span className="text-sm font-mono font-bold text-gold truncate mr-2">{effectiveCode}</span>
                 <button onClick={handleCopy} className="text-gray-400 hover:text-white transition-colors">
                   <Icon name={copying ? "check" : "copy"} className={`w-4 h-4 ${copying ? 'text-green-500' : ''}`} />
                 </button>
@@ -1841,10 +1844,10 @@ const ReferralPage = ({
                 <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 flex items-center justify-center text-indigo-400 gold-glow">
                   <Icon name="gift" className="w-6 h-6 animate-bounce" />
                 </div>
-                <div>
-                  <h4 className="font-black text-white text-sm">{t('referral.box1Title')}</h4>
-                  <p className="text-[10px] text-indigo-400 font-bold italic">{t('referral.loadingProgress')}</p>
-                </div>
+            <div className="flex flex-col gap-1">
+              <h4 className="font-black text-white text-sm">{t('referral.box1Title')}</h4>
+              <p className="text-[10px] text-indigo-400 font-bold italic h-4">{t('referral.loadingProgress')}</p>
+            </div>
               </div>
               <div className="text-right">
                 <span className="text-xs font-black text-white">{getProgress(stats?.total_active_global || 0, 2000)}%</span>
@@ -3922,6 +3925,7 @@ export default function App() {
             stats={referralStats}
             onBack={() => setActiveTab('more')}
             onGoToProfile={() => setActiveTab('profile')}
+            username={profileUsername}
           />
         );
       case 'mainnet': return <MainnetTab />;
