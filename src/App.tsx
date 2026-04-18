@@ -1819,7 +1819,7 @@ const ReferralPage = ({
                 </div>
                 <div>
                   <h4 className="font-black text-white text-sm">{t('referral.box1Title')}</h4>
-                  <p className="text-[10px] text-indigo-400 font-bold">2,000 Active Required</p>
+                  <p className="text-[10px] text-indigo-400 font-bold italic">{t('referral.loadingProgress')}</p>
                 </div>
               </div>
               <div className="text-right">
