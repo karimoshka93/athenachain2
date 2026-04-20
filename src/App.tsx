@@ -61,6 +61,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import SpinWheel from './components/SpinWheel';
 import SlotsGame from './components/SlotsGame';
+import SnakeGame from './components/SnakeGame';
 
 // --- Icon Helper Component ---
 const CoinIcon = ({ image, symbol, className = "w-10 h-10" }: { image?: string; symbol: string; className?: string }) => {
@@ -2547,6 +2548,7 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
   const [showWheel, setShowWheel] = useState(false);
   const [showSlots, setShowSlots] = useState(false);
   const [showPepeCave, setShowPepeCave] = useState(false);
+  const [showSnakeGame, setShowSnakeGame] = useState(false);
   const sections = [
     {
       title: t('common.account'),
@@ -2580,6 +2582,7 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
       items: [
         { name: t('common.wheel') || 'Wheel of Fortune', internalName: 'Wheel of Fortune', icon: <Zap className="w-5 h-5" />, isGame: true, gameType: 'wheel' },
         { name: t('common.slots') || 'Athena Slots', internalName: 'Athena Slots', icon: <Trophy className="w-5 h-5" />, isGame: true, gameType: 'slots' },
+        { name: 'SNAKE MINER', internalName: 'Snake Miner', icon: <Gamepad2 className="w-5 h-5 text-green-500" />, isGame: true, gameType: 'snake-game' },
         { name: 'PEPE CAVE', internalName: 'PEPE CAVE', icon: <Gamepad2 className="w-5 h-5 text-green-400" />, isGame: true, gameType: 'pepe-cave' },
         { name: t('common.crash') || 'Crash Game', internalName: 'Crash Game', icon: <TrendingUp className="w-5 h-5" /> },
       ]
@@ -2640,6 +2643,7 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
                     if (item.gameType === 'wheel') setShowWheel(true);
                     if (item.gameType === 'slots') setShowSlots(true);
                     if (item.gameType === 'pepe-cave') setShowPepeCave(true);
+                    if (item.gameType === 'snake-game') setShowSnakeGame(true);
                   }
                 }}
                 className={`flex flex-col items-center gap-2 p-3 rounded-2xl bg-white/5 border border-white/5 relative group cursor-pointer ${(item.isInstall || item.isGame || item.isActive) ? '' : 'opacity-60 grayscale'}`}
@@ -2731,6 +2735,19 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
               />
             </motion.div>
           </div>
+        )}
+      </AnimatePresence>
+
+      {/* Snake Game Modal */}
+      <AnimatePresence>
+        {showSnakeGame && (
+          <SnakeGame 
+            userId={userId} 
+            onClose={() => {
+              setShowSnakeGame(false);
+              onBalanceUpdate(); // Refresh balance after game
+            }} 
+          />
         )}
       </AnimatePresence>
 
