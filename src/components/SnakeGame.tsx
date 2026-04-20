@@ -120,7 +120,8 @@ const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, userId }) => {
       setIsClaiming(true);
       try {
         const { data, error } = await supabase.rpc('claim_snake_game_reward', {
-          p_user_id: userId
+          p_user_id: userId,
+          p_score: currentScore
         });
         
         if (error) throw error;
@@ -345,12 +346,15 @@ const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, userId }) => {
                     ) : claimSuccess ? (
                       <div className="p-4 bg-green-500/20 border border-green-500/30 rounded-2xl flex flex-col gap-1 animate-bounce">
                         <span className="text-xs font-black text-green-500">REWARD EARNED!</span>
-                        <span className="text-xl font-black text-white">+0.01 XRP</span>
+                        <span className="text-xl font-black text-white">+{(score * 0.001).toFixed(3)} XRP</span>
                       </div>
                     ) : (
-                      <div className="flex items-center gap-2 text-red-400 justify-center">
-                        <AlertCircle className="w-4 h-4" />
-                        <span className="text-[10px] font-bold">Reward limit reached or error</span>
+                      <div className="flex flex-col items-center gap-2">
+                        <div className="flex items-center gap-2 text-red-400 justify-center">
+                          <AlertCircle className="w-4 h-4" />
+                          <span className="text-[10px] font-bold">Reward check failed</span>
+                        </div>
+                        <p className="text-[9px] text-gray-500">Wait 6h between plays</p>
                       </div>
                     )}
                     <button 
@@ -408,7 +412,7 @@ const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, userId }) => {
         <footer className="text-center">
           <p className="text-[10px] text-gray-500 uppercase font-black tracking-widest leading-relaxed">
             Avoid hitting walls or yourself!<br/>
-            Play every 6 hours for rewards.
+            Earn 0.001 XRP per point collected.
           </p>
         </footer>
       </div>
