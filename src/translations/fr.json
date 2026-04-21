@@ -125,5 +125,23 @@
     "deleteWarning": "Cette action est permanente et irréversible.",
     "deleteConfirmText": "Tapez 'DELETE' pour confirmer",
     "deleteButton": "SUPPRIMER DÉFINITIVEMENT LE COMPTE"
+  },
+  "checklist": {
+    "title": "Liste de contrôle Mainnet",
+    "description": "Étapes essentielles pour préparer la migration des jetons",
+    "step1": "Enregistrer le nom réel et le téléphone",
+    "step1Desc": "Statut vérifié depuis Profil > Section Compte",
+    "step2": "Réussir la vérification KYC",
+    "step2Desc": "Nécessite la préparation des étapes 1, 2 et 3",
+    "step3": "Réussir 75% à l'Académie Athena",
+    "step3Desc": "Vérifiez vos progrès pédagogiques dans l'Académie",
+    "step4": "Réserver de la crypto",
+    "step5": "Ouvrir un portefeuille décentralisé",
+    "step6": "Signer l'accord de connaissance",
+    "step7": "Participer au Testnet",
+    "step8": "Migration finale vers le Mainnet",
+    "waiting": "En attente",
+    "pending": "En suspens",
+    "completed": "Terminé"
   }
 }

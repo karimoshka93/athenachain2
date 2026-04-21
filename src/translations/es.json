@@ -125,5 +125,23 @@
     "deleteWarning": "Esta acción es permanente y no se puede deshacer.",
     "deleteConfirmText": "Escribe 'DELETE' para confirmar",
     "deleteButton": "ELIMINAR CUENTA PERMANENTEMENTE"
+  },
+  "checklist": {
+    "title": "Lista de verificación de Mainnet",
+    "description": "Pasos esenciales para prepararse para la migración de tokens",
+    "step1": "Registrar nombre real y teléfono",
+    "step1Desc": "Estado verificado desde Perfil > Sección de cuenta",
+    "step2": "Aprobar la verificación KYC",
+    "step2Desc": "Requiere preparación para las Etapas 1, 2 y 3",
+    "step3": "Lograr el 75% en la Academia Athena",
+    "step3Desc": "Consulta tu progreso educativo en la Academia",
+    "step4": "Reservar criptomonedas",
+    "step5": "Abrir una billetera descentralizada",
+    "step6": "Firmar el acuerdo de conocimiento",
+    "step7": "Participar en la Testnet",
+    "step8": "Migración final a Mainnet",
+    "waiting": "Esperando",
+    "pending": "Pendiente",
+    "completed": "Completado"
   }
 }

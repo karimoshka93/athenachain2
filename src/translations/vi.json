@@ -168,5 +168,23 @@
     "rule3": "Người dùng chỉ có thể nhận MỘT ô mỗi vòng. Hãy nhanh chân lên!",
     "rule4": "Bạn phải giải câu đố bảo mật để vào hang mỗi lần.",
     "goBack": "Quay lại"
+  },
+  "checklist": {
+    "title": "Danh sách kiểm tra Mainnet",
+    "description": "Các bước thiết yếu để chuẩn bị cho việc di chuyển mã thông báo",
+    "step1": "Đăng ký tên thật và số điện thoại",
+    "step1Desc": "Kiểm tra trạng thái từ Hồ sơ > Mục tài khoản",
+    "step2": "Vượt qua xác minh KYC",
+    "step2Desc": "Yêu cầu sẵn sàng cho Giai đoạn 1, 2 và 3",
+    "step3": "Đạt 75% tại Học viện Athena",
+    "step3Desc": "Kiểm tra tiến độ giáo dục của bạn trong Học viện",
+    "step4": "Dự trữ tiền điện tử",
+    "step5": "Mở ví phi tập trung",
+    "step6": "Ký thỏa thuận kiến thức",
+    "step7": "Tham gia Testnet",
+    "step8": "Di chuyển cuối cùng sang Mainnet",
+    "waiting": "Đang chờ",
+    "pending": "Chờ xử lý",
+    "completed": "Hoàn thành"
   }
 }

@@ -168,5 +168,23 @@
     "rule3": "Pengguna hanya dapat mengklaim SATU sel per babak. Ayo cepat!",
     "rule4": "Anda harus menyelesaikan teka-teki keamanan untuk memasuki gua setiap kali.",
     "goBack": "Kembali"
+  },
+  "checklist": {
+    "title": "Daftar Periksa Mainnet",
+    "description": "Langkah-langkah penting untuk mempersiapkan migrasi token",
+    "step1": "Daftarkan Nama Asli & Telepon",
+    "step1Desc": "Status diperiksa dari Profil > bagian Akun",
+    "step2": "Lulus Verifikasi KYC",
+    "step2Desc": "Memerlukan kesiapan Tahap 1, 2, dan Tahap 3",
+    "step3": "Mencapai 75% di Akademi Athena",
+    "step3Desc": "Periksa kemajuan pendidikan Anda di Akademi",
+    "step4": "Reservasi Kripto",
+    "step5": "Buka Dompet Terdesentralisasi",
+    "step6": "Tandatangani Perjanjian Pengetahuan",
+    "step7": "Berpartisipasi dalam Testnet",
+    "step8": "Migrasi Akhir ke Mainnet",
+    "waiting": "Menunggu",
+    "pending": "Tertunda",
+    "completed": "Selesai"
   }
 }

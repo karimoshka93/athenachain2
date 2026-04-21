@@ -181,5 +181,23 @@
     "rule3": "Users can claim only ONE cell per round. Be quick!",
     "rule4": "You must solve the security puzzle to enter the cave each time.",
     "goBack": "Go Back"
+  },
+  "checklist": {
+    "title": "Mainnet Checklist",
+    "description": "Essential steps to prepare for token migration",
+    "step1": "Register Real Name & Phone",
+    "step1Desc": "Status checked from Profile > Account section",
+    "step2": "Pass KYC Verification",
+    "step2Desc": "Requires Stage 1, 2, and Stage 3 readiness",
+    "step3": "Complete 75% Athena Academy",
+    "step3Desc": "Check your educational progress in Academy",
+    "step4": "Reserve Crypto",
+    "step5": "Open Decentralized Wallet",
+    "step6": "Sign Knowledge Agreement",
+    "step7": "Participate in Testnet",
+    "step8": "Final Migration to Mainnet",
+    "waiting": "Waiting",
+    "pending": "Pending",
+    "completed": "Completed"
   }
 }

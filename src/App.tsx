@@ -163,7 +163,7 @@ const Icon = ({ name, className }: { name: string; className?: string }) => {
 };
 
 // --- Types ---
-type Tab = 'dashboard' | 'wallet' | 'tasks' | 'mainnet' | 'more' | 'profile' | 'academy' | 'settings' | 'referral';
+type Tab = 'dashboard' | 'wallet' | 'tasks' | 'mainnet' | 'more' | 'profile' | 'academy' | 'settings' | 'referral' | 'mainnet-checklist';
 
 interface Coin {
   id: string;
@@ -2556,6 +2556,7 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
         { name: t('common.profile'), internalName: 'Profile', icon: <UserIcon className="w-5 h-5" />, isActive: true },
         { name: t('common.settings'), internalName: 'Settings', icon: <Settings className="w-5 h-5" />, isActive: true },
         { name: t('kyc.title'), internalName: 'KYC', icon: <ShieldCheck className="w-5 h-5" />, isActive: true },
+        { name: t('checklist.title') || 'Mainnet Checklist', internalName: 'Mainnet Checklist', icon: <CheckSquare className="w-5 h-5 text-indigo-500" />, isActive: true },
         { name: t('common.referral'), internalName: 'Referral', icon: <Users className="w-5 h-5" />, isActive: true },
       ]
     },
@@ -2639,6 +2640,7 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
                   if (item.internalName === 'Settings') (onKYCClick as any)('settings');
                   if (item.internalName === 'Academy') (onKYCClick as any)('academy');
                   if (item.internalName === 'Referral') (onKYCClick as any)('referral');
+                  if (item.internalName === 'Mainnet Checklist') (onKYCClick as any)('mainnet-checklist');
                   if (item.isGame) {
                     if (item.gameType === 'wheel') setShowWheel(true);
                     if (item.gameType === 'slots') setShowSlots(true);
@@ -3909,7 +3911,120 @@ export default function App() {
     }
   };
 
-  const renderContent = () => {
+  const MainnetChecklistPage = ({ 
+  user, 
+  kycData, 
+  academyProgress, 
+  onBack 
+}: { 
+  user: User, 
+  kycData: { status: string, realName: string | null, phone: string | null } | null, 
+  academyProgress: { total_score: number },
+  onBack: () => void 
+}) => {
+  const { t } = useTranslation();
+
+  const steps = [
+    { 
+      id: 1, 
+      title: t('checklist.step1'), 
+      status: (kycData?.realName && kycData?.phone) ? 'completed' : 'pending',
+      description: t('checklist.step1Desc')
+    },
+    { 
+      id: 2, 
+      title: t('checklist.step2'), 
+      status: kycData?.status === 'verified' ? 'completed' : (kycData?.status?.toLowerCase().includes('stage 3') ? 'waiting' : 'pending'),
+      description: t('checklist.step2Desc')
+    },
+    { 
+      id: 3, 
+      title: t('checklist.step3'), 
+      status: academyProgress.total_score >= 75 ? 'completed' : 'pending',
+      description: t('checklist.step3Desc')
+    },
+    { id: 4, title: t('checklist.step4'), status: 'soon', description: 'Coming soon' },
+    { id: 5, title: t('checklist.step5'), status: 'soon', description: 'Coming soon' },
+    { id: 6, title: t('checklist.step6'), status: 'soon', description: 'Coming soon' },
+    { id: 7, title: t('checklist.step7'), status: 'soon', description: 'Coming soon' },
+    { id: 8, title: t('checklist.step8'), status: 'soon', description: 'Coming soon' },
+  ];
+
+  return (
+    <div className="flex flex-col gap-6 pb-24">
+      <header className="flex items-center gap-4">
+        <button onClick={onBack} className="p-2 rounded-full bg-white/5 text-gray-400 hover:text-white transition-colors">
+          <Icon name="chevron-left" className="w-6 h-6" />
+        </button>
+        <div>
+          <h1 className="text-2xl font-bold text-gold-gradient">{t('checklist.title')}</h1>
+          <p className="text-gray-400 text-sm">{t('checklist.description')}</p>
+        </div>
+      </header>
+
+      <div className="flex flex-col gap-4">
+        {steps.map((step) => (
+          <div key={step.id} className="glass p-5 rounded-2xl flex items-center justify-between border-white/5 relative overflow-hidden group">
+            <div className="flex items-center gap-4">
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                step.status === 'completed' ? 'bg-green-500/10 text-green-500' : 
+                step.status === 'waiting' ? 'bg-yellow-500/10 text-yellow-500' :
+                step.status === 'soon' ? 'bg-white/5 text-gray-600' : 'bg-white/5 text-gray-400'
+              }`}>
+                {step.status === 'completed' ? (
+                  <Icon name="check-circle-2" className="w-6 h-6" />
+                ) : step.status === 'waiting' ? (
+                  <Icon name="history" className="w-6 h-6" />
+                ) : (
+                  <span className="text-sm font-bold">{step.id}</span>
+                )}
+              </div>
+              <div className="flex flex-col">
+                <span className={`font-bold transition-colors ${step.status === 'completed' ? 'text-white' : 'text-gray-300'}`}>
+                  {step.title}
+                </span>
+                <span className="text-[10px] text-gray-500 uppercase tracking-widest font-medium">
+                  {step.description}
+                </span>
+              </div>
+            </div>
+
+            {step.status === 'completed' && (
+              <div className="px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20">
+                <span className="text-[10px] font-black text-green-500 uppercase tracking-tighter">{t('checklist.completed')}</span>
+              </div>
+            )}
+            
+            {step.status === 'waiting' && (
+              <div className="px-3 py-1 rounded-full bg-yellow-500/10 border border-yellow-500/20">
+                <span className="text-[10px] font-black text-yellow-500 uppercase tracking-tighter">{t('checklist.waiting')}</span>
+              </div>
+            )}
+
+            {step.status === 'pending' && (
+              <div className="px-3 py-1 rounded-full bg-white/5 border border-white/10">
+                <span className="text-[10px] font-black text-gray-500 uppercase tracking-tighter">{t('checklist.pending')}</span>
+              </div>
+            )}
+
+            {step.status === 'soon' && (
+              <div className="px-2 py-0.5 bg-gold/10 rounded-md border border-gold/20">
+                <span className="text-[8px] font-bold text-gold uppercase tracking-tighter">{t('common.comingSoon')}</span>
+              </div>
+            )}
+            
+            {/* Background Glow for completed items */}
+            {step.status === 'completed' && (
+              <div className="absolute top-0 right-0 w-24 h-full bg-green-500/5 blur-xl -z-10 group-hover:bg-green-500/10 transition-all" />
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const renderContent = () => {
     switch (activeTab) {
       case 'dashboard': 
         return (
@@ -3983,6 +4098,15 @@ export default function App() {
             onBack={() => setActiveTab('more')}
           />
         );
+      case 'mainnet-checklist':
+        return (
+          <MainnetChecklistPage 
+            user={user!}
+            kycData={kycData}
+            academyProgress={academyProgress}
+            onBack={() => setActiveTab('more')}
+          />
+        );
       case 'referral':
         return (
           <ReferralPage 
@@ -3993,7 +4117,7 @@ export default function App() {
           />
         );
       case 'mainnet': return <MainnetTab />;
-      case 'more': return <MoreTab userId={user?.id || ''} onBalanceUpdate={loadUserData} onLogout={handleLogout} onKYCClick={(tab?: string) => setActiveTab(tab === 'academy' ? 'academy' : tab === 'profile' ? 'profile' : tab === 'settings' ? 'settings' : tab === 'referral' ? 'referral' : 'kyc')} />;
+      case 'more': return <MoreTab userId={user?.id || ''} onBalanceUpdate={loadUserData} onLogout={handleLogout} onKYCClick={(tab?: string) => setActiveTab(tab === 'academy' ? 'academy' : tab === 'profile' ? 'profile' : tab === 'settings' ? 'settings' : tab === 'referral' ? 'referral' : tab === 'mainnet-checklist' ? 'mainnet-checklist' : 'kyc')} />;
       default: 
         return (
           <Dashboard 
