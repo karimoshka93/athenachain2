@@ -251,27 +251,27 @@ const TASKS = [
     title: 'Watch TikTok Video', 
     reward: 0.1, 
     icon: <Icon name="video" className="w-5 h-5" />, 
-    link: 'https://vt.tiktok.com/ZSHHX81St/',
+    link: 'https://vt.tiktok.com/ZS9er85gm/',
     frequency: 'Every 5 days',
-    requiredCode: 'sunset glow'
+    requiredCode: 'golden dream'
   },
   { 
     id: 6, 
     title: 'Watch YouTube Short', 
     reward: 0.1, 
     icon: <Icon name="youtube" className="w-5 h-5" />, 
-    link: 'https://youtube.com/shorts/PYy0371wafc?si=1SNQ_v5601lGRCbL',
+    link: 'https://youtube.com/shorts/Vl9HvxA7QlE?si=BVbNkmid43ShhqbN',
     frequency: 'Every 5 days',
-    requiredCode: 'move in gold'
+    requiredCode: 'enter the system'
   },
   { 
     id: 7, 
     title: 'Watch Instagram Reel', 
     reward: 0.1, 
     icon: <Icon name="instagram" className="w-5 h-5" />, 
-    link: 'https://www.instagram.com/reel/DW6MAnIjZGb/?igsh=ZmkwNm03dTZ2djYz',
+    link: 'https://www.instagram.com/reel/DXY-BF_jWrD/?igsh=MXhqZGZydHB4aGsxYw==',
     frequency: 'Every 5 days',
-    requiredCode: 'Rise beyond'
+    requiredCode: 'feel the sun'
   },
 ];
 
