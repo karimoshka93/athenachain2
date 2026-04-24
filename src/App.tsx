@@ -62,6 +62,7 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import SpinWheel from './components/SpinWheel';
 import SlotsGame from './components/SlotsGame';
 import SnakeGame from './components/SnakeGame';
+import MahjongGame from './components/MahjongGame';
 
 // --- Icon Helper Component ---
 const CoinIcon = ({ image, symbol, className = "w-10 h-10" }: { image?: string; symbol: string; className?: string }) => {
@@ -2543,12 +2544,13 @@ const AcademyPage = ({
   );
 };
 
-const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: string; onBalanceUpdate: () => void; onLogout: () => void; onKYCClick: () => void }) => {
+const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: string; onBalanceUpdate: () => void; onLogout: () => void; onKYCClick: (tab?: string) => void }) => {
   const { t } = useTranslation();
   const [showWheel, setShowWheel] = useState(false);
   const [showSlots, setShowSlots] = useState(false);
   const [showPepeCave, setShowPepeCave] = useState(false);
   const [showSnakeGame, setShowSnakeGame] = useState(false);
+  const [showMahjong, setShowMahjong] = useState(false);
   const sections = [
     {
       title: t('common.account'),
@@ -2584,6 +2586,7 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
         { name: t('common.wheel') || 'Wheel of Fortune', internalName: 'Wheel of Fortune', icon: <Zap className="w-5 h-5" />, isGame: true, gameType: 'wheel' },
         { name: t('common.slots') || 'Athena Slots', internalName: 'Athena Slots', icon: <Trophy className="w-5 h-5" />, isGame: true, gameType: 'slots' },
         { name: 'SNAKE MINER', internalName: 'Snake Miner', icon: <Gamepad2 className="w-5 h-5 text-green-500" />, isGame: true, gameType: 'snake-game' },
+        { name: 'MAHJONG', internalName: 'Mahjong', icon: <Gamepad2 className="w-5 h-5 text-gold" />, isGame: true, gameType: 'mahjong' },
         { name: 'PEPE CAVE', internalName: 'PEPE CAVE', icon: <Gamepad2 className="w-5 h-5 text-green-400" />, isGame: true, gameType: 'pepe-cave' },
         { name: t('common.crash') || 'Crash Game', internalName: 'Crash Game', icon: <TrendingUp className="w-5 h-5" /> },
       ]
@@ -2595,7 +2598,6 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
         { name: "Launchpad", internalName: 'Launchpad', icon: <Rocket className="w-5 h-5" /> },
         { name: "NFT Market", internalName: 'NFT Market', icon: <Gamepad2 className="w-5 h-5" /> },
         { name: "Academy", internalName: 'Academy', icon: <GraduationCap className="w-5 h-5" />, isActive: true },
-        { name: "Academy", internalName: 'Academy', icon: <HelpCircle className="w-5 h-5" /> },
       ]
     },
     {
@@ -2638,14 +2640,15 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
                   if (item.internalName === 'KYC') onKYCClick();
                   if (item.internalName === 'Profile') (onKYCClick as any)('profile');
                   if (item.internalName === 'Settings') (onKYCClick as any)('settings');
-                  if (item.internalName === 'Academy') (onKYCClick as any)('academy');
-                  if (item.internalName === 'Referral') (onKYCClick as any)('referral');
-                  if (item.internalName === 'Mainnet Checklist') (onKYCClick as any)('mainnet-checklist');
+                  if (item.internalName === 'Academy') onKYCClick('academy');
+                  if (item.internalName === 'Referral') onKYCClick('referral');
+                  if (item.internalName === 'Mainnet Checklist') onKYCClick('mainnet-checklist');
                   if (item.isGame) {
                     if (item.gameType === 'wheel') setShowWheel(true);
                     if (item.gameType === 'slots') setShowSlots(true);
                     if (item.gameType === 'pepe-cave') setShowPepeCave(true);
                     if (item.gameType === 'snake-game') setShowSnakeGame(true);
+                    if (item.gameType === 'mahjong') setShowMahjong(true);
                   }
                 }}
                 className={`flex flex-col items-center gap-2 p-3 rounded-2xl bg-white/5 border border-white/5 relative group cursor-pointer ${(item.isInstall || item.isGame || item.isActive) ? '' : 'opacity-60 grayscale'}`}
@@ -2750,6 +2753,26 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
               onBalanceUpdate(); // Refresh balance after game
             }} 
           />
+        )}
+      </AnimatePresence>
+
+      {/* Mahjong Modal */}
+      <AnimatePresence>
+        {showMahjong && (
+          <div className="fixed inset-0 bg-black/90 z-[300] flex items-center justify-center p-4 backdrop-blur-md">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full max-w-md"
+            >
+              <MahjongGame 
+                userId={userId} 
+                onClose={() => setShowMahjong(false)} 
+                onBalanceUpdate={onBalanceUpdate}
+              />
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
 
@@ -3082,8 +3105,10 @@ export default function App() {
     }
   };
 
-  // Load user data when authenticated
+  // Load user data when authenticated - Only once on mount or user change
   useEffect(() => {
+    let isMounted = true;
+    
     if (!user) {
       setUserAssets({});
       setMigrationStatus(true);
@@ -3092,8 +3117,11 @@ export default function App() {
       return;
     }
 
+    // Call loadUserData once when user is defined
     loadUserData();
-  }, [user]);
+
+    return () => { isMounted = false; };
+  }, [user?.id]); // Use user.id instead of user object to avoid unnecessary re-triggers if object reference changes but ID stays same
 
   // Fetch market prices for wallet
   useEffect(() => {
@@ -4308,6 +4336,27 @@ const PepeCaveGame = ({ userId, onClose, onBalanceUpdate }: { userId: string; on
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   const [nextRound, setNextRound] = useState<string>('');
 
+  useEffect(() => {
+    // Calculate next round countdown
+    const updateCountdown = () => {
+      const now = new Date();
+      const nextHour = Math.ceil((now.getUTCHours() + 0.1) / 4) * 4;
+      const nextDate = new Date();
+      nextDate.setUTCHours(nextHour % 24, 0, 0, 0);
+      if (nextHour >= 24) nextDate.setUTCDate(nextDate.getUTCDate() + 1);
+      
+      const diff = nextDate.getTime() - now.getTime();
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      setNextRound(`${h}h ${m}m ${s}s`);
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   // Entry Puzzle State
   const [puzzleCards, setPuzzleCards] = useState<any[]>([]);
   const [flipped, setFlipped] = useState<number[]>([]);
@@ -4338,25 +4387,6 @@ const PepeCaveGame = ({ userId, onClose, onBalanceUpdate }: { userId: string; on
       const { data, error } = await supabase.rpc('get_or_create_pepe_cave');
       if (error) throw error;
       setRoundData(data[0]);
-      
-      // Calculate next round countdown
-      const now = new Date();
-      const nextHour = Math.ceil((now.getUTCHours() + 0.1) / 4) * 4;
-      const nextDate = new Date();
-      nextDate.setUTCHours(nextHour % 24, 0, 0, 0);
-      if (nextHour >= 24) nextDate.setUTCDate(nextDate.getUTCDate() + 1);
-      
-      const updateCountdown = () => {
-        const diff = nextDate.getTime() - new Date().getTime();
-        const h = Math.floor(diff / 3600000);
-        const m = Math.floor((diff % 3600000) / 60000);
-        const s = Math.floor((diff % 60000) / 1000);
-        setNextRound(`${h}h ${m}m ${s}s`);
-      };
-      updateCountdown();
-      const interval = setInterval(updateCountdown, 1000);
-      return () => clearInterval(interval);
-
     } catch (err: any) {
       console.error('Cave Fetch Error:', err);
       setMessage({ type: 'error', text: t('common.error') });
