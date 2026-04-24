@@ -21,6 +21,7 @@ import {
   ArrowDownLeft,
   RefreshCw,
   Trophy,
+  AlertCircle,
   Users,
   User as UserIcon,
   Settings,
@@ -3161,7 +3162,7 @@ export default function App() {
       }
     };
     fetchPrices();
-    const interval = setInterval(fetchPrices, 60000); // Update every minute
+    const interval = setInterval(fetchPrices, 21600000); // Optimization: Update every 6 hours (21.6m ms) to save Supabase quota
     return () => clearInterval(interval);
   }, []);
 
@@ -4168,6 +4169,20 @@ const renderContent = () => {
       {/* Background Glows */}
       <div className="fixed top-[-10%] left-[-20%] w-[80%] h-[40%] bg-gold/5 rounded-full blur-[120px] pointer-events-none" />
       <div className="fixed bottom-[-10%] right-[-20%] w-[80%] h-[40%] bg-gold/5 rounded-full blur-[120px] pointer-events-none" />
+
+      {/* Network Optimization Banner */}
+      <div className="bg-gold/10 border-b border-gold/20 py-2 px-4 z-[60] flex items-center justify-center gap-2 overflow-hidden whitespace-nowrap">
+        <div className="flex items-center gap-2 animate-marquee">
+          <AlertCircle className="w-3 h-3 text-gold" />
+          <span className="text-[10px] font-black text-gold uppercase tracking-widest">
+            SERVER OPTIMIZATION: DATA REFRESHES EVERY 6 HOURS UNTIL MAY 11
+          </span>
+          <AlertCircle className="w-3 h-3 text-gold" />
+          <span className="text-[10px] font-black text-gold uppercase tracking-widest px-4">
+            SERVER OPTIMIZATION: DATA REFRESHES EVERY 6 HOURS UNTIL MAY 11
+          </span>
+        </div>
+      </div>
 
       <main className="flex-1 px-5 pt-8 overflow-y-auto no-scrollbar">
         <AnimatePresence mode="wait">
