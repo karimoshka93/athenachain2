@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Trophy, Timer, RefreshCw, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { X, Trophy, Timer, RefreshCw, AlertCircle, CheckCircle2, Zap, Gamepad2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 interface MahjongGameProps {
@@ -19,6 +19,7 @@ interface Tile {
 const SYMBOLS = ['GLD', 'PI', 'BTC', 'ETH', 'SOL', 'TON', 'BNB', 'DOGE', 'SHIB', 'USDT'];
 
 export default function MahjongGame({ userId, onClose, onBalanceUpdate }: MahjongGameProps) {
+  const [gameStarted, setGameStarted] = useState(false);
   const [tiles, setTiles] = useState<Tile[]>([]);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [moves, setMoves] = useState(0);
@@ -27,9 +28,18 @@ export default function MahjongGame({ userId, onClose, onBalanceUpdate }: Mahjon
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   const [cooldownTime, setCooldownTime] = useState<string | null>(null);
 
+  const AD_LINK = 'https://data527.click/917ef86e2376286488e0/38da61938e/?placementName=defaultkkk';
+
   useEffect(() => {
-    initializeGame();
-  }, []);
+    if (gameStarted) {
+      initializeGame();
+    }
+  }, [gameStarted]);
+
+  const handleStartGame = () => {
+    window.open(AD_LINK, '_blank');
+    setGameStarted(true);
+  };
 
   const initializeGame = () => {
     // Create 20 tiles (10 pairs)
@@ -172,46 +182,72 @@ export default function MahjongGame({ userId, onClose, onBalanceUpdate }: Mahjon
         )}
       </div>
 
-      {/* Game Board */}
-      <div className="flex-1 p-4 overflow-y-auto no-scrollbar flex items-center justify-center bg-black/40">
-        <div className="grid grid-cols-4 gap-3 w-full">
-          {tiles.map((tile) => {
-            const isSelected = selectedIds.includes(tile.id);
-            const isMatched = tile.isMatched;
+      {/* Game Board or Entry Gate */}
+      <div className="flex-1 p-4 overflow-y-auto no-scrollbar flex items-center justify-center bg-black/40 relative">
+        {!gameStarted ? (
+          <div className="flex flex-col items-center gap-6 text-center animate-in fade-in zoom-in duration-500">
+            <div className="w-24 h-24 rounded-3xl bg-gold/10 border-2 border-gold/20 flex items-center justify-center relative overflow-hidden group">
+              <Zap className="w-12 h-12 text-gold animate-pulse" />
+              <div className="absolute inset-0 bg-gold/5 blur-xl group-hover:bg-gold/10 transition-all" />
+            </div>
             
-            return (
-              <motion.button
-                key={tile.id}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => handleTileClick(tile.id)}
-                disabled={isMatched}
-                className={`aspect-square rounded-xl border-2 transition-all duration-300 flex items-center justify-center relative overflow-hidden ${
-                  isMatched 
-                    ? 'bg-green-500/10 border-green-500/30 opacity-40 grayscale pointer-events-none' 
-                    : isSelected 
-                      ? 'bg-gold/20 border-gold shadow-lg shadow-gold/20' 
-                      : 'bg-white/5 border-white/10 hover:border-white/30'
-                }`}
-              >
-                {(isSelected || isMatched) ? (
-                  <span className={`font-black text-xs ${isMatched ? 'text-green-500' : 'text-gold'}`}>
-                    {tile.symbol}
-                  </span>
-                ) : (
-                  <div className="w-6 h-6 rounded-full border border-white/20 flex items-center justify-center">
-                    <div className="w-2 h-2 bg-white/20 rounded-full" />
-                  </div>
-                )}
-                
-                {isMatched && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <CheckCircle2 className="w-6 h-6 text-green-500/20" />
-                  </div>
-                )}
-              </motion.button>
-            );
-          })}
-        </div>
+            <div className="space-y-2">
+              <h3 className="text-2xl font-black text-white uppercase tracking-tighter">Enter The Arena</h3>
+              <p className="text-xs text-gray-500 font-medium max-w-[200px]">
+                Watch a short ad to unlock your session and earn GLD rewards!
+              </p>
+            </div>
+
+            <button 
+              onClick={handleStartGame}
+              className="px-10 py-4 rounded-2xl bg-gold text-black font-black text-sm hover:scale-105 transition-all gold-glow uppercase tracking-widest flex items-center gap-2"
+            >
+              <Gamepad2 className="w-5 h-5" />
+              ENTER GAME
+            </button>
+            
+            <p className="text-[8px] text-gray-600 uppercase tracking-widest">Powered by Athena Ad Engine</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-4 gap-3 w-full">
+            {tiles.map((tile) => {
+              const isSelected = selectedIds.includes(tile.id);
+              const isMatched = tile.isMatched;
+              
+              return (
+                <motion.button
+                  key={tile.id}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => handleTileClick(tile.id)}
+                  disabled={isMatched}
+                  className={`aspect-square rounded-xl border-2 transition-all duration-300 flex items-center justify-center relative overflow-hidden ${
+                    isMatched 
+                      ? 'bg-green-500/10 border-green-500/30 opacity-40 grayscale pointer-events-none' 
+                      : isSelected 
+                        ? 'bg-gold/20 border-gold shadow-lg shadow-gold/20' 
+                        : 'bg-white/5 border-white/10 hover:border-white/30'
+                  }`}
+                >
+                  {(isSelected || isMatched) ? (
+                    <span className={`font-black text-xs ${isMatched ? 'text-green-500' : 'text-gold'}`}>
+                      {tile.symbol}
+                    </span>
+                  ) : (
+                    <div className="w-6 h-6 rounded-full border border-white/20 flex items-center justify-center">
+                      <div className="w-2 h-2 bg-white/20 rounded-full" />
+                    </div>
+                  )}
+                  
+                  {isMatched && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <CheckCircle2 className="w-6 h-6 text-green-500/20" />
+                    </div>
+                  )}
+                </motion.button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Victory / Message Overlay */}
