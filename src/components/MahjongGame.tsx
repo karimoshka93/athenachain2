@@ -27,8 +27,10 @@ export default function MahjongGame({ userId, onClose, onBalanceUpdate }: Mahjon
   const [isProcessing, setIsProcessing] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   const [cooldownTime, setCooldownTime] = useState<string | null>(null);
+  const [cooldownRemaining, setCooldownRemaining] = useState<string | null>(null);
 
   const AD_LINK = 'https://data527.click/917ef86e2376286488e0/38da61938e/?placementName=defaultkkk';
+  const COOLDOWN_HOURS = 3;
 
   useEffect(() => {
     if (gameStarted) {
@@ -36,12 +38,82 @@ export default function MahjongGame({ userId, onClose, onBalanceUpdate }: Mahjon
     }
   }, [gameStarted]);
 
+  useEffect(() => {
+    const checkCooldown = async () => {
+      try {
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('last_mahjong_game_at')
+          .eq('id', userId)
+          .single();
+
+        if (error) throw error;
+
+        if (profile?.last_mahjong_game_at) {
+          const lastPlay = new Date(profile.last_mahjong_game_at).getTime();
+          const now = new Date().getTime();
+          const diff = now - lastPlay;
+          const cooldown = COOLDOWN_HOURS * 60 * 60 * 1000;
+
+          if (diff < cooldown) {
+            setCooldownTime(new Date(lastPlay + cooldown).toISOString());
+            return;
+          }
+        }
+        
+        // Fallback to localStorage if Supabase is older or not set
+        const savedCooldown = localStorage.getItem(`mahjong_cooldown_${userId}`);
+        if (savedCooldown) {
+          const nextAvailable = new Date(savedCooldown);
+          if (nextAvailable > new Date()) {
+            setCooldownTime(savedCooldown);
+          }
+        }
+      } catch (err) {
+        console.error('Error checking Mahjong cooldown:', err);
+      }
+    };
+
+    if (userId) {
+      checkCooldown();
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    let interval: any;
+    if (cooldownTime) {
+      interval = setInterval(() => {
+        const nextAvailable = new Date(cooldownTime).getTime();
+        const now = new Date().getTime();
+        const diff = nextAvailable - now;
+
+        if (diff <= 0) {
+          setCooldownRemaining(null);
+          setCooldownTime(null);
+          localStorage.removeItem(`mahjong_cooldown_${userId}`);
+          clearInterval(interval);
+        } else {
+          const h = Math.floor(diff / (1000 * 60 * 60));
+          const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const s = Math.floor((diff % (1000 * 60)) / 1000);
+          setCooldownRemaining(`${h}h ${m}m ${s}s`);
+        }
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [cooldownTime, userId]);
+
   const handleStartGame = () => {
+    if (cooldownRemaining) return;
     window.open(AD_LINK, '_blank');
     setGameStarted(true);
   };
 
   const initializeGame = () => {
+    if (cooldownRemaining) {
+      setGameStarted(false);
+      return;
+    }
     // Create 20 tiles (10 pairs)
     const gameSymbols = [...SYMBOLS, ...SYMBOLS];
     const shuffled = gameSymbols
@@ -111,8 +183,7 @@ export default function MahjongGame({ userId, onClose, onBalanceUpdate }: Mahjon
       const { data, error } = await supabase.rpc('claim_mahjong_reward', { p_user_id: userId });
       
       if (error) throw error;
-      
-      if (data.success) {
+            if (data.success) {
         setMessage({ 
           type: 'success', 
           text: isBoosted 
@@ -120,10 +191,26 @@ export default function MahjongGame({ userId, onClose, onBalanceUpdate }: Mahjon
             : `Victory! You earned ${data.reward} GLD!` 
         });
         onBalanceUpdate();
+
+        // Enforce 3-hour cooldown after successful claim
+        const nextAvailable = new Date(Date.now() + COOLDOWN_HOURS * 60 * 60 * 1000).toISOString();
+        setCooldownTime(nextAvailable);
+        localStorage.setItem(`mahjong_cooldown_${userId}`, nextAvailable);
       } else {
-        if (data.error === 'Wait 2 hours between rewards') {
-          setMessage({ type: 'error', text: 'Game finished! Reward is on cooldown.' });
-          setCooldownTime(data.next_available_at);
+        if (data.error && data.error.includes('Wait 3 hours')) {
+          setMessage({ type: 'error', text: 'Mahjong is resting. Wait 3 hours between rewards.' });
+          
+          if (data.next_available_at) {
+            setCooldownTime(data.next_available_at);
+            localStorage.setItem(`mahjong_cooldown_${userId}`, data.next_available_at);
+          }
+        } else if (data.error === 'Wait 2 hours between rewards') {
+          // Compatibility for older RPC if it hasn't migrated yet
+          setMessage({ type: 'error', text: 'Mahjong is resting. Wait 3 hours between rewards.' });
+          if (data.next_available_at) {
+            setCooldownTime(data.next_available_at);
+            localStorage.setItem(`mahjong_cooldown_${userId}`, data.next_available_at);
+          }
         } else {
           setMessage({ type: 'error', text: data.error || 'Failed to claim reward.' });
         }
@@ -175,9 +262,12 @@ export default function MahjongGame({ userId, onClose, onBalanceUpdate }: Mahjon
         {!isWon && (
           <button 
             onClick={initializeGame}
-            className="text-[10px] font-bold text-gold hover:underline uppercase tracking-tighter"
+            disabled={!!cooldownRemaining}
+            className={`text-[10px] font-bold uppercase tracking-tighter ${
+              cooldownRemaining ? 'text-gray-600 cursor-not-allowed' : 'text-gold hover:underline'
+            }`}
           >
-            Restart
+            {cooldownRemaining ? 'Locked' : 'Restart'}
           </button>
         )}
       </div>
@@ -200,10 +290,24 @@ export default function MahjongGame({ userId, onClose, onBalanceUpdate }: Mahjon
 
             <button 
               onClick={handleStartGame}
-              className="px-10 py-4 rounded-2xl bg-gold text-black font-black text-sm hover:scale-105 transition-all gold-glow uppercase tracking-widest flex items-center gap-2"
+              disabled={!!cooldownRemaining}
+              className={`px-10 py-4 rounded-2xl font-black text-sm transition-all uppercase tracking-widest flex items-center gap-2 ${
+                cooldownRemaining
+                ? 'bg-gray-800 text-gray-500 cursor-not-allowed border border-white/5'
+                : 'bg-gold text-black hover:scale-105 gold-glow'
+              }`}
             >
-              <Gamepad2 className="w-5 h-5" />
-              ENTER GAME
+              {cooldownRemaining ? (
+                <>
+                  <Timer className="w-5 h-5" />
+                  RESTING ({cooldownRemaining.split(' ')[0]})
+                </>
+              ) : (
+                <>
+                  <Gamepad2 className="w-5 h-5" />
+                  ENTER GAME
+                </>
+              )}
             </button>
             
             <p className="text-[8px] text-gray-600 uppercase tracking-widest">Powered by Athena Ad Engine</p>
@@ -308,9 +412,14 @@ export default function MahjongGame({ userId, onClose, onBalanceUpdate }: Mahjon
                     </button>
                     <button 
                       onClick={initializeGame}
-                      className="flex-1 py-3 rounded-xl bg-gold text-black font-bold text-sm hover:brightness-110 transition-all gold-glow"
+                      disabled={!!cooldownRemaining}
+                      className={`flex-1 py-3 rounded-xl font-bold text-sm transition-all ${
+                        cooldownRemaining 
+                        ? 'bg-gray-800 text-gray-500 cursor-not-allowed border border-white/5' 
+                        : 'bg-gold text-black hover:brightness-110 gold-glow'
+                      }`}
                     >
-                      Play Again
+                      {cooldownRemaining ? `Resting (${cooldownRemaining})` : 'Play Again'}
                     </button>
                   </div>
                 )}
