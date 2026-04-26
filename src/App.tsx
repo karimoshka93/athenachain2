@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, ReactNode } from 'react';
+import React, { useState, useEffect, ReactNode, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { 
   LayoutDashboard, 
@@ -2678,6 +2678,7 @@ export default function App() {
     is_eligible: boolean;
   }>({ completed_question_ids: [], total_score: 0, is_eligible: false });
   const [referralStats, setReferralStats] = useState<any>(null);
+  const lastUserDataFetchRef = useRef<number>(0);
 
   useEffect(() => {
     // Capture referral code from URL
@@ -2765,13 +2766,21 @@ export default function App() {
     }
   };
 
-  const loadUserData = async () => {
+  const loadUserData = async (force: boolean = false) => {
     if (!user) return;
+    
+    // Cache check: Avoid refetching if called within last 30 seconds unless forced
+    const now = Date.now();
+    if (!force && lastUserDataFetchRef.current && (now - lastUserDataFetchRef.current < 30000)) {
+      return;
+    }
+    lastUserDataFetchRef.current = now;
+
     try {
       // 1. Load profile to check sync status, mining time, and tasks
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
-        .select('*')
+        .select('id, is_deleted, last_mining_time, username, completed_tasks, legacy_uid, streak_count, last_streak_date, kyc_status, real_name, full_phone_number, kyc_stage2_date')
         .eq('id', user.id)
         .maybeSingle();
 
@@ -2806,7 +2815,7 @@ export default function App() {
       // 2. Load Academy Progress
       const { data: academyData, error: academyError } = await supabase
         .from('academy_progress')
-        .select('*')
+        .select('completed_question_ids, total_score, is_eligible')
         .eq('user_id', user.id)
         .single();
 
@@ -3922,7 +3931,7 @@ const renderContent = () => {
           />
         );
       case 'mainnet': return <MainnetTab />;
-      case 'more': return <MoreTab userId={user?.id || ''} onBalanceUpdate={loadUserData} onLogout={handleLogout} onKYCClick={(tab?: string) => setActiveTab(tab === 'academy' ? 'academy' : tab === 'profile' ? 'profile' : tab === 'settings' ? 'settings' : tab === 'referral' ? 'referral' : tab === 'mainnet-checklist' ? 'mainnet-checklist' : 'kyc')} />;
+      case 'more': return <MoreTab userId={user?.id || ''} onBalanceUpdate={() => loadUserData(true)} onLogout={handleLogout} onKYCClick={(tab?: string) => setActiveTab(tab === 'academy' ? 'academy' : tab === 'profile' ? 'profile' : tab === 'settings' ? 'settings' : tab === 'referral' ? 'referral' : tab === 'mainnet-checklist' ? 'mainnet-checklist' : 'kyc')} />;
       default: 
         return (
           <Dashboard 
