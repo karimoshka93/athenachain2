@@ -194,6 +194,10 @@
     "requirementDesc": "Anda harus menjawab 75% pertanyaan dengan benar; ini adalah persyaratan untuk Daftar Periksa Mainnet.",
     "backToModules": "Kembali ke Modul",
     "steps": "Langkah",
+    "educationalPath": "Jalur pendidikan menuju tata kelola Mainnet",
+    "courseVideo": "Video Kursus",
+    "videoComingSoon": "Tautan YouTube Segera Hadir",
+    "knowledgeTest": "Tes Pengetahuan",
     "courses": {
       "1": {
         "title": "Pengantar Athena Chain",

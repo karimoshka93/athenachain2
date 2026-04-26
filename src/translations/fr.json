@@ -151,6 +151,10 @@
     "requirementDesc": "Vous devez répondre correctement à 75 % des questions ; c'est une exigence pour la liste de contrôle du Mainnet.",
     "backToModules": "Retour aux Modules",
     "steps": "Étapes",
+    "educationalPath": "Parcours éducatif vers la gouvernance du Mainnet",
+    "courseVideo": "Vidéo du cours",
+    "videoComingSoon": "Liens YouTube à venir",
+    "knowledgeTest": "Test de connaissances",
     "courses": {
       "1": {
         "title": "Introduction à Athena Chain",

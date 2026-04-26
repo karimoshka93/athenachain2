@@ -159,6 +159,10 @@
     "requirementDesc": "Вы должны правильно ответить на 75% вопросов; это обязательное условие для контрольного списка Mainnet.",
     "backToModules": "Назад к модулям",
     "steps": "Шаги",
+    "educationalPath": "Образовательный путь к управлению Mainnet",
+    "courseVideo": "Видео курса",
+    "videoComingSoon": "Ссылки на YouTube скоро появятся",
+    "knowledgeTest": "Проверка знаний",
     "courses": {
       "1": {
         "title": "Введение в Athena Chain",

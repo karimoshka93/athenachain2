@@ -194,6 +194,10 @@
     "requirementDesc": "Bạn phải trả lời đúng 75% câu hỏi; đây là yêu cầu đối với Danh sách kiểm tra Mainnet.",
     "backToModules": "Quay lại Mô-đun",
     "steps": "Bước",
+    "educationalPath": "Con đường giáo dục hướng tới quản trị Mainnet",
+    "courseVideo": "Video khóa học",
+    "videoComingSoon": "Liên kết YouTube sắp ra mắt",
+    "knowledgeTest": "Bài kiểm tra kiến thức",
     "courses": {
       "1": {
         "title": "Giới thiệu về Athena Chain",

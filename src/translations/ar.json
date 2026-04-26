@@ -165,6 +165,10 @@
     "requirementDesc": "يجب عليك الإجابة على 75% من الأسئلة بشكل صحيح؛ هذا مطلب لقائمة التحقق من الشبكة الرئيسية (Mainnet Checklist).",
     "backToModules": "العودة إلى الوحدات",
     "steps": "خطوات",
+    "educationalPath": "المسار التعليمي نحو حوكمة الشبكة الرئيسية",
+    "courseVideo": "فيديو الدورة",
+    "videoComingSoon": "روابط يوتيوب قريباً",
+    "knowledgeTest": "اختبار المعرفة",
     "courses": {
       "1": {
         "title": "مقدمة إلى سلسلة أثينا (Athena Chain)",

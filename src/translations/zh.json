@@ -200,6 +200,10 @@
     "requirementDesc": "您必须正确回答 75% 的问题；这是主网检查清单的一项要求。",
     "backToModules": "返回模块",
     "steps": "步骤",
+    "educationalPath": "通往主网治理的教育之路",
+    "courseVideo": "课程视频",
+    "videoComingSoon": "YouTube 链接即将推出",
+    "knowledgeTest": "知识测试",
     "courses": {
       "1": {
         "title": "Athena Chain 介绍",

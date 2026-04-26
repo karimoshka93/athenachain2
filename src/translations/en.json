@@ -207,6 +207,10 @@
     "requirementDesc": "You must answer 75% of the questions correctly; this is a requirement for the Mainnet Checklist.",
     "backToModules": "Back to Modules",
     "steps": "Steps",
+    "educationalPath": "Educational path to Mainnet governance",
+    "courseVideo": "Course Video",
+    "videoComingSoon": "YouTube Links Coming Soon",
+    "knowledgeTest": "Knowledge Test",
     "courses": {
       "1": {
         "title": "Introduction to Athena Chain",
