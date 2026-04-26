@@ -27,18 +27,9 @@ const SlotsGame: React.FC<SlotsGameProps> = ({ userId, onBalanceUpdate, onClose 
 
   useEffect(() => {
     checkCooldown();
+    const interval = setInterval(checkCooldown, 60000);
+    return () => clearInterval(interval);
   }, []);
-
-  // Local timer update to avoid Supabase polling
-  useEffect(() => {
-    let timerInterval: any;
-    if (timeLeft !== null && timeLeft > 0) {
-      timerInterval = setInterval(() => {
-        setTimeLeft(prev => (prev !== null && prev > 0) ? prev - 1 : null);
-      }, 1000);
-    }
-    return () => clearInterval(timerInterval);
-  }, [timeLeft !== null]);
 
   const checkCooldown = async () => {
     try {
