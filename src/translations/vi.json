@@ -186,5 +186,235 @@
     "waiting": "Đang chờ",
     "pending": "Chờ xử lý",
     "completed": "Hoàn thành"
+  },
+  "academy": {
+    "module": "Mô-đun",
+    "progress": "Tiến trình Đủ điều kiện",
+    "requirement": "Yêu cầu",
+    "requirementDesc": "Bạn phải trả lời đúng 75% câu hỏi; đây là yêu cầu đối với Danh sách kiểm tra Mainnet.",
+    "backToModules": "Quay lại Mô-đun",
+    "steps": "Bước",
+    "courses": {
+      "1": {
+        "title": "Giới thiệu về Athena Chain",
+        "description": "Nền tảng của cơ sở hạ tầng phi tập trung hiệu suất cao",
+        "questions": {
+          "1": { "text": "Mục tiêu chính của Athena Chain là gì?", "options": ["Cơ sở hạ tầng phi tập trung hiệu suất cao", "Một nền tảng truyền thông xã hội đơn giản", "Một lưu trữ đám mây tập trung", "Một bảng điều khiển chỉ dành cho trò chơi"] },
+          "2": { "text": "Cơ chế đồng thuận nào được Athena sử dụng?", "options": ["Bằng chứng công việc (PoW)", "Bằng chứng cổ phần (PoS)", "Bằng chứng lịch sử (PoH)", "Bằng chứng thẩm quyền (PoA)"] },
+          "3": { "text": "Athena có thể xử lý bao nhiêu giao dịch mỗi giây (TPS)?", "options": ["100 TPS", "1,000 TPS", "10,000 TPS", "100,000+ TPS"] },
+          "4": { "text": "Tên của mã thông báo gốc là gì?", "options": ["GEM", "ATH", "PI", "BTC"] },
+          "5": { "text": "Athena có tương thích với EVM (Máy ảo Ethereum) không?", "options": ["Có", "Không", "Chỉ dành cho NFT", "Chỉ dành cho Staking"] }
+        }
+      },
+      "2": {
+        "title": "Khai thác & Phần thưởng (ATH/GEM)",
+        "description": "Tìm hiểu cách tối đa hóa thu nhập của bạn trong hệ sinh thái",
+        "questions": {
+          "6": { "text": "Bạn có thể nhận phần thưởng khai thác bao lâu một lần?", "options": ["Mỗi giờ", "Mỗi 12 giờ", "Mỗi 24 giờ", "Một lần một tuần"] },
+          "7": { "text": "Mã thông báo phụ kiếm được trong quá trình khai thác là gì?", "options": ["ATH", "GEM", "GLD", "USDT"] },
+          "8": { "text": "Bạn có thể tăng tốc độ khai thác của mình không?", "options": ["Không, nó được cố định", "Có, thông qua giới thiệu và staking", "Chỉ bằng cách thanh toán hàng tháng", "Chỉ vào cuối tuần"] },
+          "9": { "text": "Điều gì xảy ra với các mã thông báo GEM?", "options": ["Chúng bị xóa", "Chúng được chuyển đổi sang ATH hàng tháng", "Chúng được sử dụng làm phí gas", "Chúng được bán trên các sàn giao dịch"] },
+          "10": { "text": "Khai thác có tốn pin trên di động không?", "options": ["Có, rất nhiều", "Không, nó dựa trên đám mây", "Chỉ khi ứng dụng được mở", "Chỉ trên Android"] }
+        }
+      },
+      "3": {
+        "title": "KYC & Bảo mật",
+        "description": "Đảm bảo tuân thủ và bảo vệ tài sản của bạn",
+        "questions": {
+          "11": { "text": "Tại sao KYC là bắt buộc đối với Mainnet?", "options": ["Để thu thập dữ liệu người dùng cho quảng cáo", "Để ngăn chặn các cuộc tấn công sybil và đảm bảo tuân thủ", "Để thu phí người dùng", "Nó thực sự không bắt buộc"] },
+          "12": { "text": "Các giai đoạn KYC trong Athena là gì?", "options": ["Chỉ giai đoạn 1", "Giai đoạn 1 và 2", "Giai đoạn 1, 2 và 3", "Giai đoạn A và B"] },
+          "13": { "text": "Tài liệu nào thường được yêu cầu cho Giai đoạn 2?", "options": ["Thẻ thư viện", "ID chính phủ", "Hóa đơn tiện ích", "Hồ sơ truyền thông xã hội"] },
+          "14": { "text": "Bạn có thể giao dịch mã thông báo mà không có KYC không?", "options": ["Có, đầy đủ", "Không, điều đó là không thể", "Chức năng bị hạn chế", "Chỉ vào thứ Ba"] },
+          "15": { "text": "Dữ liệu của bạn có được mã hóa trên Athena không?", "options": ["Có", "Không", "Chỉ dành cho VIP", "Chỉ trên Mainnet"] }
+        }
+      },
+      "4": {
+        "title": "Kinh tế mã thông báo & Quản trị",
+        "description": "Hiểu về nguồn cung ATH và hệ thống bỏ phiếu",
+        "questions": {
+          "16": { "text": "Tổng nguồn cung của ATH là bao nhiêu?", "options": ["100 triệu", "560 triệu", "1 tỷ", "Vô hạn"] },
+          "17": { "text": "Tỷ lệ phần trăm mã thông báo được phân bổ cho cộng đồng là bao nhiêu?", "options": ["10%", "30%", "50%", "70%"] },
+          "18": { "text": "Làm thế nào bạn có thể tham gia quản trị?", "options": ["Chỉ bằng cách khai thác", "Bằng cách staking ATH", "Bằng cách xem video", "Bằng cách mời bạn bè"] },
+          "19": { "text": "Cơ chế 'Burn' là gì?", "options": ["Xóa các tài khoản không hoạt động", "Một phần phí bị loại bỏ vĩnh viễn khỏi nguồn cung", "Bán mã thông báo cho người dùng", "Tăng tổng nguồn cung"] },
+          "20": { "text": "Tiện ích của mã thông báo GLD là gì?", "options": ["Chỉ để khai thác", "Quản trị và phần thưởng hệ sinh thái", "Trả phí gas", "Giao dịch trên Binance"] }
+        }
+      },
+      "5": {
+        "title": "Hệ sinh thái & Đối tác",
+        "description": "Khám phá mạng lưới rộng lớn hơn và tiện ích",
+        "questions": {
+          "21": { "text": "Athena Launchpad là gì?", "options": ["Một địa điểm phóng tên lửa", "Một nền tảng cho các dự án mới huy động vốn", "Nơi để mua ATH", "Một trang web tin tức"] },
+          "22": { "text": "Bạn có thể sử dụng ATH trong Chợ NFT không?", "options": ["Có", "Không", "Chỉ dành cho các NFT đặc biệt", "Chỉ trên OpenSea"] },
+          "23": { "text": "Ai là đối tác chính của Athena?", "options": ["Các ngân hàng địa phương", "Các sàn giao dịch tiền điện tử lớn và các công ty công nghệ", "Chuỗi thức ăn nhanh", "Thương hiệu quần áo"] },
+          "24": { "text": "Học viện Athena là gì?", "options": ["Một trường học vật lý", "Một nền tảng giáo dục cho người dùng", "Một công ty tuyển dụng", "Một thư viện"] },
+          "25": { "text": "Làm thế nào để bạn tham gia thị trường Athena P2P?", "options": ["Chỉ cần tải ứng dụng", "Hoàn thành KYC và liên kết ví", "Trả một khoản phí đăng ký", "Mời 10 người bạn"] }
+        }
+      },
+      "6": {
+        "title": "Staking & Thu nhập thụ động",
+        "description": "Cách khóa ATH của bạn và kiếm phần thưởng lãi suất cao",
+        "questions": {
+          "26": { "text": "Staking trong Athena là gì?", "options": ["Bán mã thông báo của bạn", "Khóa mã thông báo để hỗ trợ mạng lưới và kiếm lãi", "Gửi mã thông báo cho bạn bè", "Xóa tài khoản của bạn"] },
+          "27": { "text": "Phạm vi điển hình cho APY Staking là gì?", "options": ["1-2%", "10-20%+", "50-100%", "Bằng không"] },
+          "28": { "text": "Thời gian staking tối thiểu là bao lâu?", "options": ["1 ngày", "7 ngày", "30 ngày", "Tùy thuộc vào nhóm được chọn"] },
+          "29": { "text": "Điều gì xảy ra nếu bạn unstake sớm?", "options": ["Bạn mất tất cả mã thông báo", "Bạn có thể phải trả một khoản phí phạt nhỏ", "Không có gì xảy ra", "Bạn giành được tiền thưởng"] },
+          "30": { "text": "Mã thông báo nào có thể được staked để kiếm thêm ATH?", "options": ["Chỉ BTC", "Chỉ DOGE", "Mã thông báo ATH", "Chỉ ETH"] }
+        }
+      },
+      "7": {
+        "title": "An toàn giao dịch P2P",
+        "description": "Trao đổi ngang hàng an toàn mà không cần người trung gian",
+        "questions": {
+          "31": { "text": "Giao dịch P2P là gì?", "options": ["Chuyên nghiệp đến Chuyên nghiệp", "Ngang hàng (Trao đổi trực tiếp giữa người dùng)", "Giao thức đến Giao thức", "Giá đến Giá"] },
+          "32": { "text": "Athena bảo vệ các giao dịch P2P như thế nào?", "options": ["Qua các cuộc gọi điện thoại", "Sử dụng hệ thống Escrow (Ký quỹ)", "Bằng cách trực tiếp theo dõi giao dịch", "Nó không bảo vệ chúng"] },
+          "33": { "text": "Khi nào bạn nên giải phóng tiền điện tử trong một giao dịch P2P?", "options": ["Ngay khi người mua nói họ đã trả tiền", "Sau khi bạn nhận được và xác minh khoản thanh toán trong ngân hàng/ứng dụng của mình", "Trước khi giao dịch bắt đầu", "Không bao giờ"] },
+          "34": { "text": "Bạn nên làm gì nếu người mua yêu cầu giao dịch ngoài ứng dụng?", "options": ["Làm điều đó để được giảm giá", "Báo cáo họ và ở lại trong nền tảng Athena để đảm bảo an toàn", "Nói có ngay lập tức", "Hỏi số điện thoại của họ"] },
+          "35": { "text": "Có hệ thống đánh giá cho các nhà giao dịch P2P không?", "options": ["Có, để thể hiện sự tin tưởng và lịch sử thành công", "Không, nó ẩn danh", "Chỉ dành cho VIP", "Chỉ trên Android"] }
+        }
+      },
+      "8": {
+        "title": "Hệ sinh thái chơi game Athena",
+        "description": "Cơ chế Play-to-Earn trong metaverse Athena",
+        "questions": {
+          "36": { "text": "'Play-to-Earn' (P2E) là gì?", "options": ["Trả tiền để chơi trò chơi", "Kiếm phần thưởng tiền điện tử thực bằng cách chơi trò chơi", "Xem người khác chơi", "Thiết kế trò chơi của riêng bạn"] },
+          "37": { "text": "Những mã thông báo nào có thể được sử dụng để mua sắm trong trò chơi?", "options": ["Chỉ V-Bucks", "ATH và GEM", "Chỉ USD", "Chỉ Credits"] },
+          "38": { "text": "Các vật phẩm trong trò chơi có được lưu trữ dưới dạng NFT không?", "options": ["Có, để có quyền sở hữu thực sự", "Không, chúng tập trung", "Chỉ dành cho 10 người chơi hàng đầu", "Chỉ trên trang web"] },
+          "39": { "text": "Vòng quay may mắn là gì?", "options": ["Một trò chơi toán học", "Một trò chơi dựa trên may mắn hàng ngày để giành ATH/GEM", "Một vô lăng cho ô tô", "Một đề xuất quản trị"] },
+          "40": { "text": "Bạn có thể thắng GLD thực từ Athena Slots không?", "options": ["Không, nó chỉ để giải trí", "Có, nó được kết nối với phần thưởng hệ sinh thái", "Chỉ khi bạn thắng 100 lần", "Chỉ khi bạn giới thiệu 5 người"] }
+        }
+      },
+      "9": {
+        "title": "Cơ chế Bot giao dịch AI",
+        "description": "Tận dụng trí tuệ nhân tạo để giao dịch thông minh hơn",
+        "questions": {
+          "41": { "text": "Bot giao dịch AI của Athena làm gì?", "options": ["Nó mua pizza cho bạn", "Nó phân tích xu hướng thị trường và thực hiện các giao dịch tự động", "Nó khai thác Bitcoin trên điện thoại của bạn", "Nó xóa các giao dịch tồi tệ của bạn"] },
+          "42": { "text": "Bot AI có đảm bảo lợi nhuận 100% không?", "options": ["Có, luôn luôn", "Không, giao dịch luôn đi kèm rủi ro bất chấp phân tích thông minh", "Chỉ trong tuần đầu tiên", "Chỉ trên ETH"] },
+          "43": { "text": "Bot AI sử dụng dữ liệu nào?", "options": ["Tờ báo ngày hôm qua", "Dữ liệu thị trường thời gian thực, khối lượng và tâm lý", "Lịch sử duyệt web của bạn", "Các con số ngẫu nhiên"] },
+          "44": { "text": "Bạn có thể đặt 'Mức độ rủi ro' của riêng mình trên bot không?", "options": ["Không, nó tự động", "Có, chọn giữa Thận trọng, Cân bằng hoặc Quyết liệt", "Chỉ khi bạn trả phí", "Chỉ vào cuối tuần"] },
+          "45": { "text": "Mọi người dùng đã xác minh KYC có thể truy cập Bot AI không?", "options": ["Có", "Không, chỉ dành cho cá mập (whales)", "Chỉ dành cho nhóm phát triển", "Chỉ dành cho những người có 1.000 lượt giới thiệu"] }
+        }
+      },
+      "10": {
+        "title": "Lộ trình tương lai & Mainnet",
+        "description": "Con đường hướng tới phi tập trung và niêm yết ATH",
+        "questions": {
+          "46": { "text": "Khi nào niêm yết ATH theo lịch trình?", "options": ["Nó đã xảy ra rồi", "Kiểm tra Lộ trình chính thức trong ứng dụng để biết ngày Quý 3/Quý 4 hiện tại", "Không bao giờ", "Trong 10 năm tới"] },
+          "47": { "text": "'Ra mắt Mainnet' là gì?", "options": ["Ra mắt một trang web", "Việc phát hành chuỗi khối Athena độc lập, trực tiếp", "Ra mắt một trò chơi mới", "Một sự kiện tiếp thị"] },
+          "48": { "text": "Điều gì sẽ xảy ra với các mã thông báo Testnet của bạn trong suốt Mainnet?", "options": ["Chúng bị xóa", "Chúng được di chuyển/chuyển đổi dựa trên điều kiện đủ", "Chúng trở nên trị giá $1,000 mỗi mã", "Không có gì, chúng vẫn là Testnet"] },
+          "49": { "text": "Danh sách kiểm tra Mainnet là gì?", "options": ["Một danh sách mua sắm", "Một bộ các yêu cầu (KYC, Học viện, v.v.) để chuẩn bị di chuyển", "Một danh sách các nhà phát triển", "Một danh sách các trò chơi"] },
+          "50": { "text": "Athena có kế hoạch mở rộng sang các quốc gia khác không?", "options": ["Không, nó chỉ là địa phương", "Có, mục tiêu là bao hàm tài chính toàn cầu", "Chỉ ở Mỹ", "Chỉ ở Châu Âu"] }
+        }
+      },
+      "11": {
+        "title": "Thành thạo giao dịch P2P",
+        "description": "Cách mua và bán an toàn bằng các phương thức thanh toán địa phương",
+        "questions": {
+          "51": { "text": "Lợi ích chính của Athena P2P là gì?", "options": ["Trao đổi trực tiếp tiền điện tử lấy tiền địa phương", "Đó là một cách để chơi trò chơi", "Một nơi lưu trữ ảnh", "Một công cụ khai thác"] },
+          "52": { "text": "Mục đích của vai trò 'Thương gia' (Merchant) là gì?", "options": ["Để xóa tài khoản", "Để cung cấp thanh khoản và xây dựng lòng tin", "Để thay đổi chủ đề ứng dụng", "Để xem quảng cáo"] },
+          "53": { "text": "Làm thế nào để bạn chọn một người bán P2P an toàn?", "options": ["Bằng tên người dùng của họ", "Tìm kiếm tỷ lệ hoàn thành cao và phản hồi tích cực", "Lựa chọn ngẫu nhiên", "Người có số dư thấp nhất"] },
+          "54": { "text": "Giao dịch trước khi tiền điện tử được ký quỹ có an toàn không?", "options": ["Có, luôn luôn", "Không, nền tảng đảm bảo tiền điện tử được giữ cho đến khi thanh toán được xác nhận", "Chỉ với bạn bè", "Chỉ trên Android"] },
+          "55": { "text": "Bạn nên bao gồm những gì trong mô tả thanh toán?", "options": ["Một câu chuyện dài", "Chỉ những gì người bán chỉ định, thường là mã tham chiếu", "Mật khẩu của bạn", "Không có gì"] }
+        }
+      },
+      "12": {
+        "title": "Xác minh KYC nâng cao",
+        "description": "Điều hướng Giai đoạn 2 và bảo mật danh tính sinh trắc học",
+        "questions": {
+          "56": { "text": "Điều gì phân biệt KYC Giai đoạn 2 với Giai đoạn 1?", "options": ["Giai đoạn 2 yêu cầu tài liệu và xác minh sinh trắc học", "Giai đoạn 1 khó hơn", "Không có sự khác biệt", "Giai đoạn 2 dành cho robot"] },
+          "57": { "text": "Tại sao Giai đoạn 2 lại quan trọng?", "options": ["Để thay đổi ảnh hồ sơ của bạn", "Nó bắt buộc để đủ điều kiện rút tiền Mainnet", "Để chơi trò chơi", "Để khai thác nhanh hơn"] },
+          "58": { "text": "Những tài liệu nào thường được chấp nhận cho Giai đoạn 2?", "options": ["Thẻ thư viện", "Hộ chiếu, CMND/CCCD hoặc Giấy phép lái xe", "Thẻ học sinh", "Biên lai thuê nhà"] },
+          "59": { "text": "Xác minh Giai đoạn 2 thường mất bao lâu?", "options": ["1 giây", "Thường là 24-48 giờ tùy thuộc vào khối lượng", "1 tháng", "1 năm"] },
+          "60": { "text": "Bạn nên làm gì nếu KYC của bạn bị từ chối?", "options": ["Xóa ứng dụng", "Đăng ký lại với ảnh rõ nét hơn hoặc liên hệ bộ phận hỗ trợ", "Bỏ cuộc", "Tạo một tài khoản mới"] }
+        }
+      },
+      "13": {
+        "title": "Tối đa hóa tốc độ khai thác",
+        "description": "Các kỹ thuật để mở rộng quy mô sản xuất GEM/ATH hàng ngày của bạn",
+        "questions": {
+          "61": { "text": "Thời gian phiên khai thác tiêu chuẩn là bao lâu?", "options": ["1 giờ", "12 giờ", "24 giờ", "48 giờ"] },
+          "62": { "text": "Làm thế nào bạn có thể tăng sản lượng GEM của mình một cách hiệu quả?", "options": ["Bằng cách đóng ứng dụng", "Bằng cách xây dựng một đội ngũ và hoàn thành các nhiệm vụ hàng ngày", "Bằng cách không làm gì cả", "Bằng cách thay đổi email của bạn"] },
+          "63": { "text": "Gói Athena Premium có ảnh hưởng đến việc khai thác không?", "options": ["Không", "Có, nó cung cấp một hệ số nhân tốc độ vĩnh viễn", "Chỉ trong 1 ngày", "Nó làm chậm lại"] },
+          "64": { "text": "'Chỉ số Boost' là gì?", "options": ["Một bản tin thời tiết", "Một số điểm tính toán đóng góp tổng thể của bạn cho tốc độ mạng", "Một cấp độ trò chơi", "Phần trăm pin của bạn"] },
+          "65": { "text": "Bạn có thể mất phần thưởng 'chuỗi' (streak) khai thác của mình không?", "options": ["Không", "Có, nếu bạn không nhận trong thời gian ân hạn đã chỉ định", "Chỉ trên iOS", "Chỉ khi bạn đăng xuất"] }
+        }
+      },
+      "14": {
+        "title": "Cấu hình ví an toàn",
+        "description": "Thiết lập ví Athena không lưu ký của bạn",
+        "questions": {
+          "66": { "text": "Ví Athena là gì?", "options": ["Một chiếc ví da vật lý", "Một ví kỹ thuật số không lưu ký an toàn cho ATH và GEM", "Một tài khoản ngân hàng", "Một thị trường"] },
+          "67": { "text": "'Cụm từ khôi phục bí mật' là gì?", "options": ["Địa chỉ email của bạn", "Một tập hợp gồm 12-24 từ được sử dụng để khôi phục tài sản ví của bạn", "Số điện thoại của bạn", "Tên ứng dụng"] },
+          "68": { "text": "Bạn nên chia sẻ cụm từ bí mật của mình với ai?", "options": ["Hỗ trợ Athena", "Người bạn thân nhất của bạn", "Tuyệt đối không có ai", "Cảnh sát"] },
+          "69": { "text": "Ứng dụng Athena có thể khôi phục cụm từ của bạn nếu bị mất không?", "options": ["Có, thông qua email", "Không, vì lý do bảo mật, chỉ bạn mới nắm giữ chìa khóa", "Chỉ khi bạn trả tiền", "Chỉ dành cho quản trị viên"] },
+          "70": { "text": "Địa chỉ 'Nhận' được sử dụng để làm gì?", "options": ["Gửi tiền điện tử", "Nhận mã thông báo từ người dùng khác hoặc các sàn giao dịch", "Đăng nhập", "Mua NFT"] }
+        }
+      },
+      "15": {
+        "title": "Sẵn sàng cho Mainnet & Di chuyển",
+        "description": "Các bước cuối cùng để cầu nối tài sản của bạn sang chuỗi trực tiếp",
+        "questions": {
+          "71": { "text": "Bước đầu tiên của quá trình di chuyển là gì?", "options": ["Đảm bảo tất cả các mục Danh sách kiểm tra Mainnet đều màu xanh/đã xác minh", "Mua điện thoại mới", "Xóa ứng dụng", "Gửi 1.000 lượt giới thiệu"] },
+          "72": { "text": "Điều gì xảy ra với trạng thái khai thác của bạn sau Mainnet?", "options": ["Nó dừng lại mãi mãi", "Bạn tiếp tục khai thác trên chuỗi khối độc lập, trực tiếp", "Nó trở nên khó khăn hơn", "Nó được thay thế bằng một bài kiểm tra"] },
+          "73": { "text": "Có bất kỳ khoản phí nào cho việc di chuyển không?", "options": ["Không, nó miễn phí", "Phí gas mạng nhỏ được trả bằng tiền điện tử gốc", "Một khoản phí cố định $50", "Nó tốn một nửa số mã thông báo của bạn"] },
+          "74": { "text": "Bạn có thể di chuyển nhiều tài khoản cho mỗi người không?", "options": ["Có", "Không, giới hạn KYC chỉ một tài khoản được xác minh cho mỗi người", "Lên đến 5", "Chỉ khi bạn là người dùng Premium"] },
+          "75": { "text": "Lợi ích chính của Mainnet ATH là gì?", "options": ["Nó có màu khác", "Giá trị thị trường thực tế và khả năng giao dịch trên các sàn giao dịch", "Đồ họa tốt hơn", "Nó tồn tại lâu hơn"] }
+        }
+      },
+      "16": {
+        "title": "Lưu trữ Nút phi tập trung",
+        "description": "Hỗ trợ cơ sở hạ tầng mạng để nhận phần thưởng",
+        "questions": {
+          "76": { "text": "Nút (Node) Athena là gì?", "options": ["Một máy tính vật lý xử lý các giao dịch mạng", "Một loại mã thông báo điện tử", "Một cục pin điện thoại di động", "Một người theo dõi phương tiện truyền thông xã hội"] },
+          "77": { "text": "Lợi ích của việc chạy một nút là gì?", "options": ["Nó làm cho điện thoại của bạn nhanh hơn", "Bạn kiếm được một phần phí mạng và phần thưởng khối", "Nó cung cấp cho bạn phí bảo hiểm miễn phí", "Không có gì, nó là tự nguyện"] },
+          "78": { "text": "Bạn có cần thời gian hoạt động 24/7 cho một nút không?", "options": ["Không, chỉ một giờ mỗi ngày", "Có, tính khả dụng cao đảm bảo sự ổn định của mạng", "Chỉ vào cuối tuần", "Chỉ khi bạn thức"] },
+          "79": { "text": "'Slashing' là gì?", "options": ["Một giảm giá trên mã thông báo", "Một hình phạt cho các nút có hành động độc hại hoặc ngoại tuyến", "Tăng số dư người dùng", "Một chiến lược tiếp thị"] },
+          "80": { "text": "Một nhóm cộng đồng có thể chạy một nút không?", "options": ["Có, cho phép nhiều người dùng chia sẻ phần thưởng của một nút", "Không, chỉ các cá nhân", "Chỉ dành cho quản trị viên", "Chỉ dành cho chính phủ"] }
+        }
+      },
+      "17": {
+        "title": "Cầu nối chuỗi chéo",
+        "description": "Di chuyển tài sản của bạn giữa Athena và các chuỗi khác",
+        "questions": {
+          "81": { "text": "'Cầu nối' (Bridge) trong tiền điện tử là gì?", "options": ["Một cây cầu vật lý", "Một giao thức chuyển giao tài sản giữa các chuỗi khối khác nhau", "Một cách để hack tài khoản", "Một phòng chat của người dùng"] },
+          "82": { "text": "Những chuỗi nào tương thích với Cầu nối Athena?", "options": ["Không có", "Ethereum, BNB Chain và những chuỗi khác", "Chỉ các chuỗi nội bộ", "Chỉ các hệ thống cũ"] },
+          "83": { "text": "Tại sao bạn muốn chuyển tài sản sang Athena?", "options": ["Để trả thêm phí", "Để truy cập hệ sinh thái tốc độ cao và chi phí thấp của Athena", "Để mất mã thông báo", "Để thay đổi tên người dùng của bạn"] },
+          "84": { "text": "Việc cầu nối có tức thì không?", "options": ["Có, luôn luôn", "Nó phụ thuộc vào tốc độ xác nhận của chuỗi nguồn", "Mất 1 năm", "Chỉ dành cho người dùng premium"] },
+          "85": { "text": "'Wrapped ATH' là gì?", "options": ["ATH trong hộp quà", "Một mã thông báo được bảo chứng bởi ATH trên một chuỗi khối khác (như ERC-20)", "Một mã thông báo giả", "Một mã thông báo bị khóa"] }
+        }
+      },
+      "18": {
+        "title": "Nhóm Staking cộng đồng",
+        "description": "Khai thác lợi nhuận hợp tác để đạt hiệu quả cao hơn",
+        "questions": {
+          "86": { "text": "Nhóm Staking (Staking Pool) là gì?", "options": ["Một hồ bơi cho tiền điện tử", "Một nhóm người dùng kết hợp mã thông báo để tăng phần thưởng", "Một nơi để mua GEM", "Một thiết bị khai thác"] },
+          "87": { "text": "Ai quản lý một Nhóm Staking?", "options": ["Một Người vận hành Nhóm (Pool Operator)", "Người dùng có ít mã thông báo nhất", "Một robot ngẫu nhiên", "Không ai cả"] },
+          "88": { "text": "Lợi thế của một nhóm đối với người dùng 'nhỏ' là gì?", "options": ["Họ nhận được ít phần thưởng hơn", "Họ có thể kiếm được lợi suất staking mà không cần đáp ứng mức tối thiểu cao", "Họ nhận được quà tặng miễn phí", "Không có lợi thế nào"] },
+          "89": { "text": "Các phần thưởng có được phân phối tự động không?", "options": ["Không, bạn phải gọi hỗ trợ", "Có, các hợp đồng thông minh xử lý việc phân phối dựa trên tỷ lệ", "Chỉ một lần một năm", "Chỉ khi bạn thắng một cuộc thi"] },
+          "90": { "text": "Bạn có thể rời khỏi nhóm bất cứ lúc nào không?", "options": ["Có, mặc dù một số nhóm có thời gian gỡ bỏ ngắn", "Không, bạn bị khóa mãi mãi", "Chỉ khi quản trị viên đồng ý", "Chỉ khi bạn trả $100"] }
+        }
+      },
+      "19": {
+        "title": "Athena DEX & Thanh khoản",
+        "description": "Hoán đổi mã thông báo và cung cấp thanh khoản trên chuỗi",
+        "questions": {
+          "91": { "text": "DEX là gì?", "options": ["Một sàn giao dịch phi tập trung", "Một chuyên gia kỹ thuật số", "Một đơn vị lưu trữ dữ liệu", "Một ngân hàng tập trung"] },
+          "92": { "text": "'Automated Market Maker' (AMM) là gì?", "options": ["Một người giao dịch cho bạn", "Một thuật toán cung cấp thanh khoản tức thì cho các hoán đổi", "Một robot bán hàng", "Một máy khai thác"] },
+          "93": { "text": "Bạn kiếm được gì khi cung cấp thanh khoản?", "options": ["Không có gì", "Một phần của mỗi phí hoán đổi giao dịch", "Quảng cáo miễn phí", "NFT ngẫu nhiên"] },
+          "94": { "text": "'Tổn thất tạm thời' (Impermanent Loss) là gì?", "options": ["Mất điện thoại của bạn", "Một khoản lỗ tiềm năng so với việc nắm giữ khi giá cả thay đổi", "Phí cố định hàng tháng", "Mất mật khẩu của bạn"] },
+          "95": { "text": "Athena DEX có phải là không lưu ký không?", "options": ["Có, bạn giữ quyền kiểm soát chìa khóa của mình", "Không, Athena giữ mã thông báo của bạn", "Chỉ trên Mainnet", "Chỉ trong ngày"] }
+        }
+      },
+      "20": {
+        "title": "Trở thành Người tiên phong Athena",
+        "description": "Chứng nhận Mainnet và tương lai của Athena",
+        "questions": {
+          "96": { "text": "Hoàn thành Học viện có ý nghĩa gì?", "options": ["Bạn là bậc thầy kiến thức về Athena và đủ điều kiện nhận các lợi ích Mainnet", "Bạn là người dùng mới", "Bạn đã kết thúc một trò chơi", "Bạn là quản trị viên"] },
+          "97": { "text": "Vai trò của 'Người tiên phong Athena' (Athena Pioneer) là gì?", "options": ["Để giúp xây dựng, bảo mật và truyền bá mạng lưới", "Chỉ để xem quảng cáo", "Để thiết kế đồ họa", "Chỉ để chờ tăng giá"] },
+          "98": { "text": "Học viện có kết thúc ở đây không?", "options": ["Có, mãi mãi", "Không, các mô-đun mới sẽ được thêm vào khi hệ sinh thái phát triển", "Nó thiết lập lại mỗi tháng", "Chỉ cho testnet"] },
+          "99": { "text": "Làm thế nào bạn có thể giúp đỡ cộng đồng?", "options": ["Bằng cách thô lỗ", "Bằng cách hướng dẫn người dùng mới và chia sẻ kiến thức chính xác", "Bằng cách giữ bí mật", "Bằng cách không làm gì cả"] },
+          "100": { "text": "Bạn đã sẵn sàng cho Athena Mainnet chưa?", "options": ["Có!", "Chưa", "Có lẽ", "Tôi không chắc"] }
+        }
+      }
+    }
   }
 }

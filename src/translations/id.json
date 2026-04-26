@@ -186,5 +186,235 @@
     "waiting": "Menunggu",
     "pending": "Tertunda",
     "completed": "Selesai"
+  },
+  "academy": {
+    "module": "Modul",
+    "progress": "Kemajuan Kelayakan",
+    "requirement": "Persyaratan",
+    "requirementDesc": "Anda harus menjawab 75% pertanyaan dengan benar; ini adalah persyaratan untuk Daftar Periksa Mainnet.",
+    "backToModules": "Kembali ke Modul",
+    "steps": "Langkah",
+    "courses": {
+      "1": {
+        "title": "Pengantar Athena Chain",
+        "description": "Fondasi infrastruktur terdesentralisasi berkinerja tinggi",
+        "questions": {
+          "1": { "text": "Apa tujuan utama Athena Chain?", "options": ["Infrastruktur terdesentralisasi berkinerja tinggi", "Platform media sosial sederhana", "Penyimpanan cloud terpusat", "Konsol khusus game"] },
+          "2": { "text": "Mekanisme konsensus apa yang digunakan Athena?", "options": ["Proof of Work", "Proof of Stake (PoS)", "Proof of History", "Proof of Authority"] },
+          "3": { "text": "Berapa banyak transaksi per detik (TPS) yang dapat ditangani Athena?", "options": ["100 TPS", "1.000 TPS", "10.000 TPS", "100.000+ TPS"] },
+          "4": { "text": "Apa nama token aslinya?", "options": ["GEM", "ATH", "PI", "BTC"] },
+          "5": { "text": "Apakah Athena kompatibel dengan EVM (Ethereum Virtual Machine)?", "options": ["Ya", "Tidak", "Hanya untuk NFT", "Hanya untuk Staking"] }
+        }
+      },
+      "2": {
+        "title": "Mining & Hadiah (ATH/GEM)",
+        "description": "Pelajari cara memaksimalkan penghasilan Anda di ekosistem",
+        "questions": {
+          "6": { "text": "Seberapa sering Anda dapat mengklaim hadiah penambangan?", "options": ["Setiap jam", "Setiap 12 jam", "Setiap 24 jam", "Sekali seminggu"] },
+          "7": { "text": "Apa token sekunder yang diperoleh selama penambangan?", "options": ["ATH", "GEM", "GLD", "USDT"] },
+          "8": { "text": "Bisakah Anda meningkatkan kecepatan penambangan?", "options": ["Tidak, itu tetap", "Ya, melalui rujukan dan staking", "Hanya dengan membayar bulanan", "Hanya di akhir pekan"] },
+          "9": { "text": "Apa yang terjadi pada token GEM?", "options": ["Dihapus", "Dikonversi ke ATH setiap bulan", "Digunakan untuk biaya gas", "Dijual di bursa"] },
+          "10": { "text": "Apakah penambangan menguras baterai di ponsel?", "options": ["Ya, sangat boros", "Tidak, ini berbasis cloud", "Hanya jika aplikasi terbuka", "Hanya di Android"] }
+        }
+      },
+      "3": {
+        "title": "KYC & Keamanan",
+        "description": "Memastikan kepatuhan dan melindungi aset Anda",
+        "questions": {
+          "11": { "text": "Mengapa KYC diperlukan untuk Mainnet?", "options": ["Untuk mengumpulkan data pengguna untuk iklan", "Untuk mencegah serangan sybil dan memastikan kepatuhan", "Untuk membebankan biaya kepada pengguna", "Sebenarnya tidak diperlukan"] },
+          "12": { "text": "Apa saja tahap KYC di Athena?", "options": ["Tahap 1 saja", "Tahap 1 dan 2", "Tahap 1, 2, dan 3", "Tahap A dan B"] },
+          "13": { "text": "Dokumen apa yang biasanya diperlukan untuk Tahap 2?", "options": ["Kartu perpustakaan", "ID Pemerintah", "Tagihan utilitas", "Profil media sosial"] },
+          "14": { "text": "Bisakah Anda memperdagangkan token tanpa KYC?", "options": ["Ya, sepenuhnya", "Tidak, itu tidak mungkin", "Fungsionalitas terbatas", "Hanya pada hari Selasa"] },
+          "15": { "text": "Apakah data Anda dienkripsi di Athena?", "options": ["Ya", "Tidak", "Hanya untuk VIP", "Hanya di Mainnet"] }
+        }
+      },
+      "4": {
+        "title": "Tokenomik & Tata Kelola",
+        "description": "Memahami pasokan ATH dan sistem pemungutan suara",
+        "questions": {
+          "16": { "text": "Berapa total pasokan ATH?", "options": ["100 Juta", "560 Juta", "1 Miliar", "Tak terbatas"] },
+          "17": { "text": "Berapa persentase token yang dialokasikan untuk komunitas?", "options": ["10%", "30%", "50%", "70%"] },
+          "18": { "text": "Bagaimana Anda bisa berpartisipasi dalam tata kelola?", "options": ["Hanya dengan menambang", "Dengan staking ATH", "Dengan menonton video", "Dengan mengundang teman"] },
+          "19": { "text": "Apa itu mekanisme 'Burn'?", "options": ["Menghapus akun yang tidak aktif", "Sebagian biaya dihapus secara permanen dari pasokan", "Menjual token kepada pengguna", "Meningkatkan total pasokan"] },
+          "20": { "text": "Apa kegunaan token GLD?", "options": ["Hanya untuk menambang", "Tata kelola dan hadiah ekosistem", "Membayar biaya gas", "Berdagang di Binance"] }
+        }
+      },
+      "5": {
+        "title": "Ekosistem & Mitra",
+        "description": "Menjelajahi jaringan yang lebih luas dan utilitas",
+        "questions": {
+          "21": { "text": "Apa itu Athena Launchpad?", "options": ["Situs peluncuran roket", "Platform untuk proyek baru mengumpulkan modal", "Tempat untuk membeli ATH", "Situs web berita"] },
+          "22": { "text": "Bisakah Anda menggunakan ATH di Pasar NFT?", "options": ["Ya", "Tidak", "Hanya untuk NFT khusus", "Hanya di OpenSea"] },
+          "23": { "text": "Siapa mitra utama Athena?", "options": ["Bank lokal", "Bursa kripto utama dan perusahaan teknologi", "Rantai makanan cepat saji", "Merek pakaian"] },
+          "24": { "text": "Apa itu Akademi Athena?", "options": ["Sekolah fisik", "Platform pendidikan bagi pengguna", "Agen perekrutan", "Perpustakaan"] },
+          "25": { "text": "Bagaimana cara bergabung dengan pasar P2P Athena?", "options": ["Cukup unduh aplikasinya", "Selesaikan KYC dan tautkan dompet", "Bayar langganan", "Undang 10 teman"] }
+        }
+      },
+      "6": {
+        "title": "Staking & Pendapatan Pasif",
+        "description": "Cara mengunci ATH Anda dan mendapatkan hadiah hasil tinggi",
+        "questions": {
+          "26": { "text": "Apa itu staking di Athena?", "options": ["Menjual token Anda", "Mengunci token untuk mendukung jaringan dan mendapatkan bunga", "Mengirim token ke teman", "Menghapus akun Anda"] },
+          "27": { "text": "Berapa kisaran umum untuk APY Staking?", "options": ["1-2%", "10-20%+", "50-100%", "Nol"] },
+          "28": { "text": "Berapa periode staking minimum?", "options": ["1 hari", "7 hari", "30 hari", "Tergantung pool yang dipilih"] },
+          "29": { "text": "Apa yang terjadi jika Anda melakukan unstake lebih awal?", "options": ["Anda kehilangan semua token", "Anda mungkin membayar sedikit biaya penalti", "Tidak terjadi apa-apa", "Anda memenangkan bonus"] },
+          "30": { "text": "Token mana yang dapat dipertaruhkan untuk mendapatkan lebih banyak ATH?", "options": ["Hanya BTC", "Hanya DOGE", "Token ATH", "Hanya ETH"] }
+        }
+      },
+      "7": {
+        "title": "Keamanan Perdagangan P2P",
+        "description": "Pertukaran peer-to-peer yang aman tanpa perantara",
+        "questions": {
+          "31": { "text": "Apa itu perdagangan P2P?", "options": ["Professional to Professional", "Peer to Peer (Pertukaran langsung antar pengguna)", "Protocol to Protocol", "Price to Price"] },
+          "32": { "text": "Bagaimana Athena melindungi perdagangan P2P?", "options": ["Melalui panggilan telepon", "Menggunakan sistem Escrow", "Dengan menonton perdagangan secara langsung", "Itu tidak melindunginya"] },
+          "33": { "text": "Kapan Anda harus melepaskan kripto dalam perdagangan P2P?", "options": ["Segera setelah pembeli mengatakan mereka sudah membayar", "Setelah Anda menerima dan memverifikasi pembayaran di bank/aplikasi Anda", "Sebelum perdagangan dimulai", "Tidak pernah"] },
+          "34": { "text": "Apa yang harus Anda lakukan jika pembeli meminta untuk berdagang di luar aplikasi?", "options": ["Lakukan untuk diskon", "Laporkan mereka dan tetap di dalam platform Athena demi keamanan", "Katakan ya segera", "Minta nomor telepon mereka"] },
+          "35": { "text": "Apakah ada sistem peringkat untuk pedagang P2P?", "options": ["Ya, untuk menunjukkan kepercayaan dan riwayat keberhasilan", "Tidak, ini anonim", "Hanya untuk VIP", "Hanya di Android"] }
+        }
+      },
+      "8": {
+        "title": "Ekosistem Game Athena",
+        "description": "Mekanisme Play-to-Earn di metaverse Athena",
+        "questions": {
+          "36": { "text": "Apa itu 'Play-to-Earn' (P2E)?", "options": ["Membayar untuk bermain game", "Mendapatkan hadiah kripto nyata dengan bermain game", "Menonton orang lain bermain", "Merancang game Anda sendiri"] },
+          "37": { "text": "Token mana yang dapat digunakan untuk pembelian dalam game?", "options": ["Hanya V-Bucks", "ATH dan GEM", "Hanya USD", "Hanya Kredit"] },
+          "38": { "text": "Apakah item dalam game disimpan sebagai NFT?", "options": ["Ya, untuk kepemilikan sejati", "Tidak, itu terpusat", "Hanya untuk 10 pemain teratas", "Hanya di situs web"] },
+          "39": { "text": "Apa itu Roda Keberuntungan?", "options": ["Permainan matematika", "Permainan keberuntungan harian untuk menangkan ATH/GEM", "Roda kemudi untuk mobil", "Proposal tata kelola"] },
+          "40": { "text": "Bisakah Anda memenangkan GLD asli dari Athena Slots?", "options": ["Tidak, itu hanya untuk bersenang-senang", "Ya, itu terhubung dengan hadiah ekosistem", "Hanya jika Anda menang 100 kali", "Hanya jika Anda mereferensikan 5 orang"] }
+        }
+      },
+      "9": {
+        "title": "Mekanisme Bot Perdagangan AI",
+        "description": "Manfaatkan kecerdasan buatan untuk perdagangan yang lebih cerdas",
+        "questions": {
+          "41": { "text": "Apa yang dilakukan Bot Perdagangan AI Athena?", "options": ["Membelikan pizza untuk Anda", "Menganalisis tren pasar dan mengeksekusi perdagangan otomatis", "Menambang Bitcoin di ponsel Anda", "Menghapus perdagangan buruk Anda"] },
+          "42": { "text": "Apakah AI Bot menjamin laba 100%?", "options": ["Ya, selalu", "Tidak, perdagangan selalu melibatkan risiko terlepas dari analisis cerdas", "Hanya untuk minggu pertama", "Hanya di ETH"] },
+          "43": { "text": "Data mana yang digunakan AI Bot?", "options": ["Koran kemarin", "Data pasar real-time, volume, dan sentimen", "Riwayat browser Anda", "Angka acak"] },
+          "44": { "text": "Bisakah Anda menetapkan 'Tingkat Risiko' sendiri pada bot?", "options": ["Tidak, itu otomatis", "Ya, pilih antara Konservatif, Seimbang, atau Agresif", "Hanya jika Anda membayar biaya", "Hanya di akhir pekan"] },
+          "45": { "text": "Apakah AI Bot dapat diakses oleh semua pengguna terverifikasi KYC?", "options": ["Ya", "Tidak, hanya untuk whale", "Hanya untuk tim pengembang", "Hanya bagi mereka yang memiliki 1.000 rujukan"] }
+        }
+      },
+      "10": {
+        "title": "Roadmap Masa Depan & Mainnet",
+        "description": "Jalan menuju desentralisasi dan pencatatan ATH",
+        "questions": {
+          "46": { "text": "Kapan jadwal Pencatatan ATH?", "options": ["Sudah terjadi", "Periksa Roadmap resmi di aplikasi untuk tanggal Q3/Q4 saat ini", "Tidak pernah", "Dalam 10 tahun"] },
+          "47": { "text": "Apa itu 'Peluncuran Mainnet'?", "options": ["Meluncurkan situs web", "Rilis blockchain Athena yang independen dan live", "Peluncuran game baru", "Acara pemasaran"] },
+          "48": { "text": "Apa yang akan terjadi pada token Testnet Anda selama Mainnet?", "options": ["Akan dihapus", "Akan dimigrasi/dikonversi berdasarkan kelayakan", "Akan bernilai $1.000 masing-masing", "Tidak ada, mereka tetap sebagai Testnet"] },
+          "49": { "text": "Apa itu Daftar Periksa Mainnet?", "options": ["Daftar belanja", "Serangkaian persyaratan (KYC, Akademi, dll.) untuk mempersiapkan migrasi", "Daftar pengembang", "Daftar game"] },
+          "50": { "text": "Apakah Athena berencana untuk berekspansi ke negara lain?", "options": ["Tidak, lokal saja", "Ya, tujuannya adalah inklusi keuangan global", "Hanya di AS", "Hanya di Eropa"] }
+        }
+      },
+      "11": {
+        "title": "Penguasaan Perdagangan P2P",
+        "description": "Cara membeli dan menjual dengan aman menggunakan metode pembayaran lokal",
+        "questions": {
+          "51": { "text": "Apa manfaat utama Athena P2P?", "options": ["Tukar kripto secara langsung dengan mata uang lokal", "Ini cara untuk bermain game", "Penyimpanan untuk foto", "Alat penambangan"] },
+          "52": { "text": "Apa tujuan dari peran 'Merchant'?", "options": ["Untuk menghapus akun", "Untuk menyediakan likuiditas dan membangun kepercayaan", "Untuk mengubah tema aplikasi", "Untuk menonton iklan"] },
+          "53": { "text": "Bagaimana cara memilih penjual P2P yang aman?", "options": ["Berdasarkan nama pengguna mereka", "Cari tingkat penyelesaian tinggi dan umpan balik positif", "Pilihan acak", "Orang dengan saldo terendah"] },
+          "54": { "text": "Apakah aman untuk berdagang sebelum kripto ada di escrow?", "options": ["Ya, selalu", "Tidak, platform memastikan kripto ditahan hingga pembayaran dikonfirmasi", "Hanya dengan teman", "Hanya di Android"] },
+          "55": { "text": "Apa yang harus Anda sertakan dalam deskripsi pembayaran?", "options": ["Cerita panjang", "Hanya apa yang ditentukan penjual, biasanya kode referensi", "Kata sandi Anda", "Tidak ada"] }
+        }
+      },
+      "12": {
+        "title": "Verifikasi KYC Lanjutan",
+        "description": "Menavigasi Tahap 2 dan keamanan identitas biometrik",
+        "questions": {
+          "56": { "text": "Apa yang membedakan KYC Tahap 2 dari Tahap 1?", "options": ["Tahap 2 membutuhkan dokumen dan verifikasi biometrik", "Tahap 1 lebih sulit", "Tidak ada perbedaan", "Tahap 2 untuk robot"] },
+          "57": { "text": "Mengapa Tahap 2 sangat penting?", "options": ["Untuk mengubah foto profil Anda", "Ini diperlukan untuk kelayakan penarikan Mainnet", "Untuk bermain game", "Untuk menambang lebih cepat"] },
+          "58": { "text": "Dokumen apa yang umumnya diterima untuk Tahap 2?", "options": ["Kartu perpustakaan", "Paspor, KTP, atau SIM", "Kartu Pelajar", "Kuitansi sewa"] },
+          "59": { "text": "Berapa lama verifikasi Tahap 2 biasanya berlangsung?", "options": ["1 detik", "Biasanya 24-48 jam tergantung volume", "1 bulan", "1 tahun"] },
+          "60": { "text": "Apa yang harus Anda lakukan jika KYC Anda ditolak?", "options": ["Hapus aplikasi", "Ajukan kembali dengan foto yang lebih jelas atau hubungi dukungan", "Menyerah", "Buat akun baru"] }
+        }
+      },
+      "13": {
+        "title": "Memaksimalkan Kecepatan Mining",
+        "description": "Teknik untuk meningkatkan produksi harian GEM/ATH Anda",
+        "questions": {
+          "61": { "text": "Berapa lama durasi sesi penambangan standar?", "options": ["1 jam", "12 jam", "24 jam", "48 jam"] },
+          "62": { "text": "Bagaimana Anda bisa meningkatkan produksi GEM Anda secara efektif?", "options": ["Dengan menutup aplikasi", "Dengan membangun tim dan menyelesaikan tugas harian", "Dengan tidak melakukan apa-apa", "Dengan mengubah email Anda"] },
+          "63": { "text": "Apakah Paket Premium Athena memengaruhi penambangan?", "options": ["Tidak", "Ya, ini memberikan pengganda kecepatan permanen", "Hanya untuk 1 hari", "Ini memperlambatnya"] },
+          "64": { "text": "Apa itu 'Indeks Boost'?", "options": ["Laporan cuaca", "Skor yang menghitung total kontribusi Anda terhadap kecepatan jaringan", "Level game", "Persentase baterai Anda"] },
+          "65": { "text": "Bisakah Anda kehilangan bonus 'streak' penambangan Anda?", "options": ["Tidak", "Ya, jika Anda tidak mengklaim dalam masa tenggang yang ditentukan", "Hanya di iOS", "Hanya jika Anda keluar"] }
+        }
+      },
+      "14": {
+        "title": "Konfigurasi Dompet Aman",
+        "description": "Menyiapkan dompet Athena non-custodial Anda",
+        "questions": {
+          "66": { "text": "Apa itu Dompet Athena?", "options": ["Dompet kulit fisik", "Dompet digital non-custodial yang aman untuk ATH dan GEM", "Rekening bank", "Pasar"] },
+          "67": { "text": "Apa itu 'Frasa Pemulihan Rahasia'?", "options": ["Alamat email Anda", "Satu set 12-24 kata yang digunakan untuk memulihkan aset dompet Anda", "Nomor telepon Anda", "Nama aplikasi"] },
+          "68": { "text": "Dengan siapa Anda harus membagikan frasa rahasia Anda?", "options": ["Dukungan Athena", "Teman baik Anda", "Tentu saja tidak ada siapa pun", "Polisi"] },
+          "69": { "text": "Dapatkah aplikasi Athena memulihkan frasa Anda jika hilang?", "options": ["Ya, melalui email", "No, demi keamanan, hanya Anda yang memegang kuncinya", "Hanya jika Anda membayar", "Hanya untuk admin"] },
+          "70": { "text": "Apa kegunaan alamat 'Terima'?", "options": ["Mengirim kripto", "Menerima token dari pengguna lain atau bursa", "Masuk", "Membeli NFT"] }
+        }
+      },
+      "15": {
+        "title": "Kesiapan & Migrasi Mainnet",
+        "description": "Langkah pemungkas untuk menjembatani aset Anda ke rantai live",
+        "questions": {
+          "71": { "text": "Apa langkah pertama dari proses migrasi?", "options": ["Memastikan semua item Daftar Periksa Mainnet sudah hijau/terverifikasi", "Membeli ponsel baru", "Menghapus aplikasi", "Mengirim 1.000 rujukan"] },
+          "72": { "text": "Apa yang terjadi pada status penambangan Anda setelah Mainnet?", "options": ["Berhenti selamanya", "Anda terus menambang di blockchain independen yang live", "Ini menjadi lebih sulit", "Ini diganti dengan kuis"] },
+          "73": { "text": "Apakah ada biaya migrasi?", "options": ["Tidak, itu gratis", "Biaya gas jaringan kecil yang dibayarkan dalam kripto asli", "Biaya flat $50", "Biayanya setengah dari token Anda"] },
+          "74": { "text": "Bisakah Anda memigrasikan banyak akun per orang?", "options": ["Ya", "Tidak, KYC membatasi hanya satu akun terverifikasi per orang", "Hingga 5", "Hanya jika Anda pengguna Premium"] },
+          "75": { "text": "Apa manfaat utama Mainnet ATH?", "options": ["Warnanya berbeda", "Nilai pasar nyata dan kemampuan untuk berdagang di bursa", "Grafis yang lebih baik", "Bertahan lebih lama"] }
+        }
+      },
+      "16": {
+        "title": "Hosting Node Terdesentralisasi",
+        "description": "Mendukung infrastruktur jaringan untuk hadiah",
+        "questions": {
+          "76": { "text": "Apa itu Node Athena?", "options": ["Komputer fisik yang memproses transaksi jaringan", "Jenis token kripto", "Baterai ponsel", "Pengikut media sosial"] },
+          "77": { "text": "Apa keuntungan menjalankan node?", "options": ["Ini membuat ponsel Anda lebih cepat", "Anda mendapatkan bagian dari biaya jaringan dan hadiah blok", "Ini memberi Anda premium gratis", "Tidak ada, itu sukarela"] },
+          "78": { "text": "Apakah Anda membutuhkan uptime 24/7 untuk sebuah node?", "options": ["Tidak, satu jam sehari saja cukup", "Ya, ketersediaan tinggi menjamin stabilitas jaringan", "Hanya di akhir pekan", "Hanya saat Anda bangun"] },
+          "79": { "text": "Apa itu 'Slashing'?", "options": ["Diskon pada token", "Hukuman bagi node yang bertindak curang atau offline", "Meningkatkan saldo pengguna", "Strategi pemasaran"] },
+          "80": { "text": "Dapatkah pool komunitas menjalankan node?", "options": ["Ya, memungkinkan banyak pengguna untuk berbagi hadiah satu node", "Tidak, hanya individu", "Hanya untuk admin", "Hanya untuk pemerintah"] }
+        }
+      },
+      "17": {
+        "title": "Jembatan Lintas Rantai",
+        "description": "Memindahkan aset Anda antara Athena dan rantai lainnya",
+        "questions": {
+          "81": { "text": "Apa itu 'Jembatan' (Bridge) dalam kripto?", "options": ["Jembatan fisik", "Protokol yang mentransfer aset antar blockchain yang berbeda", "Cara untuk meretas akun", "Ruang obrolan pengguna"] },
+          "82": { "text": "Rantai mana yang kompatibel dengan Athena Bridge?", "options": ["Tidak ada", "Ethereum, BNB Chain, dan lainnya", "Hanya rantai internal", "Hanya sistem lama"] },
+          "83": { "text": "Mengapa Anda memindahkan aset ke Athena?", "options": ["Untuk membayar lebih banyak biaya", "Untuk mengakses ekosistem Athena yang berkecepatan tinggi dan berbiaya rendah", "Untuk kehilangan token", "Untuk mengubah nama pengguna Anda"] },
+          "84": { "text": "Apakah penjembatanan terjadi secara instan?", "options": ["Ya, selalu", "Tergantung kecepatan konfirmasi dari rantai sumber", "Butuh waktu 1 tahun", "Hanya untuk pengguna premium"] },
+          "85": { "text": "'Wrapped ATH' itu apa?", "options": ["ATH dalam kotak kado", "Token yang dipatok ATH di blockchain lain (seperti ERC-20)", "Token palsu", "Token yang terkunci"] }
+        }
+      },
+      "18": {
+        "title": "Kumpulan Staking Komunitas",
+        "description": "Hasil pertanian kolaboratif untuk efisiensi yang lebih tinggi",
+        "questions": {
+          "86": { "text": "Apa itu Staking Pool?", "options": ["Kolam renang untuk kripto", "Sekelompok pengguna yang menggabungkan token untuk meningkatkan hadiah", "Tempat untuk membeli GEM", "Perangkat penambangan"] },
+          "87": { "text": "Siapa yang mengelola Staking Pool?", "options": ["Seorang Pool Operator", "Pengguna dengan token paling sedikit", "Robot acak", "Tidak ada siapa pun"] },
+          "88": { "text": "Apa keuntungan pool bagi pengguna 'kecil'?", "options": ["Mereka mendapat lebih sedikit hadiah", "Mereka dapat memperoleh hasil taruhan tanpa memenuhi minimum yang tinggi", "Mereka mendapatkan hadiah gratis", "Tidak ada keuntungan"] },
+          "89": { "text": "Apakah hadiah didistribusikan secara otomatis?", "options": ["Tidak, Anda harus menghubungi dukungan", "Ya, kontrak pintar menangani distribusi berdasarkan bagian", "Hanya setahun sekali", "Hanya jika Anda memenangkan kontes"] },
+          "90": { "text": "Bisakah Anda keluar dari pool kapan saja?", "options": ["Ya, meskipun beberapa memiliki periode pelepasan singkat", "Tidak, Anda terkunci selamanya", "Hanya jika admin mengizinkan", "Hanya jika Anda membayar $100"] }
+        }
+      },
+      "19": {
+        "title": "Athena DEX & Likuiditas",
+        "description": "Menukar token dan menyediakan likuiditas secara on-chain",
+        "questions": {
+          "91": { "text": "Apa itu DEX?", "options": ["Bursa Terdesentralisasi", "Pakar Digital", "Unit penyimpanan data", "Bank terpusat"] },
+          "92": { "text": "Apa itu 'Automated Market Maker' (AMM)?", "options": ["Seseorang yang berdagang untuk Anda", "Algoritma yang menyediakan likuiditas instan untuk pertukaran", "Robot penjual", "Mesin penambangan"] },
+          "93": { "text": "Apa yang Anda dapatkan karena menyediakan likuiditas?", "options": ["Tidak ada", "Bagian dari biaya penukaran setiap transaksi", "Iklan gratis", "NFT acak"] },
+          "94": { "text": "Apa itu 'Impermanent Loss'?", "options": ["Kehilangan ponsel Anda", "Potensi kerugian relatif terhadap menahan saat harga menyimpang", "Biaya bulanan tetap", "Kehilangan kata sandi Anda"] },
+          "95": { "text": "Apakah Athena DEX bersifat non-custodial?", "options": ["Ya, Anda tetap memegang kendali atas kunci Anda", "Tidak, Athena yang memegang token Anda", "Hanya di Mainnet", "Hanya pada siang hari"] }
+        }
+      },
+      "20": {
+        "title": "Menjadi Pionir Athena",
+        "description": "Sertifikasi Mainnet dan masa depan Athena",
+        "questions": {
+          "96": { "text": "Apa arti dari menyelesaikan Akademi?", "options": ["Anda adalah master pengetahuan Athena dan berhak atas manfaat Mainnet", "Anda adalah pengguna baru", "Anda menyelesaikan sebuah game", "Anda adalah admin"] },
+          "97": { "text": "Apa peran seorang 'Pionir Athena'?", "options": ["Untuk membantu membangun, mengamankan, dan menyebarkan jaringan", "Hanya untuk menonton iklan", "Untuk mendesain grafis", "Hanya menunggu kenaikan harga"] },
+          "98": { "text": "Apakah Akademi berakhir di sini?", "options": ["Ya, selamanya", "Tidak, modul baru akan ditambahkan seiring ekosistem berkembang", "Direset setiap bulan", "Hanya untuk testnet"] },
+          "99": { "text": "Bagaimana Anda bisa membantu komunitas?", "options": ["Dengan bersikap kasar", "Dengan membimbing pengguna baru dan berbagi pengetahuan yang akurat", "Dengan menyimpan rahasia", "Dengan tidak melakukan apa-apa"] },
+          "100": { "text": "Apakah Anda siap untuk Athena Mainnet?", "options": ["Ya!", "Tidak", "Mungkin", "Saya tidak yakin"] }
+        }
+      }
+    }
   }
 }

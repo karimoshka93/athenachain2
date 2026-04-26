@@ -143,5 +143,235 @@
     "waiting": "En attente",
     "pending": "En suspens",
     "completed": "Terminé"
+  },
+  "academy": {
+    "module": "Module",
+    "progress": "Progrès de l'éligibilité",
+    "requirement": "Exigence",
+    "requirementDesc": "Vous devez répondre correctement à 75 % des questions ; c'est une exigence pour la liste de contrôle du Mainnet.",
+    "backToModules": "Retour aux Modules",
+    "steps": "Étapes",
+    "courses": {
+      "1": {
+        "title": "Introduction à Athena Chain",
+        "description": "Les fondements de l'infrastructure décentralisée haute performance",
+        "questions": {
+          "1": { "text": "Quel est l'objectif principal d'Athena Chain ?", "options": ["Infrastructure décentralisée haute performance", "Une simple plateforme de médias sociaux", "Un stockage cloud centralisé", "Une console réservée aux jeux"] },
+          "2": { "text": "Quel mécanisme de consensus Athena utilise-t-elle ?", "options": ["Proof of Work", "Proof of Stake (PoS)", "Proof of History", "Proof of Authority"] },
+          "3": { "text": "Combien de transactions par seconde (TPS) Athena peut-elle gérer ?", "options": ["100 TPS", "1 000 TPS", "10 000 TPS", "100 000+ TPS"] },
+          "4": { "text": "Quel est le nom du jeton natif ?", "options": ["GEM", "ATH", "PI", "BTC"] },
+          "5": { "text": "Athena est-elle compatible avec l'EVM (Ethereum Virtual Machine) ?", "options": ["Oui", "Non", "Uniquement pour les NFT", "Uniquement pour le Staking"] }
+        }
+      },
+      "2": {
+        "title": "Minage & Récompenses (ATH/GEM)",
+        "description": "Apprenez à maximiser vos gains dans l'écosystème",
+        "questions": {
+          "6": { "text": "À quelle fréquence pouvez-vous réclamer des récompenses de minage ?", "options": ["Toutes les heures", "Toutes les 12 heures", "Toutes les 24 heures", "Une fois par semaine"] },
+          "7": { "text": "Quel est le jeton secondaire gagné pendant le minage ?", "options": ["ATH", "GEM", "GLD", "USDT"] },
+          "8": { "text": "Pouvez-vous booster votre vitesse de minage ?", "options": ["Non, elle est fixe", "Oui, par les parrainages et le staking", "Seulement en payant mensuellement", "Uniquement le week-end"] },
+          "9": { "text": "Qu'arrive-t-il aux jetons GEM ?", "options": ["Ils sont supprimés", "Ils sont convertis en ATH mensuellement", "Ils servent de frais de gaz", "Ils sont vendus sur les bourses"] },
+          "10": { "text": "Le minage consomme-t-il la batterie sur mobile ?", "options": ["Oui, beaucoup", "Non, c'est basé sur le cloud", "Uniquement si l'application est ouverte", "Uniquement sur Android"] }
+        }
+      },
+      "3": {
+        "title": "KYC & Sécurité",
+        "description": "Assurer la conformité et protéger vos actifs",
+        "questions": {
+          "11": { "text": "Pourquoi le KYC est-il requis pour le Mainnet ?", "options": ["Collecter des données pour la publicité", "Prévenir les attaques Sybil et assurer la conformité", "Facturer les utilisateurs", "Ce n'est pas vraiment requis"] },
+          "12": { "text": "Quelles sont les étapes du KYC chez Athena ?", "options": ["Phase 1 uniquement", "Phases 1 et 2", "Phases 1, 2 et 3", "Phases A et B"] },
+          "13": { "text": "Quel document est généralement requis pour la Phase 2 ?", "options": ["Carte de bibliothèque", "Pièce d'identité gouvernementale", "Facture de services publics", "Profil de réseau social"] },
+          "14": { "text": "Pouvez-vous échanger des jetons sans KYC ?", "options": ["Oui, totalement", "Non, c'est impossible", "Fonctionnalité limitée", "Uniquement le mardi"] },
+          "15": { "text": "Vos données sont-elles cryptées sur Athena ?", "options": ["Oui", "Non", "Uniquement pour les VIP", "Uniquement sur le Mainnet"] }
+        }
+      },
+      "4": {
+        "title": "Tokenomique & Gouvernance",
+        "description": "Comprendre l'offre d'ATH et le système de vote",
+        "questions": {
+          "16": { "text": "Quelle est l'offre totale d'ATH ?", "options": ["100 millions", "560 millions", "1 milliard", "Infinie"] },
+          "17": { "text": "Quel pourcentage de jetons est alloué à la communauté ?", "options": ["10%", "30%", "50%", "70%"] },
+          "18": { "text": "Comment pouvez-vous participer à la gouvernance ?", "options": ["Uniquement par le minage", "En stakant des ATH", "En regardant des vidéos", "En invitant des amis"] },
+          "19": { "text": "Qu'est-ce que le mécanisme de 'Burn' ?", "options": ["Supprimer les comptes inactifs", "Une partie des frais est retirée définitivement de l'offre", "Vendre des jetons aux utilisateurs", "Augmenter l'offre totale"] },
+          "20": { "text": "Quelle est l'utilité du jeton GLD ?", "options": ["Uniquement pour le minage", "Gouvernance et récompenses de l'écosystème", "Payer les frais de gaz", "Échanger sur Binance"] }
+        }
+      },
+      "5": {
+        "title": "Écosystème & Partenaires",
+        "description": "Explorer le réseau élargi et les utilités",
+        "questions": {
+          "21": { "text": "Qu'est-ce qu'Athena Launchpad ?", "options": ["Un site de lancement de fusées", "Une plateforme permettant aux nouveaux projets de lever des capitaux", "Un endroit pour acheter des ATH", "Un site d'actualités"] },
+          "22": { "text": "Pouvez-vous utiliser l'ATH sur le marché NFT ?", "options": ["Oui", "Non", "Uniquement pour certains NFT", "Uniquement sur OpenSea"] },
+          "23": { "text": "Qui sont les partenaires principaux d'Athena ?", "options": ["Les banques locales", "Les grandes bourses crypto et entreprises technologiques", "Des chaînes de restauration rapide", "Des marques de vêtements"] },
+          "24": { "text": "Qu'est-ce que l'Académie Athena ?", "options": ["Une école physique", "Une plateforme éducative pour les utilisateurs", "Une agence de recrutement", "Une bibliothèque"] },
+          "25": { "text": "Comment rejoindre le marché P2P d'Athena ?", "options": ["Il suffit de télécharger l'application", "Compléter le KYC et lier un portefeuille", "Payer un abonnement", "Inviter 10 amis"] }
+        }
+      },
+      "6": {
+        "title": "Staking & Revenus Passifs",
+        "description": "Comment verrouiller votre ATH et gagner des récompenses à haut rendement",
+        "questions": {
+          "26": { "text": "Qu'est-ce que le staking chez Athena ?", "options": ["Vendre vos jetons", "Verrouiller des jetons pour soutenir le réseau et gagner des intérêts", "Envoyer des jetons à des amis", "Supprimer votre compte"] },
+          "27": { "text": "Quelle est la fourchette typique pour l'APY du Staking ?", "options": ["1-2%", "10-20%+", "50-100%", "Zéro"] },
+          "28": { "text": "Quelle est la période minimale de staking ?", "options": ["1 jour", "7 jours", "30 jours", "Dépend du pool choisi"] },
+          "29": { "text": "Qu'arrive-t-il si vous retirez votre staking plus tôt ?", "options": ["Vous perdez tous les jetons", "Vous pourriez payer de petits frais de pénalité", "Rien ne se passe", "Vous gagnez un bonus"] },
+          "30": { "text": "Quel jeton peut être staké pour gagner plus d'ATH ?", "options": ["Uniquement BTC", "Uniquement DOGE", "Le jeton ATH", "Uniquement ETH"] }
+        }
+      },
+      "7": {
+        "title": "Sécurité du commerce P2P",
+        "description": "Échanges de pair à pair sécurisés sans intermédiaire",
+        "questions": {
+          "31": { "text": "Qu'est-ce que le commerce P2P ?", "options": ["Professionnel à Professionnel", "Pair à Pair (Échange direct entre utilisateurs)", "Protocole à Protocole", "Prix à Prix"] },
+          "32": { "text": "Comment Athena protège-t-elle les échanges P2P ?", "options": ["Par des appels téléphoniques", "En utilisant un système d'Escrow (Séquestre)", "En surveillant l'échange en personne", "Elle ne les protège pas"] },
+          "33": { "text": "Quand devez-vous libérer la crypto dans un échange P2P ?", "options": ["Dès que l'acheteur dit avoir payé", "Après avoir reçu et vérifié le paiement dans votre banque/application", "Avant le début de l'échange", "Jamais"] },
+          "34": { "text": "Que faire si un acheteur demande à échanger hors de l'application ?", "options": ["Le faire pour une remise", "Le signaler et rester sur Athena pour la sécurité", "Dire oui immédiatement", "Demander son numéro de téléphone"] },
+          "35": { "text": "Existe-t-il un système de notation pour les commerçants P2P ?", "options": ["Oui, pour montrer la confiance et l'historique", "Non, c'est anonyme", "Uniquement pour les VIP", "Uniquement sur Android"] }
+        }
+      },
+      "8": {
+        "title": "Écosystème de jeu Athena",
+        "description": "Mécanismes Play-to-Earn dans le métavers Athena",
+        "questions": {
+          "36": { "text": "Qu'est-ce que le 'Play-to-Earn' (P2E) ?", "options": ["Payer pour jouer", "Gagner de réelles récompenses crypto en jouant", "Regarder les autres jouer", "Concevoir son propre jeu"] },
+          "37": { "text": "Quels jetons servent aux achats dans le jeu ?", "options": ["Uniquement V-Bucks", "ATH et GEM", "Uniquement USD", "Uniquement Crédits"] },
+          "38": { "text": "Les objets du jeu sont-ils stockés sous forme de NFT ?", "options": ["Oui, pour une vraie propriété", "Non, c'est centralisé", "Uniquement pour les 10 meilleurs", "Uniquement sur le site web"] },
+          "39": { "text": "Qu'est-ce que la Roue de la Fortune ?", "options": ["Un jeu mathématique", "Un jeu de chance quotidien pour gagner des ATH/GEM", "Un volant de voiture", "Une proposition de gouvernance"] },
+          "40": { "text": "Peut-on gagner de vrais GLD avec Athena Slots ?", "options": ["Non, c'est juste pour le plaisir", "Oui, c'est lié aux récompenses de l'écosystème", "Seulement si vous gagnez 100 fois", "Seulement si vous parrainez 5 personnes"] }
+        }
+      },
+      "9": {
+        "title": "Mécanismes du Bot de Trading AI",
+        "description": "Utilisez l'IA pour un trading plus intelligent",
+        "questions": {
+          "41": { "text": "Que fait le Bot de Trading AI d'Athena ?", "options": ["Il vous achète des pizzas", "Il analyse les tendances et exécute des trades", "Il mine du Bitcoin sur votre téléphone", "Il efface vos mauvais trades"] },
+          "42": { "text": "Le Bot AI garantit-il 100% de profit ?", "options": ["Oui, toujours", "Non, le trading comporte des risques malgré l'analyse", "Seulement la première semaine", "Uniquement sur ETH"] },
+          "43": { "text": "Quelles données utilise le Bot AI ?", "options": ["Le journal d'hier", "Marché en temps réel, volume et sentiment", "Votre historique de navigation", "Des chiffres aléatoires"] },
+          "44": { "text": "Pouvez-vous régler votre 'Niveau de Risque' sur le bot ?", "options": ["Non, c'est automatique", "Oui, entre Conservateur, Équilibré ou Agressif", "Seulement en payant des frais", "Uniquement le week-end"] },
+          "45": { "text": "Le Bot AI est-il accessible à tous les utilisateurs KYC ?", "options": ["Oui", "Non, seulement aux whales", "Seulement à l'équipe de développement", "Seulement avec 1 000 parrainages"] }
+        }
+      },
+      "10": {
+        "title": "Roadmap Future & Mainnet",
+        "description": "Le chemin vers la décentralisation et l'inscription de l'ATH",
+        "questions": {
+          "46": { "text": "Quand est prévue l'inscription de l'ATH ?", "options": ["C'est déjà fait", "Consultez la Roadmap officielle pour les dates Q3/Q4", "Jamais", "Dans 10 ans"] },
+          "47": { "text": "Qu'est-ce que le 'Lancement Mainnet' ?", "options": ["Lancer un site web", "La sortie de la blockchain Athena indépendante et live", "Lancer un nouveau jeu", "Un événement marketing"] },
+          "48": { "text": "Qu'arrive-t-il à vos jetons Testnet pendant le Mainnet ?", "options": ["Ils sont supprimés", "Ils sont migrés selon l'éligibilité", "Ils valent 1 000 $ chacun", "Rien, ils restent sur Testnet"] },
+          "49": { "text": "Qu'est-ce que la Liste de contrôle Mainnet ?", "options": ["Une liste de courses", "Des exigences (KYC, Académie, etc.) pour la migration", "Une liste de développeurs", "Une liste de jeux"] },
+          "50": { "text": "Athena prévoit-elle de s'étendre ailleurs ?", "options": ["Non, local uniquement", "Oui, pour l'inclusion financière mondiale", "Uniquement aux USA", "Uniquement en Europe"] }
+        }
+      },
+      "11": {
+        "title": "Maîtrise du commerce P2P",
+        "description": "Acheter et vendre en sécurité avec les paiements locaux",
+        "questions": {
+          "51": { "text": "Quel est l'avantage du P2P Athena ?", "options": ["Échanger directement crypto contre monnaie locale", "C'est une façon de jouer", "Stockage de photos", "Outil de minage"] },
+          "52": { "text": "Quel est le rôle du 'Merchant' ?", "options": ["Supprimer des comptes", "Fournir de la liquidité et instaurer la confiance", "Changer le thème de l'app", "Regarder des pubs"] },
+          "53": { "text": "Comment choisir un vendeur P2P sûr ?", "options": ["Par son pseudo", "Taux de complétion élevé et avis positifs", "Choix aléatoire", "Celui avec le moins de solde"] },
+          "54": { "text": "Est-il sûr d'échanger avant l'Escrow ?", "options": ["Oui, toujours", "Non, l'app garde la crypto jusqu'au paiement", "Seulement avec des amis", "Uniquement sur Android"] },
+          "55": { "text": "Que mettre dans la description du paiement ?", "options": ["Une longue histoire", "Seulement ce que le vendeur demande (code de réf)", "Votre mot de passe", "Rien"] }
+        }
+      },
+      "12": {
+        "title": "Vérification KYC avancée",
+        "description": "Naviguer en Phase 2 et sécurité biométrique",
+        "questions": {
+          "56": { "text": "Différence entre KYC Phase 2 et Phase 1 ?", "options": ["Phase 2 exige documents et biométrie", "Phase 1 est plus dure", "Aucune différence", "Phase 2 est pour les robots"] },
+          "57": { "text": "Pourquoi la Phase 2 est cruciale ?", "options": ["Changer d'avatar", "Requise pour les retraits Mainnet", "Pour jouer aux jeux", "Miner plus vite"] },
+          "58": { "text": "Documents acceptés pour la Phase 2 ?", "options": ["Carte bibliothèque", "Passeport, CNI ou Permis", "Carte étudiant", "Quittance de loyer"] },
+          "59": { "text": "Durée de la vérification Phase 2 ?", "options": ["1 seconde", "24-48h selon le volume", "1 mois", "1 an"] },
+          "60": { "text": "Que faire si le KYC est rejeté ?", "options": ["Quitter l'app", "Réessayer avec des photos claires ou contacter le support", "Abandonner", "Créer un nouveau compte"] }
+        }
+      },
+      "13": {
+        "title": "Maximiser la vitesse de minage",
+        "description": "Techniques pour accroître la production de GEM/ATH",
+        "questions": {
+          "61": { "text": "Durée d'une session de minage standard ?", "options": ["1 heure", "12 heures", "24 heures", "48 heures"] },
+          "62": { "text": "Comment booster sa production de GEM ?", "options": ["Fermer l'app", "Bâtir une équipe et finir les tâches", "Rien faire", "Changer d'e-mail"] },
+          "63": { "text": "Le Pack Premium influe-t-il sur le minage ?", "options": ["Non", "Oui, multiplicateur permanent de vitesse", "Seulement 1 jour", "Ça ralentit"] },
+          "64": { "text": "Qu'est-ce que l'Indice Boost ?", "options": ["Météo", "Score calculant votre apport à la vitesse globale", "Niveau de jeu", "Batterie %"] },
+          "65": { "text": "Peut-on perdre son bonus de 'streak' ?", "options": ["Non", "Oui, sans réclamation dans le délai", "Seulement sur iOS", "Seulement en se déconnectant"] }
+        }
+      },
+      "14": {
+        "title": "Configuration sûre du portefeuille",
+        "description": "Établir votre portefeuille Athena non-custodial",
+        "questions": {
+          "66": { "text": "Portefeuille Athena ?", "options": ["Portefeuille en cuir", "Portefeuille numérique sécurisé pour ATH/GEM", "Compte en banque", "Marché"] },
+          "67": { "text": "Phrase de récupération secrète ?", "options": ["Votre e-mail", "Série de 12-24 mots pour restaurer vos actifs", "Votre téléphone", "Nom de l'app"] },
+          "68": { "text": "À qui donner sa phrase secrète ?", "options": ["Support Athena", "Meilleur ami", "Absolument personne", "Police"] },
+          "69": { "text": "Athena peut restaurer la phrase si perdue ?", "options": ["Oui par e-mail", "Non, vous seul avez les clés par sécurité", "Seulement en payant", "Seulement via admin"] },
+          "70": { "text": "L'adresse 'Recevoir' sert à quoi ?", "options": ["Envoyer de la crypto", "Recevoir des jetons d'autres bourses", "Se connecter", "Acheter des NFT"] }
+        }
+      },
+      "15": {
+        "title": "Prêt pour le Mainnet & Migration",
+        "description": "Étapes finales pour ponter vos actifs",
+        "questions": {
+          "71": { "text": "Étape 1 de la migration ?", "options": ["Checklist Mainnet tout en vert", "Nouvel iPhone", "Supprimer l'app", "1 000 parrainages"] },
+          "72": { "text": "Minage après le Mainnet ?", "options": ["Stop définitif", "Poursuite sur la blockchain live", "Plus difficile", "Remplacé par quiz"] },
+          "73": { "text": "Frais de migration ?", "options": ["Gratuit", "Petits frais de gaz en crypto native", "Frais fixes de 50 $", "Coûte la moitié des jetons"] },
+          "74": { "text": "Plusieurs comptes par personne ?", "options": ["Oui", "Non, KYC limité à un compte par personne", "Jusqu'à 5", "Seulement en Premium"] },
+          "75": { "text": "Avantage principal de l'ATH Mainnet ?", "options": ["Autre couleur", "Valeur réelle et échange sur bourses", "Mieux visuellement", "Dure plus longtemps"] }
+        }
+      },
+      "16": {
+        "title": "Hébergement de nœuds décentralisés",
+        "description": "Soutenir le réseau contre récompenses",
+        "questions": {
+          "76": { "text": "Nœud Athena ?", "options": ["Ordinateur traitant les transactions", "Type de jeton", "Batterie mobile", "Abonné social"] },
+          "77": { "text": "Intérêt de gérer un nœud ?", "options": ["Vitesse mobile", "Part des frais et récompenses de bloc", "Premium gratuit", "Rien, bénévole"] },
+          "78": { "text": "Uptime 24/7 requis ?", "options": ["Non, 1h par jour", "Oui, assure la stabilité réseau", "Seulement week-end", "Seulement éveillé"] },
+          "79": { "text": "Slashing ?", "options": ["Remise de jeton", "Sanction si malveillant ou hors-ligne", "Hausse de solde", "Marketing"] },
+          "80": { "text": "Pool communautaire peut tenir un nœud ?", "options": ["Oui, partage des gains", "Non, individuels", "Uniquement admin", "Gouvernement"] }
+        }
+      },
+      "17": {
+        "title": "Pont inter-chaînes (Bridge)",
+        "description": "Déplacer vos actifs vers d'autres chaînes",
+        "questions": {
+          "81": { "text": "Pont en crypto ?", "options": ["Pont de pierre", "Protocole transférant des actifs entre chaînes", "Hack de compte", "Chat utilisateur"] },
+          "82": { "text": "Chaînes compatibles Athena Bridge ?", "options": ["Zéro", "Ethereum, BNB Chain, etc.", "Chaînes internes", "Vieux systèmes"] },
+          "83": { "text": "Pourquoi migrer vers Athena ?", "options": ["Payer plus frais", "Accès à la vitesse et aux bas coûts d'Athena", "Perdre jetons", "Changer pseudo"] },
+          "84": { "text": "Pontage instantané ?", "options": ["Oui", "Dépend des validations de la chaîne source", "Prend 1 an", "Seulement Premium"] },
+          "85": { "text": "Wrapped ATH ?", "options": ["ATH en cadeau", "Jeton indexé sur une autre chaîne (ERC-20)", "Faux jeton", "Jeton bloqué"] }
+        }
+      },
+      "18": {
+        "title": "Pools de Staking communautaires",
+        "description": "Yield farming collaboratif",
+        "questions": {
+          "86": { "text": "Staking Pool ?", "options": ["Piscine crypto", "Groupe d'usagers mutualisant les jetons", "Lieu achat GEM", "Appareil minage"] },
+          "87": { "text": "Qui gère le Pool ?", "options": ["Pool Operator", "L'usager au plus bas solde", "Robot hasard", "Personne"] },
+          "88": { "text": "Atout du pool pour 'petits' usagers ?", "options": ["Moins de gains", "Gain sans le minimum élevé requis", "Cadeau", "Zéro atout"] },
+          "89": { "text": "Récompenses auto ?", "options": ["Non, appeler support", "Oui, smart contracts gèrent selon la part", "Un an", "Si victoire concours"] },
+          "90": { "text": "Quitter le pool quand on veut ?", "options": ["Oui (parfois délai court)", "Non, coincé à vie", "Si accord admin", "Si paye 100 $"] }
+        }
+      },
+      "19": {
+        "title": "Athena DEX & Liquidité",
+        "description": "Swaps et apport de liquidité on-chain",
+        "questions": {
+          "91": { "text": "DEX ?", "options": ["Bourse décentralisée", "Expert digital", "Stockage data", "Banque centrale"] },
+          "92": { "text": "AMM ?", "options": ["Trader à votre place", "Algorithme offrant la liquidité pour swaps", "Robot vente", "Machine minage"] },
+          "93": { "text": "Gain apport liquidité ?", "options": ["Zéro", "Part des frais de chaque swap", "Pub gratuit", "NFT hasard"] },
+          "94": { "text": "Impermanent Loss ?", "options": ["Perte mobile", "Perte relative au 'hold' si les prix divergent", "Frais fixe mois", "Perte mot de passe"] },
+          "95": { "text": "Athena DEX non-custodial ?", "options": ["Oui, gardez vos clés", "Non, Athena garde tout", "Seulement Mainnet", "Seulement le jour"] }
+        }
+      },
+      "20": {
+        "title": "Devenir Pionnier Athena",
+        "description": "Certification Mainnet et futur d'Athena",
+        "questions": {
+          "96": { "text": "Finit l'Académie ?", "options": ["Maître en savoir Athena et éligible Mainnet", "Nouveau venu", "Fini un jeu", "Admin"] },
+          "97": { "text": "Rôle Pionnier Athena ?", "options": ["Bâtir, sécuriser et prôner le réseau", "Regarder pubs", "Design", "Attendre pump"] },
+          "98": { "text": "L'Académie s'arrête là ?", "options": ["Oui à jamais", "Non, nouveaux modules prévus", "Reset mois", "Testnet seul"] },
+          "99": { "text": "Aider la communauté ?", "options": ["Être impoli", "Guider les nouveaux et partager le savoir", "Garder secrets", "Rien faire"] },
+          "100": { "text": "Prêt pour Athena Mainnet ?", "options": ["Oui !", "Pas encore", "Peut-être", "Pas sûr"] }
+        }
+      }
+    }
   }
 }
