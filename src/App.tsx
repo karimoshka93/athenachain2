@@ -2356,15 +2356,11 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
       ]
     },
     {
-      title: (
-        <div className="flex items-center gap-2">
-          {t('common.games') || 'Games'}
-          <span className="text-[8px] bg-red-500/20 text-red-500 px-1.5 py-0.5 rounded border border-red-500/30 uppercase font-black tracking-widest animate-pulse">PAUSED</span>
-        </div>
-      ),
+      title: t('common.games') || 'Games',
       items: [
         { name: t('common.wheel') || 'Wheel of Fortune', internalName: 'Wheel of Fortune', icon: <Zap className="w-5 h-5" />, isGame: true, gameType: 'wheel' },
         { name: t('common.slots') || 'Athena Slots', internalName: 'Athena Slots', icon: <Trophy className="w-5 h-5" />, isGame: true, gameType: 'slots' },
+        { name: 'MAHJONG', internalName: 'Mahjong', icon: <Gamepad2 className="w-5 h-5 text-gold" />, isGame: true, gameType: 'mahjong', isPaused: true },
         { name: 'SNAKE MINER', internalName: 'Snake Miner', icon: <Gamepad2 className="w-5 h-5 text-green-500" />, isGame: true, gameType: 'snake-game' },
         { name: 'PEPE CAVE', internalName: 'PEPE CAVE', icon: <Gamepad2 className="w-5 h-5 text-green-400" />, isGame: true, gameType: 'pepe-cave' },
         { name: t('common.crash') || 'Crash Game', internalName: 'Crash Game', icon: <TrendingUp className="w-5 h-5" /> },
@@ -2423,20 +2419,23 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
                   if (item.internalName === 'Referral') onKYCClick('referral');
                   if (item.internalName === 'Mainnet Checklist') onKYCClick('mainnet-checklist');
                   if (item.isGame) {
-                    alert("Games are temporarily paused for maintenance. Please check back later.");
-                    // if (item.gameType === 'wheel') setShowWheel(true);
-                    // if (item.gameType === 'slots') setShowSlots(true);
-                    // if (item.gameType === 'pepe-cave') setShowPepeCave(true);
-                    // if (item.gameType === 'snake-game') setShowSnakeGame(true);
+                    if ((item as any).isPaused) {
+                      alert("This game is temporarily paused for maintenance. Please check back later.");
+                      return;
+                    }
+                    if (item.gameType === 'wheel') setShowWheel(true);
+                    if (item.gameType === 'slots') setShowSlots(true);
+                    if (item.gameType === 'pepe-cave') setShowPepeCave(true);
+                    if (item.gameType === 'snake-game') setShowSnakeGame(true);
                   }
                 }}
-                className={`flex flex-col items-center gap-2 p-3 rounded-2xl bg-white/5 border border-white/5 relative group cursor-pointer ${(item.isInstall || item.isGame || item.isActive) ? '' : 'opacity-60 grayscale'} ${item.isGame ? 'opacity-40 grayscale cursor-not-allowed' : ''}`}
+                className={`flex flex-col items-center gap-2 p-3 rounded-2xl bg-white/5 border border-white/5 relative group cursor-pointer ${(item.isInstall || item.isGame || item.isActive) ? '' : 'opacity-60 grayscale'} ${(item as any).isPaused ? 'opacity-40 grayscale cursor-not-allowed' : ''}`}
               >
-                <div className={`w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center ${(item.isInstall || item.isGame || item.isActive) ? (item.isGame ? 'text-gray-500' : 'text-gold') : 'text-gray-400'}`}>
+                <div className={`w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center ${(item.isInstall || item.isGame || item.isActive) ? ((item as any).isPaused ? 'text-gray-500' : 'text-gold') : 'text-gray-400'}`}>
                   {item.icon}
                 </div>
-                <span className={`text-[10px] text-center font-medium leading-tight ${(item.isInstall || item.isGame || item.isActive) ? (item.isGame ? 'text-gray-500' : 'text-white') : 'text-gray-500'}`}>{item.name}</span>
-                {item.isGame && (
+                <span className={`text-[10px] text-center font-medium leading-tight ${(item.isInstall || item.isGame || item.isActive) ? ((item as any).isPaused ? 'text-gray-500' : 'text-white') : 'text-gray-500'}`}>{item.name}</span>
+                {(item as any).isPaused && (
                   <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-2xl">
                     <span className="text-[8px] font-black text-red-500 uppercase tracking-tighter bg-black/60 px-2 py-0.5 rounded border border-red-500/30">PAUSED</span>
                   </div>
