@@ -214,7 +214,7 @@ const TASKS = [
   { 
     id: 1, 
     title: 'Repost last X post', 
-    reward: 0.01, 
+    reward: 0.005, 
     icon: <Icon name="twitter" className="w-5 h-5" />, 
     link: 'https://x.com/DigitalGold2025',
     frequency: 'Daily',
@@ -223,7 +223,7 @@ const TASKS = [
   { 
     id: 2, 
     title: 'Repost last Instagram post', 
-    reward: 0.01, 
+    reward: 0.005, 
     icon: <Icon name="instagram" className="w-5 h-5" />, 
     link: 'https://instagram.com/digitalgold11',
     frequency: 'Daily',
@@ -232,7 +232,7 @@ const TASKS = [
   { 
     id: 3, 
     title: 'React on last Telegram post', 
-    reward: 0.01, 
+    reward: 0.005, 
     icon: <Icon name="send" className="w-5 h-5" />, 
     link: 'https://t.me/digitalgold2025',
     frequency: 'Daily',
@@ -241,7 +241,7 @@ const TASKS = [
   { 
     id: 4, 
     title: 'Check for news in Youtube', 
-    reward: 0.05, 
+    reward: 0.005, 
     icon: <Icon name="youtube" className="w-5 h-5" />, 
     link: 'https://www.youtube.com/@DigitalGold25',
     frequency: 'Daily',
@@ -250,7 +250,7 @@ const TASKS = [
   { 
     id: 5, 
     title: 'Watch TikTok Video', 
-    reward: 0.1, 
+    reward: 0.05, 
     icon: <Icon name="video" className="w-5 h-5" />, 
     link: 'https://vt.tiktok.com/ZS9er85gm/',
     frequency: 'Every 5 days',
@@ -259,7 +259,7 @@ const TASKS = [
   { 
     id: 6, 
     title: 'Watch YouTube Short', 
-    reward: 0.1, 
+    reward: 0.05, 
     icon: <Icon name="youtube" className="w-5 h-5" />, 
     link: 'https://youtube.com/shorts/Vl9HvxA7QlE?si=BVbNkmid43ShhqbN',
     frequency: 'Every 5 days',
@@ -268,7 +268,7 @@ const TASKS = [
   { 
     id: 7, 
     title: 'Watch Instagram Reel', 
-    reward: 0.1, 
+    reward: 0.05, 
     icon: <Icon name="instagram" className="w-5 h-5" />, 
     link: 'https://www.instagram.com/reel/DXY-BF_jWrD/?igsh=MXhqZGZydHB4aGsxYw==',
     frequency: 'Every 5 days',
@@ -433,7 +433,7 @@ const Dashboard = ({
   const [loading, setLoading] = useState(true);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
 
-  const BASE_MINING_RATE = 0.02 / 3600;
+  const BASE_MINING_RATE = 0.01 / 3600;
   const referralBonusMultiplier = 1 + (activeReferralsCount * 0.05);
   const MINING_RATE_PER_SECOND = BASE_MINING_RATE * referralBonusMultiplier;
   const SESSION_DURATION_SECONDS = 2 * 3600;
@@ -670,7 +670,7 @@ const Dashboard = ({
         </div>
 
         <p className="text-gray-500 text-[10px] text-center max-w-[220px]">
-          Current rate: 0.02 GLD/hr • 2 hour sessions • Session resets on claim
+          Current rate: 0.01 GLD/hr • 2 hour sessions • Session resets on claim
         </p>
       </div>
 
@@ -3703,43 +3703,50 @@ export default function App() {
   };
 
   const MainnetChecklistPage = ({ 
-  user, 
-  kycData, 
-  academyProgress, 
-  onBack 
-}: { 
-  user: User, 
-  kycData: { status: string, realName: string | null, phone: string | null } | null, 
-  academyProgress: { total_score: number },
-  onBack: () => void 
-}) => {
-  const { t } = useTranslation();
-
-  const steps = [
-    { 
-      id: 1, 
-      title: t('checklist.step1'), 
-      status: (kycData?.realName && kycData?.phone) ? 'completed' : 'pending',
-      description: t('checklist.step1Desc')
-    },
-    { 
-      id: 2, 
-      title: t('checklist.step2'), 
-      status: kycData?.status === 'verified' ? 'completed' : (kycData?.status?.toLowerCase().includes('stage 3') ? 'waiting' : 'pending'),
-      description: t('checklist.step2Desc')
-    },
-    { 
-      id: 3, 
-      title: t('checklist.step3'), 
-      status: academyProgress.total_score >= 75 ? 'completed' : 'pending',
-      description: t('checklist.step3Desc')
-    },
-    { id: 4, title: t('checklist.step4'), status: 'soon', description: t('common.comingSoon') },
-    { id: 5, title: t('checklist.step5'), status: 'soon', description: t('common.comingSoon') },
-    { id: 6, title: t('checklist.step6'), status: 'soon', description: t('common.comingSoon') },
-    { id: 7, title: t('checklist.step7'), status: 'soon', description: t('common.comingSoon') },
-    { id: 8, title: t('checklist.step8'), status: 'soon', description: t('common.comingSoon') },
-  ];
+    user, 
+    kycData, 
+    academyProgress, 
+    gldBalance,
+    onBack 
+  }: { 
+    user: User, 
+    kycData: { status: string, realName: string | null, phone: string | null } | null, 
+    academyProgress: { total_score: number },
+    gldBalance: number,
+    onBack: () => void 
+  }) => {
+    const { t } = useTranslation();
+  
+    const steps = [
+      { 
+        id: 1, 
+        title: t('checklist.step1'), 
+        status: (kycData?.realName && kycData?.phone) ? 'completed' : 'pending',
+        description: t('checklist.step1Desc')
+      },
+      { 
+        id: 2, 
+        title: t('checklist.step2'), 
+        status: kycData?.status === 'verified' ? 'completed' : (kycData?.status?.toLowerCase().includes('stage 3') ? 'waiting' : 'pending'),
+        description: t('checklist.step2Desc')
+      },
+      { 
+        id: 3, 
+        title: t('checklist.step3'), 
+        status: academyProgress.total_score >= 75 ? 'completed' : 'pending',
+        description: t('checklist.step3Desc')
+      },
+      { 
+        id: 4, 
+        title: t('checklist.step4'), 
+        status: gldBalance >= 200 ? 'completed' : 'pending',
+        description: t('checklist.step4Desc')
+      },
+      { id: 5, title: t('checklist.step5'), status: 'soon', description: t('common.comingSoon') },
+      { id: 6, title: t('checklist.step6'), status: 'soon', description: t('common.comingSoon') },
+      { id: 7, title: t('checklist.step7'), status: 'soon', description: t('common.comingSoon') },
+      { id: 8, title: t('checklist.step8'), status: 'soon', description: t('common.comingSoon') },
+    ];
 
   return (
     <div className="flex flex-col gap-6 pb-24">
@@ -3895,6 +3902,7 @@ const renderContent = () => {
             user={user!}
             kycData={kycData}
             academyProgress={academyProgress}
+            gldBalance={userAssets['GLD'] || 0}
             onBack={() => setActiveTab('more')}
           />
         );
