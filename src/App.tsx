@@ -274,6 +274,15 @@ const TASKS = [
     frequency: 'Every 5 days',
     requiredCode: 'feel the sun'
   },
+  { 
+    id: 8, 
+    title: 'Watch Ad (Renewable every 1 hour)', 
+    reward: 0.005, 
+    icon: <Icon name="play-circle" className="w-5 h-5" />, 
+    link: 'https://idealistic-revenue.com/b_3cVU0.PC3-p/vXb/mNVYJgZKD/0c3BM/DeAayEMQjLIj5/LXTWcTw/M/DEIQyWM/zkMb',
+    frequency: 'Every 1 hour',
+    isHourly: true
+  },
 ];
 
 const MAINNET_STEPS = [
@@ -916,7 +925,19 @@ const TasksTab = ({
 
       <div className="flex flex-col gap-3">
         {TASKS.map((task) => {
-          const isCompleted = completedTasks.includes(task.id);
+          let isCompleted = completedTasks.includes(task.id);
+          const isHourly = (task as any).isHourly;
+          
+          if (isHourly && isCompleted) {
+            const lastDone = localStorage.getItem(`last_done_${task.id}`);
+            if (lastDone) {
+              const diff = Date.now() - parseInt(lastDone);
+              if (diff >= 3600000) {
+                isCompleted = false;
+              }
+            }
+          }
+
           const needsCode = !!task.requiredCode;
           const isVisited = visitedTasks.includes(task.id);
 
@@ -2826,9 +2847,9 @@ export default function App() {
         const lastResetDate = lastResetEntry ? lastResetEntry - 1000000 : 0;
 
         if (lastResetDate !== today) {
-          // It's a new day! Filter out daily tasks
-          const dailyTaskIds = TASKS.filter(t => (t as any).isDaily).map(t => t.id);
-          tasks = tasks.filter((id: number) => !dailyTaskIds.includes(id) && id <= 1000000);
+          // It's a new day! Filter out daily and hourly tasks
+          const resettableTaskIds = TASKS.filter(t => (t as any).isDaily || (t as any).isHourly).map(t => t.id);
+          tasks = tasks.filter((id: number) => !resettableTaskIds.includes(id) && id <= 1000000);
           // Add new reset marker
           tasks.push(today + 1000000);
           
@@ -3492,7 +3513,27 @@ export default function App() {
   };
 
   const handleCompleteTask = async (taskId: number, reward: number) => {
-    if (!user || completedTasks.includes(taskId)) return;
+    const task = TASKS.find(t => t.id === taskId);
+    const isHourly = (task as any)?.isHourly;
+    const lastDoneKey = `last_done_${taskId}`;
+    
+    if (!user) return;
+    
+    // Check if task is already completed (and not hourly)
+    if (completedTasks.includes(taskId) && !isHourly) return;
+    
+    // For hourly tasks, check the 1-hour window
+    if (isHourly && completedTasks.includes(taskId)) {
+      const lastDone = localStorage.getItem(lastDoneKey);
+      if (lastDone) {
+        const diff = Date.now() - parseInt(lastDone);
+        if (diff < 3600000) { // Less than 1 hour
+          const remainingMinutes = Math.ceil((3600000 - diff) / 60000);
+          alert(`Please wait ${remainingMinutes} more minutes before watching this ad again.`);
+          return;
+        }
+      }
+    }
 
     try {
       // Safety check: Fetch latest balance from server to prevent overwriting with 0 if local state is stale
@@ -3507,7 +3548,9 @@ export default function App() {
 
       const currentGld = currentBalanceData?.amount || 0;
       const newGld = currentGld + reward;
-      const newCompletedTasks = [...completedTasks, taskId];
+      
+      // Ensure unique IDs in completedTasks
+      const newCompletedTasks = [...new Set([...completedTasks, taskId])];
 
       // Update Supabase: Tasks, Balance
       const [profileRes, balanceRes] = await Promise.all([
@@ -3528,6 +3571,10 @@ export default function App() {
       if (balanceRes.error) throw balanceRes.error;
 
       // Update local state
+      if (isHourly) {
+        localStorage.setItem(lastDoneKey, Date.now().toString());
+      }
+      
       setCompletedTasks(newCompletedTasks);
       setUserAssets(prev => ({
         ...prev,
