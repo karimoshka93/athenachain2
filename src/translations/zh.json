@@ -93,6 +93,12 @@
     "finished": "已结束",
     "claimReward": "领取奖励"
   },
+  "announcement": {
+    "title": "GLD 质押系统即将开始",
+    "dateRange": "5月1-2日",
+    "firstPoint": "第一：如果您的余额超过 1000 GLD，所有超过 1000 GLD 的余额将被锁定 3 年，如果没有这一点，您将无法通过 Mainnent 检查清单。",
+    "secondPoint": "第二：您的剩余余额将有各种质押选项，这些选项有助于当前的挖矿率。"
+  },
   "profile": {
     "subtitle": "个人详情与安全",
     "username": "用户名",

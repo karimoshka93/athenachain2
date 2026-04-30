@@ -100,6 +100,12 @@
     "currentSession": "Current Session Earnings",
     "timeRemaining": "Time Remaining"
   },
+  "announcement": {
+    "title": "GLD Staking system will begin",
+    "dateRange": "May 1-2",
+    "firstPoint": "First: If your balance exceeds 1000 GLD, all balances above 1000 GLD will be locked for 3 years, and you cannot pass the Mainnent Checklist without this.",
+    "secondPoint": "Second: Your remaining balance will have various staking options that contribute to the current mining rate."
+  },
   "profile": {
     "subtitle": "Personal details & Security",
     "username": "Username",

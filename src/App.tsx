@@ -52,7 +52,8 @@ import {
   Star,
   Heart,
   Moon,
-  Mountain
+  Mountain,
+  Megaphone
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { supabase } from './lib/supabase';
@@ -610,6 +611,33 @@ const Dashboard = ({
           </button>
         </motion.div>
       )}
+
+      {/* Announcement Section */}
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="glass rounded-3xl p-6 border-red-500/40 bg-red-500/5 relative overflow-hidden shadow-[0_0_20px_rgba(239,68,68,0.1)]"
+      >
+        <div className="absolute top-0 right-0 p-3">
+          <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+        </div>
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <Megaphone className="w-5 h-5 text-red-500" />
+            <h3 className="text-red-400 font-bold text-sm uppercase tracking-wider">
+              {t('announcement.dateRange')}: {t('announcement.title')}
+            </h3>
+          </div>
+          <div className="flex flex-col gap-3">
+            <p className="text-gray-200 text-xs font-semibold leading-relaxed">
+              {t('announcement.firstPoint')}
+            </p>
+            <p className="text-gray-300 text-[11px] leading-relaxed opacity-80 border-l-2 border-red-500/30 pl-3">
+              {t('announcement.secondPoint')}
+            </p>
+          </div>
+        </div>
+      </motion.div>
 
       {/* Mining Section */}
       <div className="glass rounded-3xl p-8 flex flex-col items-center justify-center gap-6 relative overflow-hidden">

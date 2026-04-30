@@ -87,6 +87,12 @@
     "finished": "SELESAI",
     "claimReward": "KLAIM HADIAH"
   },
+  "announcement": {
+    "title": "Sistem staking GLD akan dimulai",
+    "dateRange": "1-2 Mei",
+    "firstPoint": "Pertama: Jika saldo Anda melebihi 1000 GLD, semua saldo di atas 1000 GLD akan dikunci selama 3 tahun, dan Anda tidak dapat melewati Daftar Periksa Mainnent tanpa ini.",
+    "secondPoint": "Kedua: Sisa saldo Anda akan memiliki berbagai opsi staking yang berkontribusi pada tingkat penambangan saat ini."
+  },
   "profile": {
     "subtitle": "Detail Pribadi & Keamanan",
     "username": "Nama Pengguna",

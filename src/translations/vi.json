@@ -87,6 +87,12 @@
     "finished": "ĐÃ KẾT THÚC",
     "claimReward": "NHẬN PHẦN THƯỞNG"
   },
+  "announcement": {
+    "title": "Hệ thống staking GLD sẽ bắt đầu",
+    "dateRange": "Ngày 1-2 tháng 5",
+    "firstPoint": "Thứ nhất: Nếu số dư của bạn vượt quá 1000 GLD, tất cả số dư trên 1000 GLD sẽ bị khóa trong 3 năm và bạn không thể vượt qua Danh sách kiểm tra Mainnent nếu không có điều này.",
+    "secondPoint": "Thứ hai: Số dư còn lại của bạn sẽ có các tùy chọn staking khác nhau góp phần vào tốc độ khai thác hiện tại."
+  },
   "profile": {
     "subtitle": "Chi tiết cá nhân & Bảo mật",
     "username": "Tên người dùng",

@@ -69,6 +69,12 @@
     "finished": "TERMINÉ",
     "claimReward": "RÉCLAMER RÉCOMPENSE"
   },
+  "announcement": {
+    "title": "Le système de staking GLD va commencer",
+    "dateRange": "1-2 mai",
+    "firstPoint": "Premièrement : si votre solde dépasse 1000 GLD, tous les soldes supérieurs à 1000 GLD seront bloqués pendant 3 ans, et vous ne pourrez pas passer la liste de contrôle Mainnent sans cela.",
+    "secondPoint": "Deuxièmement : votre solde restant disposera de diverses options de staking qui contribuent au taux de minage actuel."
+  },
   "profile": {
     "subtitle": "Détails personnels & Sécurité",
     "username": "Nom d'utilisateur",

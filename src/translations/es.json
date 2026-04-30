@@ -69,6 +69,12 @@
     "finished": "FINALIZADO",
     "claimReward": "RECLAMAR RECOMPENSA"
   },
+  "announcement": {
+    "title": "Sistema de staking GLD comenzará",
+    "dateRange": "1-2 de mayo",
+    "firstPoint": "Primero: Si su saldo supera los 1000 GLD, todos los saldos por encima de 1000 GLD se bloquearán por 3 años, y no podrá pasar la lista de verificación de Mainnent sin esto.",
+    "secondPoint": "Segundo: Su saldo restante tendrá varias opciones de staking que contribuyen a la tasa de minería actual."
+  },
   "profile": {
     "subtitle": "Detalles personales y Seguridad",
     "username": "Nombre de usuario",
