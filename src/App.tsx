@@ -212,6 +212,16 @@ const MARKET_DATA = [
 
 const TASKS = [
   { 
+    id: 8, 
+    title: 'Watch Ad (Renewable every 1 hour)', 
+    reward: 0.005, 
+    icon: <Icon name="play-circle" className="w-5 h-5" />, 
+    link: 'https://idealistic-revenue.com/b_3cVU0.PC3-p/vXb/mNVYJgZKD/0c3BM/DeAayEMQjLIj5/LXTWcTw/M/DEIQyWM/zkMb',
+    frequency: 'Every 1 hour',
+    isHourly: true,
+    isRed: true
+  },
+  { 
     id: 1, 
     title: 'Repost last X post', 
     reward: 0.005, 
@@ -273,15 +283,6 @@ const TASKS = [
     link: 'https://www.instagram.com/reel/DXY-BF_jWrD/?igsh=MXhqZGZydHB4aGsxYw==',
     frequency: 'Every 5 days',
     requiredCode: 'feel the sun'
-  },
-  { 
-    id: 8, 
-    title: 'Watch Ad (Renewable every 1 hour)', 
-    reward: 0.005, 
-    icon: <Icon name="play-circle" className="w-5 h-5" />, 
-    link: 'https://idealistic-revenue.com/b_3cVU0.PC3-p/vXb/mNVYJgZKD/0c3BM/DeAayEMQjLIj5/LXTWcTw/M/DEIQyWM/zkMb',
-    frequency: 'Every 1 hour',
-    isHourly: true
   },
 ];
 
@@ -940,28 +941,29 @@ const TasksTab = ({
 
           const needsCode = !!task.requiredCode;
           const isVisited = visitedTasks.includes(task.id);
+          const isRed = (task as any).isRed;
 
           return (
             <div 
               key={task.id} 
               className={`glass rounded-2xl p-5 flex flex-col gap-4 group transition-all ${
-                isCompleted ? 'opacity-50 border-green-500/30' : 'hover:border-gold/30'
+                isCompleted ? 'opacity-50 border-green-500/30' : (isRed ? 'border-red-500/50 bg-red-500/5 shadow-[0_0_20px_rgba(239,68,68,0.1)]' : 'hover:border-gold/30')
               }`}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${
-                    isCompleted ? 'bg-green-500/10 text-green-500' : 'bg-white/5 text-gold group-hover:bg-gold/10'
+                    isCompleted ? 'bg-green-500/10 text-green-500' : (isRed ? 'bg-red-500/10 text-red-500' : 'bg-white/5 text-gold group-hover:bg-gold/10')
                   }`}>
                     {isCompleted ? <ShieldCheck className="w-5 h-5" /> : task.icon}
                   </div>
                   <div className="flex flex-col">
-                    <span className={`font-bold text-sm ${isCompleted ? 'text-gray-400 line-through' : ''}`}>{task.title}</span>
+                    <span className={`font-bold text-sm ${isCompleted ? 'text-gray-400 line-through' : (isRed ? 'text-red-400' : '')}`}>{task.title}</span>
                     <div className="flex items-center gap-2">
-                      <span className={`${isCompleted ? 'text-green-500' : 'text-gold'} text-xs font-bold`}>
+                      <span className={`${isCompleted ? 'text-green-500' : (isRed ? 'text-red-500 underline decoration-red-500/30 underline-offset-4' : 'text-gold')} text-xs font-bold uppercase tracking-wider`}>
                         {isCompleted ? 'Rewarded' : `+${task.reward} GLD`}
                       </span>
-                      <span className="text-gray-500 text-[10px] uppercase tracking-tighter bg-white/5 px-1.5 py-0.5 rounded">{task.frequency}</span>
+                      <span className={`text-[10px] uppercase tracking-tighter px-1.5 py-0.5 rounded ${isRed && !isCompleted ? 'bg-red-500/20 text-red-400 border border-red-500/20' : 'text-gray-500 bg-white/5'}`}>{task.frequency}</span>
                     </div>
                   </div>
                 </div>
@@ -987,7 +989,7 @@ const TasksTab = ({
                     )}
                     <button 
                       onClick={() => handleGo(task)}
-                      className={`${!needsCode && isVisited ? 'bg-white/5 text-gray-400' : 'bg-gold/10 text-gold group-hover:bg-gold group-hover:text-black'} px-4 py-2 rounded-lg text-sm font-bold transition-all`}
+                      className={`${!needsCode && isVisited ? 'bg-white/5 text-gray-400' : (isRed ? 'bg-red-600/90 text-white shadow-lg shadow-red-900/20' : 'bg-gold/10 text-gold group-hover:bg-gold group-hover:text-black')} px-4 py-2 rounded-lg text-sm font-bold transition-all`}
                     >
                       {needsCode ? 'Go' : (isVisited ? 'Re-visit' : 'Go')}
                     </button>
