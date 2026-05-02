@@ -1461,7 +1461,6 @@ const ReservationPage = ({ user, balance, profile, onBack, onUpdateSuccess }: Re
       mandatoryExpiry.setFullYear(now.getFullYear() + 3);
 
       const updateData: any = {
-        balance: finalBalance,
         optional_lock_amount: (profile?.optional_lock_amount || 0) + optionalAmount,
         optional_lock_percentage: selectedPercent,
         optional_lock_duration: selectedDuration,
@@ -1473,12 +1472,22 @@ const ReservationPage = ({ user, balance, profile, onBack, onUpdateSuccess }: Re
         updateData.mandatory_lock_expiry = mandatoryExpiry.toISOString();
       }
 
-      const { error } = await supabase
-        .from('profiles')
-        .update(updateData)
-        .eq('id', user.id);
+      // Update both profiles and user_balances
+      const [profileRes, balanceRes] = await Promise.all([
+        supabase
+          .from('profiles')
+          .update(updateData)
+          .eq('id', user.id),
+        supabase
+          .from('user_balances')
+          .update({ amount: finalBalance })
+          .eq('user_id', user.id)
+          .eq('coin_symbol', 'GLD')
+      ]);
 
-      if (error) throw error;
+      if (profileRes.error) throw profileRes.error;
+      if (balanceRes.error) throw balanceRes.error;
+
       onUpdateSuccess();
     } catch (err) {
       console.error('Error starting reservation:', err);
