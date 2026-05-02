@@ -14,6 +14,7 @@ import {
   Video, 
   TrendingUp, 
   TrendingDown, 
+  ChevronLeft,
   ChevronRight, 
   Lock, 
   Zap,
@@ -139,6 +140,7 @@ const Icon = ({ name, className }: { name: string; className?: string }) => {
     'gamepad-2': Gamepad2,
     'trending-up': TrendingUp,
     'trending-down': TrendingDown,
+    'chevron-left': ChevronLeft,
     'chevron-right': ChevronRight,
     'lock': Lock,
     'zap': Zap,
@@ -1445,9 +1447,9 @@ const ReservationPage = ({ user, balance, profile, onBack, onUpdateSuccess }: Re
     setProcessing(true);
 
     try {
-      const remainingBalance = balance - excessAmount;
-      const optionalAmount = (remainingBalance * selectedPercent) / 100;
-      const finalBalance = balance - excessAmount - optionalAmount;
+      const remainingBalance = Math.max(0, balance - excessAmount);
+      const optionalAmount = parseFloat(((remainingBalance * selectedPercent) / 100).toFixed(6));
+      const finalBalance = Math.max(0, parseFloat((balance - excessAmount - optionalAmount).toFixed(6)));
 
       // Calculate optional expiry
       const now = new Date();
@@ -1489,9 +1491,9 @@ const ReservationPage = ({ user, balance, profile, onBack, onUpdateSuccess }: Re
       if (balanceRes.error) throw balanceRes.error;
 
       onUpdateSuccess();
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error starting reservation:', err);
-      alert('Failed to process reservation. Please try again.');
+      alert(`Failed to process reservation: ${err.message || 'Please try again.'}`);
     } finally {
       setProcessing(false);
     }
@@ -1557,14 +1559,16 @@ const ReservationPage = ({ user, balance, profile, onBack, onUpdateSuccess }: Re
         <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex flex-col gap-3">
           <div className="flex justify-between items-center text-xs">
             <span className="text-gray-500 font-bold uppercase">{t('reservation.excess')}</span>
-            <span className={`font-bold ${excessAmount > 0 ? 'text-gold' : 'text-green-500'}`}>
-              {excessAmount.toFixed(2)} GLD
+            <span className={`font-bold ${ (mandatoryLocked > 0 || excessAmount > 0) ? 'text-gold' : 'text-green-500'}`}>
+              {(mandatoryLocked > 0 ? mandatoryLocked : excessAmount).toFixed(2)} GLD
             </span>
           </div>
           {mandatoryLocked > 0 && (
             <div className="flex justify-between items-center text-xs pt-3 border-t border-white/5">
               <span className="text-gray-500 font-bold uppercase">{t('reservation.locked_until')}</span>
-              <span className="text-gold font-bold">{new Date(profile.mandatory_lock_expiry).toLocaleDateString()}</span>
+              <span className="text-gold font-bold">
+                {profile?.mandatory_lock_expiry ? new Date(profile.mandatory_lock_expiry).toLocaleDateString() : t('common.pending')}
+              </span>
             </div>
           )}
           {balance <= 1000 && !mandatoryLocked && (
