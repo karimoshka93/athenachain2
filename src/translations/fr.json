@@ -75,6 +75,27 @@
     "firstPoint": "Premièrement : si votre solde dépasse 1000 GLD, tous les soldes supérieurs à 1000 GLD seront bloqués pendant 3 ans, et vous ne pourrez pas passer la liste de contrôle Mainnent sans cela.",
     "secondPoint": "Deuxièmement : votre solde restant disposera de diverses options de staking qui contribuent au taux de minage actuel."
   },
+  "reservation": {
+    "title": "Système de Réservation GLD",
+    "subtitle": "Préparez votre compte pour la check-list du Mainnet",
+    "stage1_title": "1. Verrouillage de Renforcement du Système",
+    "stage1_desc": "Exigence du protocole : Les soldes dépassant 1000 GLD doivent être verrouillés pendant 3 ans pour assurer la stabilité du réseau.",
+    "stage1_status_over": "{amount} GLD seront verrouillés pendant 3 ans",
+    "stage1_status_ok": "Solde dans les limites (Terminé)",
+    "stage2_title": "2. Réservation de Stratégie Optionnelle",
+    "stage2_desc": "Sélectionnez une partie de votre solde restant à réserver. Des réservations plus élevées augmentent votre taux de minage.",
+    "select_percent": "Sélectionner le Pourcentage",
+    "select_duration": "Sélectionner la Durée",
+    "months_3": "3 Mois",
+    "months_6": "6 Mois",
+    "year_1": "1 An",
+    "confirm_btn": "Démarrer la Réservation",
+    "completed_all": "Réservation Terminée",
+    "completed_desc": "Votre compte est maintenant prêt pour la prochaine étape de la check-list du Mainnet.",
+    "excess": "Montant Excédentaire",
+    "locked_until": "Verrouillé jusqu'au",
+    "watch_tutorial": "Regarder la vidéo tutoriel"
+  },
   "profile": {
     "subtitle": "Détails personnels & Sécurité",
     "username": "Nom d'utilisateur",
@@ -83,6 +104,8 @@
     "setUsername": "Définir le nom d'utilisateur",
     "accountIntegrity": "Intégrité du compte",
     "securityAnalysis": "Analyse de sécurité & confiance",
+    "gld_reservation": "Réservation GLD",
+    "reservation_desc": "Système de verrouillage pour la préparation du Mainnet",
     "checking": "Vérification",
     "integrityDesc": "\"Nous vérifions l'historique de votre compte pour assurer la conformité. Ce processus est automatique.\""
   },

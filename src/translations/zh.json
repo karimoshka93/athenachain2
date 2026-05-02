@@ -99,6 +99,27 @@
     "firstPoint": "第一：如果您的余额超过 1000 GLD，所有超过 1000 GLD 的余额将被锁定 3 年，如果没有这一点，您将无法通过 Mainnent 检查清单。",
     "secondPoint": "第二：您的剩余余额将有各种质押选项，这些选项有助于当前的挖矿率。"
   },
+  "reservation": {
+    "title": "GLD 预订系统",
+    "subtitle": "为主网检查清单准备您的账户",
+    "stage1_title": "1. 系统强化锁定",
+    "stage1_desc": "协议要求：超过 1000 GLD 的余额必须锁定 3 年，以确保网络稳定。",
+    "stage1_status_over": "{amount} GLD 将被锁定 3 年",
+    "stage1_status_ok": "余额在限制范围内（已完成）",
+    "stage2_title": "2. 可选策略预订",
+    "stage2_desc": "选择您剩余余额的一部分进行预订。更高的预订比例将提高您的挖矿率。",
+    "select_percent": "选择百分比",
+    "select_duration": "选择时长",
+    "months_3": "3 个月",
+    "months_6": "6 个月",
+    "year_1": "1 年",
+    "confirm_btn": "开始预订",
+    "completed_all": "预订已完成",
+    "completed_desc": "您的账户现在已为主网检查清单的下一阶段做好准备。",
+    "excess": "超出金额",
+    "locked_until": "锁定至",
+    "watch_tutorial": "观看教程视频"
+  },
   "profile": {
     "subtitle": "个人详情与安全",
     "username": "用户名",
@@ -107,6 +128,8 @@
     "setUsername": "设置唯一用户名",
     "accountIntegrity": "账户完整性",
     "securityAnalysis": "安全与信任分析",
+    "gld_reservation": "GLD 预订",
+    "reservation_desc": "主网准备锁定系统",
     "checking": "检查中",
     "integrityDesc": "“我们目前正在验证您的账户历史记录，以确保符合我们的安全协议。此过程是自动完成的。”"
   },

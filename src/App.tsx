@@ -35,6 +35,7 @@ import {
   Cpu,
   CreditCard,
   ArrowRightLeft,
+  ExternalLink,
   ShieldCheck,
   HelpCircle,
   Download,
@@ -64,6 +65,21 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import SpinWheel from './components/SpinWheel';
 import SlotsGame from './components/SlotsGame';
 import SnakeGame from './components/SnakeGame';
+
+// --- Shared UI Components ---
+const Badge = ({ text, color = 'gold' }: { text: string; color?: 'gold' | 'green' | 'red' | 'blue' }) => {
+  const colors = {
+    gold: 'bg-gold/10 text-gold border-gold/20',
+    green: 'bg-green-500/10 text-green-500 border-green-500/20',
+    red: 'bg-red-500/10 text-red-500 border-red-500/20',
+    blue: 'bg-blue-500/10 text-blue-500 border-blue-500/20'
+  };
+  return (
+    <div className={`px-2 py-0.5 rounded-md border text-[8px] font-black uppercase tracking-tighter ${colors[color]}`}>
+      {text}
+    </div>
+  );
+};
 
 // --- Icon Helper Component ---
 const CoinIcon = ({ image, symbol, className = "w-10 h-10" }: { image?: string; symbol: string; className?: string }) => {
@@ -152,7 +168,8 @@ const Icon = ({ name, className }: { name: string; className?: string }) => {
     'star': Star,
     'heart': Heart,
     'moon': Moon,
-    'mountain': Mountain
+    'mountain': Mountain,
+    'megaphone': Megaphone
   };
 
   const LucideIcon = iconMap[name];
@@ -165,7 +182,7 @@ const Icon = ({ name, className }: { name: string; className?: string }) => {
 };
 
 // --- Types ---
-type Tab = 'dashboard' | 'wallet' | 'tasks' | 'mainnet' | 'more' | 'profile' | 'academy' | 'settings' | 'referral' | 'mainnet-checklist';
+type Tab = 'dashboard' | 'wallet' | 'tasks' | 'mainnet' | 'more' | 'profile' | 'academy' | 'settings' | 'referral' | 'mainnet-checklist' | 'reservation';
 
 interface Coin {
   id: string;
@@ -612,32 +629,6 @@ const Dashboard = ({
         </motion.div>
       )}
 
-      {/* Announcement Section */}
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="glass rounded-3xl p-6 border-red-500/40 bg-red-500/5 relative overflow-hidden shadow-[0_0_20px_rgba(239,68,68,0.1)]"
-      >
-        <div className="absolute top-0 right-0 p-3">
-          <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-        </div>
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-2">
-            <Megaphone className="w-5 h-5 text-red-500" />
-            <h3 className="text-red-400 font-bold text-sm uppercase tracking-wider">
-              {t('announcement.dateRange')}: {t('announcement.title')}
-            </h3>
-          </div>
-          <div className="flex flex-col gap-3">
-            <p className="text-gray-200 text-xs font-semibold leading-relaxed">
-              {t('announcement.firstPoint')}
-            </p>
-            <p className="text-gray-300 text-[11px] leading-relaxed opacity-80 border-l-2 border-red-500/30 pl-3">
-              {t('announcement.secondPoint')}
-            </p>
-          </div>
-        </div>
-      </motion.div>
 
       {/* Mining Section */}
       <div className="glass rounded-3xl p-8 flex flex-col items-center justify-center gap-6 relative overflow-hidden">
@@ -1427,6 +1418,236 @@ const SettingsPage = ({
   );
 };
 
+// --- Reservation Page Component ---
+interface ReservationPageProps {
+  user: User;
+  balance: number;
+  profile: any;
+  onBack: () => void;
+  onUpdateSuccess: () => void;
+}
+
+const ReservationPage = ({ user, balance, profile, onBack, onUpdateSuccess }: ReservationPageProps) => {
+  const { t } = useTranslation();
+  const [selectedPercent, setSelectedPercent] = useState<number | null>(profile?.optional_lock_percentage || null);
+  const [selectedDuration, setSelectedDuration] = useState<string | null>(profile?.optional_lock_duration || null);
+  const [processing, setProcessing] = useState(false);
+
+  const mandatoryLocked = profile?.mandatory_lock_amount || 0;
+  const isMandatoryDone = balance <= 1000 || mandatoryLocked > 0;
+  const isOptionalDone = (profile?.optional_lock_amount || 0) > 0;
+  const isAllDone = isMandatoryDone && isOptionalDone;
+
+  const excessAmount = balance > 1000 ? balance - 1000 : 0;
+
+  const handleConfirm = async () => {
+    if (!selectedPercent || !selectedDuration) return;
+    setProcessing(true);
+
+    try {
+      const remainingBalance = balance - excessAmount;
+      const optionalAmount = (remainingBalance * selectedPercent) / 100;
+      const finalBalance = balance - excessAmount - optionalAmount;
+
+      // Calculate optional expiry
+      const now = new Date();
+      let expiry = new Date();
+      if (selectedDuration === '3m') expiry.setMonth(now.getMonth() + 3);
+      else if (selectedDuration === '6m') expiry.setMonth(now.getMonth() + 6);
+      else if (selectedDuration === '1y') expiry.setFullYear(now.getFullYear() + 1);
+
+      // Mandatory expiry is always 3 years
+      const mandatoryExpiry = new Date();
+      mandatoryExpiry.setFullYear(now.getFullYear() + 3);
+
+      const updateData: any = {
+        balance: finalBalance,
+        optional_lock_amount: (profile?.optional_lock_amount || 0) + optionalAmount,
+        optional_lock_percentage: selectedPercent,
+        optional_lock_duration: selectedDuration,
+        optional_lock_expiry: expiry.toISOString()
+      };
+
+      if (excessAmount > 0 && mandatoryLocked === 0) {
+        updateData.mandatory_lock_amount = excessAmount;
+        updateData.mandatory_lock_expiry = mandatoryExpiry.toISOString();
+      }
+
+      const { error } = await supabase
+        .from('profiles')
+        .update(updateData)
+        .eq('id', user.id);
+
+      if (error) throw error;
+      onUpdateSuccess();
+    } catch (err) {
+      console.error('Error starting reservation:', err);
+      alert('Failed to process reservation. Please try again.');
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-6 pb-24">
+      <header className="flex items-center gap-4">
+        <button onClick={onBack} className="p-2 rounded-xl bg-white/5 border border-white/10 text-gray-400">
+          <Icon name="chevron-left" className="w-5 h-5" />
+        </button>
+        <div>
+          <h1 className="text-2xl font-bold text-gold-gradient">{t('reservation.title')}</h1>
+          <p className="text-gray-400 text-sm">{t('reservation.subtitle')}</p>
+        </div>
+      </header>
+
+      <a 
+        href="https://youtu.be/00mL-zcEkFQ" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="glass rounded-2xl p-4 border-gold/20 bg-gold/5 flex items-center justify-between group active:scale-[0.98] transition-all"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center text-red-500">
+            <Youtube className="w-6 h-6" />
+          </div>
+          <div>
+            <span className="text-sm font-bold text-white block">{t('reservation.watch_tutorial')}</span>
+            <span className="text-[10px] text-gray-400">youtube.com/watch?v=00mL-zcEkFQ</span>
+          </div>
+        </div>
+        <ExternalLink className="w-4 h-4 text-gray-500 group-hover:text-gold transition-colors" />
+      </a>
+
+      {isAllDone && (
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="glass rounded-3xl p-8 border-gold bg-gold/10 flex flex-col items-center text-center gap-4"
+        >
+          <div className="w-20 h-20 rounded-full bg-gold/20 flex items-center justify-center border-4 border-gold text-gold gold-glow">
+            <ShieldCheck className="w-10 h-10" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-black text-gold uppercase tracking-tighter">{t('reservation.completed_all')}</h2>
+            <p className="text-gray-300 text-sm mt-1">{t('reservation.completed_desc')}</p>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Stage 1: Mandatory */}
+      <div className={`glass rounded-3xl p-6 border-white/5 flex flex-col gap-4 ${isMandatoryDone ? 'opacity-60 grayscale-[0.5]' : ''}`}>
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-bold text-white flex items-center gap-2">
+            <span className="w-7 h-7 rounded-lg bg-gold/20 text-gold flex items-center justify-center text-sm">1</span>
+            {t('reservation.stage1_title')}
+          </h3>
+          {isMandatoryDone && <Badge text={t('common.completed')} color="green" />}
+        </div>
+        <p className="text-gray-400 text-xs leading-relaxed">{t('reservation.stage1_desc')}</p>
+        
+        <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex flex-col gap-3">
+          <div className="flex justify-between items-center text-xs">
+            <span className="text-gray-500 font-bold uppercase">{t('reservation.excess')}</span>
+            <span className={`font-bold ${excessAmount > 0 ? 'text-gold' : 'text-green-500'}`}>
+              {excessAmount.toFixed(2)} GLD
+            </span>
+          </div>
+          {mandatoryLocked > 0 && (
+            <div className="flex justify-between items-center text-xs pt-3 border-t border-white/5">
+              <span className="text-gray-500 font-bold uppercase">{t('reservation.locked_until')}</span>
+              <span className="text-gold font-bold">{new Date(profile.mandatory_lock_expiry).toLocaleDateString()}</span>
+            </div>
+          )}
+          {balance <= 1000 && !mandatoryLocked && (
+            <div className="flex justify-between items-center text-xs pt-3 border-t border-white/5 text-green-500 font-bold italic">
+              {t('reservation.stage1_status_ok')}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Stage 2: Optional */}
+      <div className={`glass rounded-3xl p-6 border-white/5 flex flex-col gap-6 ${isOptionalDone ? 'opacity-60 grayscale-[0.5]' : ''}`}>
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-bold text-white flex items-center gap-2">
+            <span className="w-7 h-7 rounded-lg bg-gold/20 text-gold flex items-center justify-center text-sm">2</span>
+            {t('reservation.stage2_title')}
+          </h3>
+          {isOptionalDone && <Badge text={t('common.completed')} color="green" />}
+        </div>
+        <p className="text-gray-400 text-xs leading-relaxed">{t('reservation.stage2_desc')}</p>
+
+        {!isOptionalDone && (
+          <div className="flex flex-col gap-6">
+            <div className="space-y-3">
+              <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">{t('reservation.select_percent')}</label>
+              <div className="grid grid-cols-4 gap-2">
+                {[25, 50, 75, 100].map(p => (
+                  <button
+                    key={p}
+                    onClick={() => setSelectedPercent(p)}
+                    className={`py-3 rounded-xl border text-sm font-bold transition-all ${
+                      selectedPercent === p 
+                        ? 'bg-gold border-gold text-black shadow-lg shadow-gold/20 scale-[1.05]' 
+                        : 'bg-white/5 border-white/10 text-gray-400 hover:border-gold/30'
+                    }`}
+                  >
+                    {p}%
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <label className="text-[10px] uppercase font-bold text-gray-500 ml-1">{t('reservation.select_duration')}</label>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { id: '3m', label: t('reservation.months_3') },
+                  { id: '6m', label: t('reservation.months_6') },
+                  { id: '1y', label: t('reservation.year_1') }
+                ].map(d => (
+                  <button
+                    key={d.id}
+                    onClick={() => setSelectedDuration(d.id)}
+                    className={`py-3 rounded-xl border text-sm font-bold transition-all ${
+                      selectedDuration === d.id 
+                        ? 'bg-gold border-gold text-black shadow-lg shadow-gold/20 scale-[1.05]' 
+                        : 'bg-white/5 border-white/10 text-gray-400 hover:border-gold/30'
+                    }`}
+                  >
+                    {d.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <button
+              onClick={handleConfirm}
+              disabled={!selectedPercent || !selectedDuration || processing}
+              className="w-full py-4 rounded-xl bg-gold text-black font-black text-sm uppercase gold-glow transition-all active:scale-[0.98] disabled:opacity-50 mt-2"
+            >
+              {processing ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : t('reservation.confirm_btn')}
+            </button>
+          </div>
+        )}
+
+        {isOptionalDone && (
+          <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex flex-col gap-3">
+            <div className="flex justify-between items-center text-xs">
+              <span className="text-gray-500 font-bold uppercase">Reserved Amount</span>
+              <span className="text-gold font-bold">{profile?.optional_lock_amount?.toFixed(2)} GLD</span>
+            </div>
+            <div className="flex justify-between items-center text-[10px] pt-3 border-t border-white/5 text-gray-400">
+              <span className="font-bold uppercase">Mining Boost</span>
+              <span className="text-green-500 font-bold">+{profile?.optional_lock_percentage || 0}% Speed</span>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const ProfilePage = ({ 
   user,
   username,
@@ -1437,7 +1658,9 @@ const ProfilePage = ({
   onUpdateUsername,
   onUpdateProfileInfo,
   onClaimStrike,
-  onBack
+  onNavigateToReservation,
+  onBack,
+  profile
 }: { 
   user: User;
   username: string | null;
@@ -1448,7 +1671,9 @@ const ProfilePage = ({
   onUpdateUsername: (newUsername: string) => Promise<{ success: boolean; message: string }>;
   onUpdateProfileInfo: (realName: string, phone: string) => Promise<{ success: boolean; message: string }>;
   onClaimStrike: () => Promise<{ success: boolean; message: string; reward?: number; streakDay?: number }>;
+  onNavigateToReservation: () => void;
   onBack: () => void;
+  profile: any;
 }) => {
   const { t } = useTranslation();
   const [editing, setEditing] = useState(false);
@@ -1624,6 +1849,26 @@ const ProfilePage = ({
             </div>
             {kycData?.status === 'verified' && <Icon name="shield-check" className="w-6 h-6 text-green-500" />}
           </div>
+
+          {/* GLD Reservation Link */}
+          <button 
+            onClick={onNavigateToReservation}
+            className="p-4 rounded-2xl bg-gold/10 border border-gold/20 flex items-center justify-between group active:scale-[0.98] transition-all"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gold/20 flex items-center justify-center text-gold">
+                <Icon name="megaphone" className="w-5 h-5" />
+              </div>
+              <div className="text-left">
+                <span className="text-sm font-bold text-white block">{t('profile.gld_reservation')}</span>
+                <span className="text-[10px] text-gray-400">{t('profile.reservation_desc')}</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              {(profile?.optional_lock_amount > 0) && <Badge text="Completed" color="green" />}
+              <Icon name="chevron-right" className="w-4 h-4 text-gold group-hover:translate-x-1 transition-transform" />
+            </div>
+          </button>
         </div>
 
         {/* Weekly Strike Section */}
@@ -2715,6 +2960,7 @@ export default function App() {
     is_eligible: boolean;
   }>({ completed_question_ids: [], total_score: 0, is_eligible: false });
   const [referralStats, setReferralStats] = useState<any>(null);
+  const [userProfile, setUserProfile] = useState<any>(null);
 
   useEffect(() => {
     // Capture referral code from URL
@@ -2835,6 +3081,7 @@ export default function App() {
           phone: profile.full_phone_number || null,
           date: profile.kyc_stage2_date || null
         });
+        setUserProfile(profile);
       } else {
         // No profile found, probably a new user
         setMigrationStatus(true);
@@ -3784,12 +4031,16 @@ export default function App() {
     kycData, 
     academyProgress, 
     gldBalance,
+    profile,
+    onNavigateToReservation,
     onBack 
   }: { 
     user: User, 
     kycData: { status: string, realName: string | null, phone: string | null } | null, 
     academyProgress: { total_score: number },
     gldBalance: number,
+    profile: any,
+    onNavigateToReservation: () => void,
     onBack: () => void 
   }) => {
     const { t } = useTranslation();
@@ -3799,30 +4050,41 @@ export default function App() {
         id: 1, 
         title: t('checklist.step1'), 
         status: (kycData?.realName && kycData?.phone) ? 'completed' : 'pending',
-        description: t('checklist.step1Desc')
+        description: t('checklist.step1Desc'),
+        action: () => setActiveTab('profile')
       },
       { 
         id: 2, 
         title: t('checklist.step2'), 
         status: kycData?.status === 'verified' ? 'completed' : (kycData?.status?.toLowerCase().includes('stage 3') ? 'waiting' : 'pending'),
-        description: t('checklist.step2Desc')
+        description: t('checklist.step2Desc'),
+        action: () => setActiveTab('profile')
       },
       { 
         id: 3, 
         title: t('checklist.step3'), 
         status: academyProgress.total_score >= 75 ? 'completed' : 'pending',
-        description: t('checklist.step3Desc')
+        description: t('checklist.step3Desc'),
+        action: () => setActiveTab('academy')
       },
       { 
         id: 4, 
         title: t('checklist.step4'), 
         status: gldBalance >= 200 ? 'completed' : 'pending',
-        description: t('checklist.step4Desc')
+        description: t('checklist.step4Desc'),
+        action: () => setActiveTab('dashboard')
       },
-      { id: 5, title: t('checklist.step5'), status: 'soon', description: t('common.comingSoon') },
-      { id: 6, title: t('checklist.step6'), status: 'soon', description: t('common.comingSoon') },
-      { id: 7, title: t('checklist.step7'), status: 'soon', description: t('common.comingSoon') },
-      { id: 8, title: t('checklist.step8'), status: 'soon', description: t('common.comingSoon') },
+      { 
+        id: 5, 
+        title: t('reservation.title'), 
+        status: (profile?.optional_lock_amount > 0) ? 'completed' : 'pending',
+        description: t('profile.reservation_desc'),
+        action: onNavigateToReservation
+      },
+      { id: 6, title: t('checklist.step5'), status: 'soon', description: t('common.comingSoon'), action: () => {} },
+      { id: 7, title: t('checklist.step6'), status: 'soon', description: t('common.comingSoon'), action: () => {} },
+      { id: 8, title: t('checklist.step7'), status: 'soon', description: t('common.comingSoon'), action: () => {} },
+      { id: 9, title: t('checklist.step8'), status: 'soon', description: t('common.comingSoon'), action: () => {} },
     ];
 
   return (
@@ -3839,7 +4101,12 @@ export default function App() {
 
       <div className="flex flex-col gap-4">
         {steps.map((step) => (
-          <div key={step.id} className="glass p-5 rounded-2xl flex items-center justify-between border-white/5 relative overflow-hidden group">
+          <button 
+            key={step.id} 
+            onClick={step.action}
+            disabled={step.status === 'soon' || step.status === 'completed'}
+            className="glass p-5 rounded-2xl flex items-center justify-between border-white/5 relative overflow-hidden group text-left w-full active:scale-[0.98] transition-all disabled:active:scale-100 disabled:opacity-100"
+          >
             <div className="flex items-center gap-4">
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
                 step.status === 'completed' ? 'bg-green-500/10 text-green-500' : 
@@ -3892,7 +4159,7 @@ export default function App() {
             {step.status === 'completed' && (
               <div className="absolute top-0 right-0 w-24 h-full bg-green-500/5 blur-xl -z-10 group-hover:bg-green-500/10 transition-all" />
             )}
-          </div>
+          </button>
         ))}
       </div>
     </div>
@@ -3953,7 +4220,19 @@ const renderContent = () => {
             onUpdateUsername={handleUpdateUsername}
             onUpdateProfileInfo={handleUpdateProfileInfo}
             onClaimStrike={handleClaimStrike}
+            onNavigateToReservation={() => setActiveTab('reservation')}
             onBack={() => setActiveTab('more')}
+            profile={userProfile}
+          />
+        );
+      case 'reservation':
+        return (
+          <ReservationPage 
+            user={user!}
+            balance={userAssets['GLD'] || 0}
+            profile={userProfile}
+            onBack={() => setActiveTab('profile')}
+            onUpdateSuccess={loadUserData}
           />
         );
       case 'settings':
@@ -3980,6 +4259,8 @@ const renderContent = () => {
             kycData={kycData}
             academyProgress={academyProgress}
             gldBalance={userAssets['GLD'] || 0}
+            profile={userProfile}
+            onNavigateToReservation={() => setActiveTab('reservation')}
             onBack={() => setActiveTab('more')}
           />
         );

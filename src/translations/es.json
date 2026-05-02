@@ -75,6 +75,27 @@
     "firstPoint": "Primero: Si su saldo supera los 1000 GLD, todos los saldos por encima de 1000 GLD se bloquearán por 3 años, y no podrá pasar la lista de verificación de Mainnent sin esto.",
     "secondPoint": "Segundo: Su saldo restante tendrá varias opciones de staking que contribuyen a la tasa de minería actual."
   },
+  "reservation": {
+    "title": "Sistema de Reserva GLD",
+    "subtitle": "Prepare su cuenta para la lista de verificación de Mainnet",
+    "stage1_title": "1. Bloqueo de Refuerzo del Sistema",
+    "stage1_desc": "Requisito del protocolo: Los saldos que superen los 1000 GLD deben bloquearse durante 3 años para garantizar la estabilidad de la red.",
+    "stage1_status_over": "{amount} GLD se bloquearán por 3 años",
+    "stage1_status_ok": "Saldo dentro de los límites (Completado)",
+    "stage2_title": "2. Reserva de Estrategia Opcional",
+    "stage2_desc": "Seleccione una parte de su saldo restante para reservar. Reservas más altas aumentan su tasa de minería.",
+    "select_percent": "Seleccionar Porcentaje",
+    "select_duration": "Seleccionar Duración",
+    "months_3": "3 Meses",
+    "months_6": "6 Meses",
+    "year_1": "1 Año",
+    "confirm_btn": "Iniciar Reserva",
+    "completed_all": "Reserva Completada",
+    "completed_desc": "Su cuenta ya está lista para la siguiente etapa de la lista de verificación de Mainnet.",
+    "excess": "Cantidad Excedente",
+    "locked_until": "Bloqueado hasta",
+    "watch_tutorial": "Ver Video Tutorial"
+  },
   "profile": {
     "subtitle": "Detalles personales y Seguridad",
     "username": "Nombre de usuario",
@@ -83,6 +104,8 @@
     "setUsername": "Establecer nombre de usuario",
     "accountIntegrity": "Integridad de la cuenta",
     "securityAnalysis": "Análisis de seguridad y confianza",
+    "gld_reservation": "Reserva GLD",
+    "reservation_desc": "Sistema de bloqueo para preparación de Mainnet",
     "checking": "Verificando",
     "integrityDesc": "\"Estamos verificando el historial de su cuenta para asegurar el cumplimiento. Este proceso es automático.\""
   },

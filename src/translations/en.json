@@ -106,6 +106,27 @@
     "firstPoint": "First: If your balance exceeds 1000 GLD, all balances above 1000 GLD will be locked for 3 years, and you cannot pass the Mainnent Checklist without this.",
     "secondPoint": "Second: Your remaining balance will have various staking options that contribute to the current mining rate."
   },
+  "reservation": {
+    "title": "GLD Reservation System",
+    "subtitle": "Prepare your account for Mainnet checklist",
+    "stage1_title": "1. System Reinforcement Lockout",
+    "stage1_desc": "Protocol requirement: Balances exceeding 1000 GLD must be locked for 3 years to ensure network stability.",
+    "stage1_status_over": "{amount} GLD will be locked for 3 years",
+    "stage1_status_ok": "Balance within limits (Completed)",
+    "stage2_title": "2. Optional Strategy Reservation",
+    "stage2_desc": "Select a portion of your remaining balance to reserve. Higher reservations boost your mining rate.",
+    "select_percent": "Select Percentage",
+    "select_duration": "Select Duration",
+    "months_3": "3 Months",
+    "months_6": "6 Months",
+    "year_1": "1 Year",
+    "confirm_btn": "Start Reservation",
+    "completed_all": "Reservation Completed",
+    "completed_desc": "Your account is now ready for the next stage of the Mainnet checklist.",
+    "excess": "Excess Amount",
+    "locked_until": "Locked until",
+    "watch_tutorial": "Watch Tutorial Video"
+  },
   "profile": {
     "subtitle": "Personal details & Security",
     "username": "Username",
@@ -114,6 +135,8 @@
     "setUsername": "Set Unique Username",
     "accountIntegrity": "Account Integrity",
     "securityAnalysis": "Security & Trust Analysis",
+    "gld_reservation": "GLD Reservation",
+    "reservation_desc": "Lock system for Mainnet preparation",
     "checking": "Checking",
     "integrityDesc": "\"We are currently verifying your account history to ensure compliance with our security protocols. This process is automatic.\""
   },

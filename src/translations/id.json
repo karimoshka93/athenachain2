@@ -93,6 +93,27 @@
     "firstPoint": "Pertama: Jika saldo Anda melebihi 1000 GLD, semua saldo di atas 1000 GLD akan dikunci selama 3 tahun, dan Anda tidak dapat melewati Daftar Periksa Mainnent tanpa ini.",
     "secondPoint": "Kedua: Sisa saldo Anda akan memiliki berbagai opsi staking yang berkontribusi pada tingkat penambangan saat ini."
   },
+  "reservation": {
+    "title": "Sistem Reservasi GLD",
+    "subtitle": "Siapkan akun Anda untuk daftar periksa Mainnet",
+    "stage1_title": "1. Penguncian Penguatan Sistem",
+    "stage1_desc": "Persyaratan protokol: Saldo yang melebihi 1000 GLD harus dikunci selama 3 года untuk memastikan stabilitas jaringan.",
+    "stage1_status_over": "{amount} GLD akan dikunci selama 3 tahun",
+    "stage1_status_ok": "Saldo dalam batas (Selesai)",
+    "stage2_title": "2. Reservasi Strategi Opsional",
+    "stage2_desc": "Pilih sebagian dari sisa saldo Anda untuk dicanangkan. Reservasi yang lebih tinggi meningkatkan tingkat penambangan Anda.",
+    "select_percent": "Pilih Persentase",
+    "select_duration": "Pilih Durasi",
+    "months_3": "3 Bulan",
+    "months_6": "6 Bulan",
+    "year_1": "1 Tahun",
+    "confirm_btn": "Mulai Reservasi",
+    "completed_all": "Reservasi Selesai",
+    "completed_desc": "Akun Anda sekarang siap untuk tahap selanjutnya dari daftar periksa Mainnet.",
+    "excess": "Jumlah Berlebih",
+    "locked_until": "Terkunci hingga",
+    "watch_tutorial": "Tonton Video Tutorial"
+  },
   "profile": {
     "subtitle": "Detail Pribadi & Keamanan",
     "username": "Nama Pengguna",
@@ -101,6 +122,8 @@
     "setUsername": "Atur Nama Pengguna Unik",
     "accountIntegrity": "Integritas Akun",
     "securityAnalysis": "Analisis Keamanan & Kepercayaan",
+    "gld_reservation": "Reservasi GLD",
+    "reservation_desc": "Sistem penguncian untuk persiapan Mainnet",
     "checking": "Memeriksa",
     "integrityDesc": "\"Kami saat ini sedang memverifikasi riwayat akun Anda untuk memastikan kepatuhan dengan protokol keamanan kami. Proses ini otomatis.\""
   },
