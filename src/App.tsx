@@ -445,7 +445,8 @@ const Dashboard = ({
   onInstall,
   miningMessage,
   onProfileClick,
-  activeReferralsCount
+  activeReferralsCount,
+  profile
 }: { 
   onViewAll: () => void, 
   onClaim: (amount: number) => void,
@@ -455,7 +456,8 @@ const Dashboard = ({
   onInstall: () => void,
   miningMessage: { type: 'success' | 'error', text: string } | null,
   onProfileClick: () => void,
-  activeReferralsCount: number
+  activeReferralsCount: number,
+  profile: any
 }) => {
   const { t } = useTranslation();
   const [minedAmount, setMinedAmount] = useState(0);
@@ -465,7 +467,9 @@ const Dashboard = ({
 
   const BASE_MINING_RATE = 0.01 / 3600;
   const referralBonusMultiplier = 1 + (activeReferralsCount * 0.05);
-  const MINING_RATE_PER_SECOND = BASE_MINING_RATE * referralBonusMultiplier;
+  // Optional lock boost: e.g. 50% lock = 1.5x speed
+  const lockBoostMultiplier = 1 + (profile?.optional_lock_percentage || 0) / 100;
+  const MINING_RATE_PER_SECOND = BASE_MINING_RATE * referralBonusMultiplier * lockBoostMultiplier;
   const SESSION_DURATION_SECONDS = 2 * 3600;
 
   useEffect(() => {
@@ -566,7 +570,7 @@ const Dashboard = ({
       setTimeLeft(null);
     }
     return () => clearInterval(interval);
-  }, [lastMiningTime]);
+  }, [lastMiningTime, MINING_RATE_PER_SECOND, SESSION_DURATION_SECONDS]);
 
   const handleClaim = () => {
     if (minedAmount > 0) {
@@ -701,7 +705,7 @@ const Dashboard = ({
         </div>
 
         <p className="text-gray-500 text-[10px] text-center max-w-[220px]">
-          Current rate: 0.01 GLD/hr • 2 hour sessions • Session resets on claim
+          Current rate: {(MINING_RATE_PER_SECOND * 3600).toFixed(3)} GLD/hr • 2 hour sessions • Session resets on claim
         </p>
       </div>
 
@@ -4193,6 +4197,7 @@ const renderContent = () => {
             miningMessage={miningMessage}
             onProfileClick={() => setActiveTab('more')}
             activeReferralsCount={referralStats?.user_active_count || 0}
+            profile={userProfile}
           />
         );
       case 'wallet': 
@@ -4300,6 +4305,7 @@ const renderContent = () => {
             miningMessage={miningMessage}
             onProfileClick={() => setActiveTab('more')}
             activeReferralsCount={referralStats?.user_active_count || 0}
+            profile={userProfile}
           />
         );
     }
