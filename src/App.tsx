@@ -4379,9 +4379,18 @@ const renderContent = () => {
                     <div className="w-10 h-10 rounded-xl bg-orange-500/20 flex items-center justify-center text-orange-500 shrink-0">
                       <Icon name="alert-triangle" className="w-6 h-6" />
                     </div>
-                    <div className="flex flex-col gap-1">
-                      <h3 className="text-orange-500 font-bold text-sm uppercase tracking-wider">Penalty Warning</h3>
-                      <p className="text-gray-400 text-xs leading-relaxed">
+                    <div className="flex flex-col gap-1 flex-1">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-orange-500 font-bold text-sm uppercase tracking-wider">Penalty Warning</h3>
+                        <a 
+                          href="mailto:digitalgold390@gmail.com?subject=Penalty%20Appeal&body=My%20UID:%20(please%20include%20your%20user%20ID%20here)"
+                          className="px-3 py-1 rounded-lg bg-orange-500/20 text-orange-500 text-[10px] font-bold uppercase tracking-wider hover:bg-orange-500/30 transition-colors flex items-center gap-1"
+                        >
+                          <Icon name="mail" className="w-3 h-3" />
+                          Appeal
+                        </a>
+                      </div>
+                      <p className="text-gray-400 text-xs leading-relaxed pr-2">
                         Your balance has been reset to zero due to suspicious synchronization activity. Further violations will result in a permanent ban.
                       </p>
                     </div>
