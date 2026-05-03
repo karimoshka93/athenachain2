@@ -236,7 +236,7 @@ const TASKS = [
     title: 'Watch Ad (Renewable every 1 hour)', 
     reward: 0.005, 
     icon: <Icon name="play-circle" className="w-5 h-5" />, 
-    link: 'https://idealistic-revenue.com/b_3cVU0.PC3-p/vXb/mNVYJgZKD/0c3BM/DeAayEMQjLIj5/LXTWcTw/M/DEIQyWM/zkMb',
+    link: 'https://www.profitablecpmratenetwork.com/iefjy68tq?key=8a88eabcfabfca1a7fadd4a9fb46a455',
     frequency: 'Every 1 hour',
     isHourly: true,
     isRed: true
@@ -1176,17 +1176,21 @@ const SettingsPage = ({
     
     setProcessing(true);
     try {
-      // Soft delete: Mark profile as deleted and logout
-      const { error } = await supabase
-        .from('profiles')
-        .update({ is_deleted: true, deleted_at: new Date().toISOString() })
-        .eq('id', user.id);
+      // Hard delete: Calls the custom function to wipe all user data from auth.users
+      // This will cascade to profiles, balances, and transactions.
+      const { error } = await supabase.rpc('delete_user_account');
 
       if (error) throw error;
       
+      // Auto logout and redirect
       onLogout();
     } catch (err: any) {
-      setMessage({ type: 'error', text: err.message });
+      // If the RPC fails (e.g. because it hasn't been created yet), fallback to a standard message
+      if (err.message.includes('function delete_user_account() does not exist')) {
+        setMessage({ type: 'error', text: 'Hard Delete failed: Please run the SQL setup in Supabase first.' });
+      } else {
+        setMessage({ type: 'error', text: err.message });
+      }
     } finally {
       setProcessing(false);
     }
