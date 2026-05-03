@@ -86,3 +86,8 @@ BEGIN
     DELETE FROM auth.users WHERE id = auth.uid();
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 5. EMERGENCY CLEANUP (Run once to fix existing orphans)
+DELETE FROM public.profiles WHERE id NOT IN (SELECT id FROM auth.users);
+DELETE FROM public.user_balances WHERE user_id NOT IN (SELECT id FROM auth.users);
+DELETE FROM public.academy_progress WHERE user_id NOT IN (SELECT id FROM auth.users);
