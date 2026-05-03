@@ -776,13 +776,11 @@ const Dashboard = ({
 const WalletTab = ({ 
   migrationStatus, 
   onMainSync,
-  onExtraSync, 
   userAssets,
   marketPrices
 }: { 
   migrationStatus: boolean, 
   onMainSync: () => void,
-  onExtraSync: () => void,
   userAssets: Record<string, number>,
   marketPrices: Record<string, number>
 }) => {
@@ -796,18 +794,9 @@ const WalletTab = ({
 
   return (
     <div className="flex flex-col gap-6 pb-24">
-      <header className="flex items-center justify-between">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-bold text-gold-gradient">{t('wallet.portfolio') || 'Portfolio'}</h1>
-          <p className="text-gray-400 text-sm">{t('wallet.portfolioDesc') || 'Manage your global assets'}</p>
-        </div>
-        <button 
-          onClick={onExtraSync}
-          className="w-10 h-10 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center text-gold hover:bg-gold/20 transition-all shadow-lg shadow-gold/5"
-          title="Extra Sync"
-        >
-          <Icon name="refresh-cw" className="w-5 h-5" />
-        </button>
+      <header className="flex flex-col gap-1">
+        <h1 className="text-2xl font-bold text-gold-gradient">{t('wallet.portfolio') || 'Portfolio'}</h1>
+        <p className="text-gray-400 text-sm">{t('wallet.portfolioDesc') || 'Manage your global assets'}</p>
       </header>
 
       {/* Migration Card */}
@@ -2950,6 +2939,7 @@ export default function App() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [migrationStatus, setMigrationStatus] = useState(true);
   const [showMigrationModal, setShowMigrationModal] = useState(false);
+  const [isBanned, setIsBanned] = useState(false);
   const [userAssets, setUserAssets] = useState<Record<string, number>>({});
   const [lastMiningTime, setLastMiningTime] = useState<string | null>(null);
   const [completedTasks, setCompletedTasks] = useState<number[]>([]);
@@ -3082,6 +3072,11 @@ export default function App() {
       if (profile) {
         if (profile.is_deleted) {
           handleLogout();
+          return;
+        }
+
+        if (profile.is_banned) {
+          setIsBanned(true);
           return;
         }
 
@@ -4205,7 +4200,6 @@ const renderContent = () => {
           <WalletTab 
             migrationStatus={migrationStatus} 
             onMainSync={handleMainSync}
-            onExtraSync={handleExtraSync} 
             userAssets={userAssets} 
             marketPrices={marketPrices} 
           />
@@ -4340,7 +4334,25 @@ const renderContent = () => {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
           >
-            {renderContent()}
+            {isBanned ? (
+              <div className="flex flex-col items-center justify-center min-h-[60vh] text-center gap-6 p-8">
+                <div className="w-24 h-24 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 border-4 border-red-500/20 shadow-lg shadow-red-500/20">
+                  <Icon name="shield-off" className="w-12 h-12" />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <h1 className="text-3xl font-black text-red-500 uppercase tracking-tighter">Account Suspended</h1>
+                  <p className="text-gray-400 text-sm leading-relaxed">
+                    Your account has been permanently restricted due to suspicious sync activity or terms of service violations.
+                  </p>
+                </div>
+                <button 
+                  onClick={handleLogout}
+                  className="px-8 py-3 rounded-xl bg-white/5 border border-white/10 text-gray-500 font-bold hover:text-white transition-all"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : renderContent()}
           </motion.div>
         </AnimatePresence>
       </main>
@@ -4447,42 +4459,44 @@ const renderContent = () => {
       </AnimatePresence>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto glass border-t border-white/5 px-4 py-3 flex items-center justify-between z-50">
-        <NavButton 
-          active={activeTab === 'dashboard'} 
-          onClick={() => setActiveTab('dashboard')} 
-          icon={<Icon name="layout-dashboard" className="w-6 h-6" />} 
-          label={t('common.dashboard')} 
-        />
-        <NavButton 
-          active={activeTab === 'wallet'} 
-          onClick={() => setActiveTab('wallet')} 
-          icon={<Icon name="wallet" className="w-6 h-6" />} 
-          label={t('common.wallet')} 
-        />
-        <NavButton 
-          active={activeTab === 'tasks'} 
-          onClick={() => setActiveTab('tasks')} 
-          icon={<Icon name="check-square" className="w-6 h-6" />} 
-          label={t('common.tasks')} 
-        />
-        <NavButton 
-          active={activeTab === 'mainnet'} 
-          onClick={() => setActiveTab('mainnet')} 
-          icon={<Icon name="rocket" className="w-6 h-6" />} 
-          label={t('common.mainnet')} 
-        />
-        <NavButton 
-          active={activeTab === 'more'} 
-          onClick={() => setActiveTab('more')} 
-          icon={
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center overflow-hidden transition-all ${activeTab === 'more' ? 'bg-gold/20 border-gold' : 'bg-gold/10 border-gold/20'} border`}>
-              <Icon name="users" className={`w-4 h-4 ${activeTab === 'more' ? 'text-gold' : 'text-gold/70'}`} />
-            </div>
-          } 
-          label={t('common.profile')} 
-        />
-      </nav>
+      {!isBanned && (
+        <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto glass border-t border-white/5 px-4 py-3 flex items-center justify-between z-50">
+          <NavButton 
+            active={activeTab === 'dashboard'} 
+            onClick={() => setActiveTab('dashboard')} 
+            icon={<Icon name="layout-dashboard" className="w-6 h-6" />} 
+            label={t('common.dashboard')} 
+          />
+          <NavButton 
+            active={activeTab === 'wallet'} 
+            onClick={() => setActiveTab('wallet')} 
+            icon={<Icon name="wallet" className="w-6 h-6" />} 
+            label={t('common.wallet')} 
+          />
+          <NavButton 
+            active={activeTab === 'tasks'} 
+            onClick={() => setActiveTab('tasks')} 
+            icon={<Icon name="check-square" className="w-6 h-6" />} 
+            label={t('common.tasks')} 
+          />
+          <NavButton 
+            active={activeTab === 'mainnet'} 
+            onClick={() => setActiveTab('mainnet')} 
+            icon={<Icon name="rocket" className="w-6 h-6" />} 
+            label={t('common.mainnet')} 
+          />
+          <NavButton 
+            active={activeTab === 'more'} 
+            onClick={() => setActiveTab('more')} 
+            icon={
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center overflow-hidden transition-all ${activeTab === 'more' ? 'bg-gold/20 border-gold' : 'bg-gold/10 border-gold/20'} border`}>
+                <Icon name="users" className={`w-4 h-4 ${activeTab === 'more' ? 'text-gold' : 'text-gold/70'}`} />
+              </div>
+            } 
+            label={t('common.profile')} 
+          />
+        </nav>
+      )}
     </div>
   );
 }
