@@ -2940,6 +2940,8 @@ export default function App() {
   const [migrationStatus, setMigrationStatus] = useState(true);
   const [showMigrationModal, setShowMigrationModal] = useState(false);
   const [isBanned, setIsBanned] = useState(false);
+  const [isPenalized, setIsPenalized] = useState(false);
+  const [lockedUntil, setLockedUntil] = useState<string | null>(null);
   const [userAssets, setUserAssets] = useState<Record<string, number>>({});
   const [lastMiningTime, setLastMiningTime] = useState<string | null>(null);
   const [completedTasks, setCompletedTasks] = useState<number[]>([]);
@@ -3078,6 +3080,14 @@ export default function App() {
         if (profile.is_banned) {
           setIsBanned(true);
           return;
+        }
+
+        if (profile.is_penalized) {
+          setIsPenalized(true);
+        }
+
+        if (profile.gld_locked_until) {
+          setLockedUntil(profile.gld_locked_until);
         }
 
         // Set defaults if profile is missing or fields are null
@@ -4345,6 +4355,12 @@ const renderContent = () => {
                     Your account has been permanently restricted due to suspicious sync activity or terms of service violations.
                   </p>
                 </div>
+                {lockedUntil && (
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-4 w-full">
+                    <p className="text-xs text-gray-500 uppercase font-bold mb-1">Unlocks On</p>
+                    <p className="text-white font-mono">{new Date(lockedUntil).toLocaleString()}</p>
+                  </div>
+                )}
                 <button 
                   onClick={handleLogout}
                   className="px-8 py-3 rounded-xl bg-white/5 border border-white/10 text-gray-500 font-bold hover:text-white transition-all"
@@ -4352,7 +4368,28 @@ const renderContent = () => {
                   Logout
                 </button>
               </div>
-            ) : renderContent()}
+            ) : (
+              <>
+                {isPenalized && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mx-4 mt-4 p-4 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-start gap-4"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-orange-500/20 flex items-center justify-center text-orange-500 shrink-0">
+                      <Icon name="alert-triangle" className="w-6 h-6" />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <h3 className="text-orange-500 font-bold text-sm uppercase tracking-wider">Penalty Warning</h3>
+                      <p className="text-gray-400 text-xs leading-relaxed">
+                        Your balance has been reset to zero due to suspicious synchronization activity. Further violations will result in a permanent ban.
+                      </p>
+                    </div>
+                  </motion.div>
+                )}
+                {renderContent()}
+              </>
+            )}
           </motion.div>
         </AnimatePresence>
       </main>
