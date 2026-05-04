@@ -474,5 +474,9 @@
     "step3": "3- Go to the wallet section and sync your old GLD Miner account",
     "step4": "4- Re-sync your KYC, lock, duration, and other settings",
     "appeal": "Appeal"
+  },
+  "loyalty": {
+    "title": "Loyalty Reward",
+    "description": "Thank you for being part of the Athena ecosystem. To celebrate our community, we have a special gift for you!"
   }
 }

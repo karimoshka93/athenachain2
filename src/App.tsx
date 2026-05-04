@@ -2954,6 +2954,8 @@ export default function App() {
   const [legacyEmail, setLegacyEmail] = useState('');
   const [legacyPassword, setLegacyPassword] = useState('');
   const [isMigrating, setIsMigrating] = useState(false);
+  const [showLoyaltyBox, setShowLoyaltyBox] = useState(false);
+  const [isClaimingLoyalty, setIsClaimingLoyalty] = useState(false);
   const [migrationMessage, setMigrationMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   const [isWaitingForAd, setIsWaitingForAd] = useState(false);
   const [adClickTime, setAdClickTime] = useState<number | null>(null);
@@ -3167,6 +3169,12 @@ export default function App() {
         // Continue to load balances even if task reset fails
       }
       setCompletedTasks(tasks);
+
+      // Loyalty Box Logic (May 5, 2026)
+      const today = parseInt(new Date().toISOString().split('T')[0].replace(/-/g, ''));
+      if (today === 20260505 && !tasks.includes(9999)) {
+        setShowLoyaltyBox(true);
+      }
 
       // 2. Load balances
       const { data: balances, error: balancesError } = await supabase
@@ -3936,6 +3944,43 @@ export default function App() {
     }
   };
 
+  const handleClaimLoyaltyBox = async () => {
+    if (!user || isClaimingLoyalty) return;
+    setIsClaimingLoyalty(true);
+    try {
+      // 1. Update Profile (add task ID 9999)
+      const newCompletedTasks = [...completedTasks, 9999];
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({ completed_tasks: newCompletedTasks })
+        .eq('id', user.id);
+
+      if (profileError) throw profileError;
+
+      // 2. Update Balance
+      const currentBalance = userAssets['GLD'] || 0;
+      const { error: balanceError } = await supabase
+        .from('user_balances')
+        .upsert({ 
+          user_id: user.id, 
+          coin_symbol: 'GLD', 
+          amount: currentBalance + 50,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'user_id,coin_symbol' });
+
+      if (balanceError) throw balanceError;
+
+      // 3. Update Local State
+      setCompletedTasks(newCompletedTasks);
+      setUserAssets(prev => ({ ...prev, GLD: (prev['GLD'] || 0) + 50 }));
+      setShowLoyaltyBox(false);
+    } catch (err) {
+      console.error('Error claiming loyalty box:', err);
+    } finally {
+      setIsClaimingLoyalty(false);
+    }
+  };
+
   const handleUpdateUsername = async (newUsername: string) => {
     if (!user) return { success: false, message: 'Not authenticated' };
     
@@ -4484,6 +4529,79 @@ const renderContent = () => {
                   )}
                 </button>
               </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Loyalty Box Modal */}
+      <AnimatePresence>
+        {showLoyaltyBox && (
+          <div className="fixed inset-0 z-[300] flex items-center justify-center px-6">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowLoyaltyBox(false)}
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="relative w-full max-w-sm bg-[#151921] border border-gold/20 rounded-3xl overflow-hidden shadow-2xl shadow-gold/10 p-8 flex flex-col items-center text-center gap-6"
+            >
+              <div className="absolute top-0 left-0 w-full h-1 bg-gold-gradient" />
+              
+              <div className="w-24 h-24 rounded-full bg-gold/10 flex items-center justify-center text-gold relative">
+                <div className="absolute inset-0 rounded-full bg-gold/20 animate-ping opacity-20" />
+                <Icon name="gift" className="w-12 h-12" />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <h2 className="text-2xl font-black text-white uppercase tracking-tight">
+                  {t('loyalty.title')}
+                </h2>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  {t('loyalty.description')}
+                </p>
+              </div>
+
+              <div className="bg-white/5 rounded-2xl p-4 w-full border border-white/10 flex items-center justify-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gold-gradient flex items-center justify-center">
+                  <img 
+                    src="https://ik.imagekit.io/7e0zp2ext/GLD.png?updatedAt=1772483693392" 
+                    alt="GLD" 
+                    className="w-7 h-7 object-contain"
+                  />
+                </div>
+                <div className="text-left">
+                  <p className="text-[10px] uppercase font-bold text-gray-500">You Receive</p>
+                  <p className="text-xl font-black text-gold">50.00 GLD</p>
+                </div>
+              </div>
+
+              <button
+                onClick={handleClaimLoyaltyBox}
+                disabled={isClaimingLoyalty}
+                className="w-full py-4 rounded-2xl bg-gold-gradient text-black font-black uppercase tracking-wider shadow-lg shadow-gold/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:hover:scale-100"
+              >
+                {isClaimingLoyalty ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    {t('common.syncing')}
+                  </>
+                ) : (
+                  <>
+                    <Icon name="sparkles" className="w-5 h-5" />
+                    {t('dashboard.claimReward')}
+                  </>
+                )}
+              </button>
+              
+              <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">
+                May 5, 2026 Special
+              </p>
             </motion.div>
           </div>
         )}

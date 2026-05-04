@@ -461,5 +461,9 @@
     "step3": "3- Chuyển đến phần ví và đồng bộ hóa tài khoản GLD Miner cũ của bạn",
     "step4": "4- Đồng bộ hóa lại KYC, khóa, thời lượng và các cài đặt khác của bạn",
     "appeal": "Khiếu nại"
+  },
+  "loyalty": {
+    "title": "Phần thưởng lòng trung thành",
+    "description": "Cảm ơn bạn đã là một phần của hệ sinh thái Athena. Để tôn vinh cộng đồng của chúng ta, chúng tôi có một món quà đặc biệt dành cho bạn!"
   }
 }

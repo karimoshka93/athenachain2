@@ -461,5 +461,9 @@
     "step3": "3- Pergi ke bagian dompet dan sinkronkan akun GLD Miner lama Anda",
     "step4": "4- Sinkronkan ulang KYC, penguncian, durasi, dan pengaturan lainnya",
     "appeal": "Banding"
+  },
+  "loyalty": {
+    "title": "Hadiah Loyalitas",
+    "description": "Terima kasih telah menjadi bagian dari ekosistem Athena. Untuk merayakan komunitas kami, kami memiliki hadiah spesial untuk Anda!"
   }
 }
