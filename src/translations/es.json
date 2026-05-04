@@ -173,5 +173,16 @@
     "waiting": "Esperando",
     "pending": "Pendiente",
     "completed": "Completado"
+  },
+  "penalty": {
+    "warning": "Advertencia de penalización",
+    "mainMessage": "Su saldo ha sido restablecido a cero debido a actividad de sincronización sospechosa. Violaciones adicionales resultarán en una prohibición permanente.",
+    "offerTitle": "Actualmente hay muchas solicitudes, y para darles otra oportunidad a los usuarios, hemos decidido lo siguiente:",
+    "offerDesc": "Si desea una solución inmediata, puede renunciar a su progreso reciente en AthenaChain siguiendo estos pasos:",
+    "step1": "1- Desde la sección de configuración: Elimine su cuenta de AthenaChain",
+    "step2": "2- Cree una nueva cuenta",
+    "step3": "3- Vaya a la sección de billetera y sincronice su antigua cuenta de GLD Miner",
+    "step4": "4- Vuelva a sincronizar su KYC, bloqueo, duración y otras configuraciones",
+    "appeal": "Apelación"
   }
 }

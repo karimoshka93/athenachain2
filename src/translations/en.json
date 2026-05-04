@@ -463,5 +463,16 @@
         }
       }
     }
+  },
+  "penalty": {
+    "warning": "Penalty Warning",
+    "mainMessage": "Your balance has been reset to zero due to suspicious synchronization activity. Further violations will result in a permanent ban.",
+    "offerTitle": "There are currently many requests, and to give users another chance, we have decided the following:",
+    "offerDesc": "If you want an immediate solution, you can forfeit your recent progress in AthenaChain by following these steps:",
+    "step1": "1- From the settings section: Delete your AthenaChain account",
+    "step2": "2- Create a new account",
+    "step3": "3- Go to the wallet section and sync your old GLD Miner account",
+    "step4": "4- Re-sync your KYC, lock, duration, and other settings",
+    "appeal": "Appeal"
   }
 }

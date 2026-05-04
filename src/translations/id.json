@@ -450,5 +450,16 @@
         }
       }
     }
+  },
+  "penalty": {
+    "warning": "Peringatan Penalti",
+    "mainMessage": "Saldo Anda telah diatur ulang menjadi nol karena aktivitas sinkronisasi yang mencurigakan. Pelanggaran lebih lanjut akan mengakibatkan pemblokiran permanen.",
+    "offerTitle": "Saat ini ada banyak permintaan, dan untuk memberi pengguna kesempatan lain, kami telah memutuskan hal berikut:",
+    "offerDesc": "Jika Anda ingin solusi segera, Anda dapat melepaskan progres terbaru Anda di AthenaChain dengan mengikuti langkah-langkah berikut:",
+    "step1": "1- Dari bagian pengaturan: Hapus akun AthenaChain Anda",
+    "step2": "2- Buat akun baru",
+    "step3": "3- Pergi ke bagian dompet dan sinkronkan akun GLD Miner lama Anda",
+    "step4": "4- Sinkronkan ulang KYC, penguncian, durasi, dan pengaturan lainnya",
+    "appeal": "Banding"
   }
 }

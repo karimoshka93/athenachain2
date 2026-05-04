@@ -407,5 +407,16 @@
         }
       }
     }
+  },
+  "penalty": {
+    "warning": "Avertissement de pénalité",
+    "mainMessage": "Votre solde a été remis à zéro en raison d'une activité de synchronisation suspecte. D'autres violations entraîneront un bannissement permanent.",
+    "offerTitle": "Il y a actuellement de nombreuses demandes, et pour donner une autre chance aux utilisateurs, nous avons décidé ce qui suit :",
+    "offerDesc": "Si vous voulez une solution immédiate, vous pouvez renoncer à votre progression récente dans AthenaChain en suivant ces étapes :",
+    "step1": "1- Dans la section paramètres : Supprimez votre compte AthenaChain",
+    "step2": "2- Créez un nouveau compte",
+    "step3": "3- Allez dans la section portefeuille et synchronisez votre ancien compte GLD Miner",
+    "step4": "4- Resynchronisez votre KYC, le verrouillage, la durée et les autres paramètres",
+    "appeal": "Appel"
   }
 }

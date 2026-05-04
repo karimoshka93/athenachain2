@@ -4351,18 +4351,33 @@ const renderContent = () => {
                     </div>
                     <div className="flex flex-col gap-1 flex-1">
                       <div className="flex items-center justify-between">
-                        <h3 className="text-orange-500 font-bold text-sm uppercase tracking-wider">Penalty Warning</h3>
+                        <h3 className="text-orange-500 font-bold text-sm uppercase tracking-wider">{t('penalty.warning')}</h3>
                         <a 
                           href="mailto:digitalgold390@gmail.com?subject=Penalty%20Appeal&body=My%20UID:%20(please%20include%20your%20user%20ID%20here)"
                           className="px-3 py-1 rounded-lg bg-orange-500/20 text-orange-500 text-[10px] font-bold uppercase tracking-wider hover:bg-orange-500/30 transition-colors flex items-center gap-1"
                         >
                           <Icon name="mail" className="w-3 h-3" />
-                          Appeal
+                          {t('penalty.appeal')}
                         </a>
                       </div>
-                      <p className="text-gray-400 text-xs leading-relaxed pr-2">
-                        Your balance has been reset to zero due to suspicious synchronization activity. Further violations will result in a permanent ban.
+                      <p className="text-gray-400 text-[10px] leading-relaxed pr-2 mb-3">
+                        {t('penalty.mainMessage')}
                       </p>
+
+                      <div className="bg-orange-500/5 rounded-xl border border-orange-500/10 p-3 flex flex-col gap-2">
+                        <p className="text-orange-400 font-bold text-[10px] uppercase tracking-tight">
+                          {t('penalty.offerTitle')}
+                        </p>
+                        <p className="text-gray-400 text-[9px] leading-relaxed italic">
+                          {t('penalty.offerDesc')}
+                        </p>
+                        <div className="text-gray-300 text-[9px] flex flex-col gap-1 pl-1">
+                          <p>{t('penalty.step1')}</p>
+                          <p>{t('penalty.step2')}</p>
+                          <p>{t('penalty.step3')}</p>
+                          <p>{t('penalty.step4')}</p>
+                        </div>
+                      </div>
                     </div>
                   </motion.div>
                 )}

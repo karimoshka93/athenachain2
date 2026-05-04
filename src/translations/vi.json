@@ -450,5 +450,16 @@
         }
       }
     }
+  },
+  "penalty": {
+    "warning": "Cảnh báo hình phạt",
+    "mainMessage": "Số dư của bạn đã được đặt lại về không do hoạt động đồng bộ hóa nghi ngờ. Các vi phạm tiếp theo sẽ dẫn đến lệnh cấm vĩnh viễn.",
+    "offerTitle": "Hiện tại có rất nhiều yêu cầu và để cung cấp cho người dùng một cơ hội khác, chúng tôi đã quyết định như sau:",
+    "offerDesc": "Nếu bạn muốn có giải pháp ngay lập tức, bạn có thể từ bỏ tiến trình gần đây của mình trong AthenaChain bằng cách thực hiện các bước sau:",
+    "step1": "1- Từ phần cài đặt: Xóa tài khoản AthenaChain của bạn",
+    "step2": "2- Tạo tài khoản mới",
+    "step3": "3- Chuyển đến phần ví và đồng bộ hóa tài khoản GLD Miner cũ của bạn",
+    "step4": "4- Đồng bộ hóa lại KYC, khóa, thời lượng và các cài đặt khác của bạn",
+    "appeal": "Khiếu nại"
   }
 }
