@@ -3385,23 +3385,6 @@ export default function App() {
       if (!currentLegacyUid) throw new Error('Could not retrieve legacy account ID.');
       console.log('Legacy Firebase UID:', currentLegacyUid);
 
-      // --- ANTI-FARMING CHECK ---
-      // 1. GLOBAL CHECK: Check if this legacy UID has already been migrated by ANYONE else
-      const { data: existingProfile, error: checkError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('legacy_uid', currentLegacyUid)
-        .maybeSingle();
-
-      if (checkError) {
-        console.error('Anti-farming check error:', checkError);
-        throw new Error('Security check failed. Please try again.');
-      }
-
-      if (existingProfile && existingProfile.id !== user.id) {
-        throw new Error('This legacy account is already linked to another Athena wallet. One legacy account can only be synced to one Athena account.');
-      }
-
       // 2. USER CHECK: Check if the CURRENT user has already migrated a DIFFERENT legacy account
       if (legacyUid && legacyUid !== currentLegacyUid) {
         throw new Error('Security Alert: This Athena wallet is already linked to a different legacy account. You must use the same legacy account you previously registered.');
@@ -3421,21 +3404,6 @@ export default function App() {
 
       const userData = userSnap.exists() ? userSnap.data() : {};
       const walletData = walletSnap.exists() ? walletSnap.data() : {};
-
-      // --- LEGACY LOCK (FIREBASE SIDE) ---
-      // This prevents the same legacy account from being used by multiple Athena accounts
-      // even if Supabase RLS prevents us from checking other profiles.
-      if (userData.athena_uid && userData.athena_uid !== user.id) {
-        throw new Error('This legacy account is already linked to another Athena wallet. One legacy account can only be synced to one Athena account.');
-      }
-
-      // Mark this legacy account as linked to this Athena user
-      try {
-        await updateDoc(userDocRef, { athena_uid: user.id });
-      } catch (err) {
-        console.warn('Could not write lock to legacy DB, but proceeding if user owns it:', err);
-      }
-      // -----------------------------------
 
       console.log('Users collection data:', userData);
       console.log('Wallets collection data:', walletData);
@@ -3535,8 +3503,6 @@ export default function App() {
 
       if (isAuthError) {
         errorMessage = 'Invalid V1 credentials. Please double-check your legacy email and password. Ensure you are using the exact account from the previous app.';
-      } else if (errorMessage.includes('unique constraint') || errorMessage.includes('23505') || errorMessage.includes('already linked')) {
-        errorMessage = 'This legacy account is already linked to another Athena wallet. One legacy account can only be synced to one Athena account.';
       }
       
       setMigrationMessage({ type: 'error', text: errorMessage });
