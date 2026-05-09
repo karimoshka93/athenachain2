@@ -3332,7 +3332,11 @@ export default function App() {
         if (error) throw error;
       }
     } catch (error: any) {
-      setAuthMessage({ type: 'error', text: error.message });
+      let errorMessage = error.message;
+      if (errorMessage.includes('exceed_egress_quota') || errorMessage.includes('Service for this project is restricted')) {
+        errorMessage = "(We are currently working on infrastructure updates for Athena Chain; please check back later.)";
+      }
+      setAuthMessage({ type: 'error', text: errorMessage });
     } finally {
       setIsProcessing(false);
     }
