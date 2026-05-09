@@ -3568,26 +3568,32 @@ export default function App() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="w-full p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-center flex flex-col gap-1.5"
+            className="w-full p-6 rounded-3xl bg-red-500/10 border border-red-500/20 text-center flex flex-col gap-2 shadow-2xl shadow-red-500/5 mb-2"
           >
             <div className="flex items-center justify-center gap-2 text-red-500 mb-1">
-              <AlertCircle className="w-4 h-4" />
-              <p className="text-[10px] font-black uppercase tracking-[0.2em]">Infrastructure Update</p>
+              <AlertCircle className="w-5 h-5" />
+              <p className="text-xs font-black uppercase tracking-[0.2em]">Infrastructure Update</p>
             </div>
-            <p className="text-gray-200 text-xs font-medium leading-relaxed">
+            <p className="text-gray-100 text-sm font-bold leading-relaxed px-2">
               (We are currently working on infrastructure updates for Athena Chain; please check back later.)
             </p>
-            <p className="text-red-400/60 text-[9px] font-black uppercase tracking-tighter mt-1 italic">
-              We will remove this message in two days
-            </p>
+            <div className="mt-3 bg-red-500/10 py-1.5 px-4 rounded-full self-center">
+              <p className="text-red-400 text-[10px] font-black uppercase tracking-widest italic">
+                Back in two days
+              </p>
+            </div>
           </motion.div>
 
-          <form onSubmit={handleAuth} className="w-full glass rounded-3xl p-6 flex flex-col gap-4 border-white/5">
+          <form onSubmit={handleAuth} className="w-full glass rounded-3xl p-6 flex flex-col gap-4 border-white/5 opacity-50 pointer-events-none grayscale-[0.5]">
             <h2 className="text-xl font-bold text-center mb-2">
               {authMode === 'login' ? 'Welcome Back' : 
                authMode === 'signup' ? 'Create Account' : 
                authMode === 'forgot-password' ? 'Reset Password' : 'New Password'}
             </h2>
+            
+            <p className="text-[10px] font-bold text-center text-red-400/60 uppercase tracking-widest -mt-4 mb-2">
+              Maintenance Mode Active
+            </p>
             
             {authMessage && (
               <div className={`p-3 rounded-xl text-xs font-medium text-center ${
@@ -3607,7 +3613,8 @@ export default function App() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="name@example.com"
                     required
-                    className="bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-gold/50 transition-colors"
+                    disabled
+                    className="bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-gold/50 transition-colors cursor-not-allowed"
                   />
                 </div>
               )}
@@ -3620,7 +3627,8 @@ export default function App() {
                     onChange={(e) => setNewPassword(e.target.value)}
                     placeholder="••••••••"
                     required
-                    className="bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-gold/50 transition-colors"
+                    disabled
+                    className="bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-gold/50 transition-colors cursor-not-allowed"
                   />
                 </div>
               )}
@@ -3633,7 +3641,8 @@ export default function App() {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
-                    className="bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-gold/50 transition-colors"
+                    disabled
+                    className="bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-gold/50 transition-colors cursor-not-allowed"
                   />
                 </div>
               )}
@@ -3664,16 +3673,12 @@ export default function App() {
 
             <button 
               type="submit"
-              disabled={isProcessing}
-              className="w-full bg-gold-gradient text-black font-extrabold py-4 rounded-xl gold-glow hover:brightness-110 active:scale-[0.98] transition-all mt-2 flex items-center justify-center gap-2"
+              disabled
+              className="w-full bg-gold-gradient text-black font-extrabold py-4 rounded-xl gold-glow hover:brightness-110 active:scale-[0.98] transition-all mt-2 flex items-center justify-center gap-2 opacity-30 cursor-not-allowed"
             >
-              {isProcessing ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                authMode === 'login' ? 'SIGN IN' : 
-                authMode === 'signup' ? 'CREATE ACCOUNT' : 
-                authMode === 'forgot-password' ? 'SEND RESET LINK' : 'UPDATE PASSWORD'
-              )}
+              {authMode === 'login' ? 'SIGN IN' : 
+               authMode === 'signup' ? 'CREATE ACCOUNT' : 
+               authMode === 'forgot-password' ? 'SEND RESET LINK' : 'UPDATE PASSWORD'}
             </button>
 
             <div className="flex items-center gap-4 my-2">
@@ -3682,7 +3687,7 @@ export default function App() {
               <div className="flex-1 h-[1px] bg-white/10" />
             </div>
 
-            <button type="button" className="w-full bg-white/5 border border-white/10 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-3 hover:bg-white/10 transition-all">
+            <button type="button" disabled className="w-full bg-white/5 border border-white/10 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-3 opacity-30 cursor-not-allowed">
               <img src="https://www.google.com/favicon.ico" className="w-4 h-4 grayscale brightness-200" alt="Google" />
               Continue with Google
             </button>
