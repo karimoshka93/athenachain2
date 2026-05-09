@@ -3560,6 +3560,24 @@ export default function App() {
             </div>
           </div>
 
+          {/* Temporary Maintenance Message */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-center flex flex-col gap-1.5"
+          >
+            <div className="flex items-center justify-center gap-2 text-red-500 mb-1">
+              <AlertCircle className="w-4 h-4" />
+              <p className="text-[10px] font-black uppercase tracking-[0.2em]">Infrastructure Update</p>
+            </div>
+            <p className="text-gray-200 text-xs font-medium leading-relaxed">
+              (We are currently working on infrastructure updates for Athena Chain; please check back later.)
+            </p>
+            <p className="text-red-400/60 text-[9px] font-black uppercase tracking-tighter mt-1 italic">
+              We will remove this message in two days
+            </p>
+          </motion.div>
+
           <form onSubmit={handleAuth} className="w-full glass rounded-3xl p-6 flex flex-col gap-4 border-white/5">
             <h2 className="text-xl font-bold text-center mb-2">
               {authMode === 'login' ? 'Welcome Back' : 
