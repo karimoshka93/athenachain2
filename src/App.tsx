@@ -68,10 +68,13 @@ import SlotsGame from './components/SlotsGame';
 import SnakeGame from './components/SnakeGame';
 
 // --- Version Control (Force Reload) ---
-const APP_VERSION = '2026.05.12.02';
+const APP_VERSION = '2026.05.12.04';
 if (typeof window !== 'undefined') {
   const lastVersion = localStorage.getItem('app_version');
   if (lastVersion !== APP_VERSION) {
+    console.log('Update detected. Clearing all local caches...');
+    
+    // Clear Service Workers
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations().then((registrations) => {
         for (const registration of registrations) {
@@ -79,6 +82,8 @@ if (typeof window !== 'undefined') {
         }
       });
     }
+
+    // Clear Cache Storage
     if ('caches' in window) {
       caches.keys().then((names) => {
         for (const name of names) {
@@ -86,10 +91,12 @@ if (typeof window !== 'undefined') {
         }
       });
     }
+
+    // Update version and force hard reload
     localStorage.setItem('app_version', APP_VERSION);
     setTimeout(() => {
       window.location.reload();
-    }, 500);
+    }, 100);
   }
 }
 
