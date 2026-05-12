@@ -68,7 +68,7 @@ import SlotsGame from './components/SlotsGame';
 import SnakeGame from './components/SnakeGame';
 
 // --- Version Control (Force Reload) ---
-const APP_VERSION = '2026.05.12.04';
+const APP_VERSION = '2026051206'; // Increment version to force cache bypass
 if (typeof window !== 'undefined') {
   const lastVersion = localStorage.getItem('app_version');
   if (lastVersion !== APP_VERSION) {
@@ -78,9 +78,11 @@ if (typeof window !== 'undefined') {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations().then((registrations) => {
         for (const registration of registrations) {
-          registration.unregister();
+          registration.unregister().then(() => {
+            console.log('SW unregistered during version upgrade');
+          });
         }
-      });
+      }).catch(err => console.error('SW cleanup error:', err));
     }
 
     // Clear Cache Storage
