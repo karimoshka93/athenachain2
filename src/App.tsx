@@ -67,6 +67,32 @@ import SpinWheel from './components/SpinWheel';
 import SlotsGame from './components/SlotsGame';
 import SnakeGame from './components/SnakeGame';
 
+// --- Version Control (Force Reload) ---
+const APP_VERSION = '2026.05.12.02';
+if (typeof window !== 'undefined') {
+  const lastVersion = localStorage.getItem('app_version');
+  if (lastVersion !== APP_VERSION) {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        for (const registration of registrations) {
+          registration.unregister();
+        }
+      });
+    }
+    if ('caches' in window) {
+      caches.keys().then((names) => {
+        for (const name of names) {
+          caches.delete(name);
+        }
+      });
+    }
+    localStorage.setItem('app_version', APP_VERSION);
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
+  }
+}
+
 // --- Shared UI Components ---
 const Badge = ({ text, color = 'gold' }: { text: string; color?: 'gold' | 'green' | 'red' | 'blue' }) => {
   const colors = {
