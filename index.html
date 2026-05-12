@@ -13,12 +13,21 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx?v=2026051202"></script>
     <script>
-      // Clean up old service workers that might be causing issues
+      // Aggressively unregister all service workers to fix the asset blocking issue
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.getRegistrations().then(registrations => {
-          for (let registration of registrations) {
-            registration.unregister();
+          for (const registration of registrations) {
+            registration.unregister().then(() => {
+              console.log('Service Worker unregistered successfully');
+            });
           }
+        }).catch(err => console.error('SW unregistration failed:', err));
+      }
+      
+      // Clear all caches
+      if ('caches' in window) {
+        caches.keys().then(names => {
+          for (const name of names) caches.delete(name);
         });
       }
     </script>
