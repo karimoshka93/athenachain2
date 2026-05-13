@@ -2976,7 +2976,7 @@ export default function App() {
   const [showMarketView, setShowMarketView] = useState(false);
   const [marketPrices, setMarketPrices] = useState<Record<string, number>>({ 'GLD': 3.00 });
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-  const [migrationStatus, setMigrationStatus] = useState(true);
+  const [migrationStatus, setMigrationStatus] = useState(false);
   const [showMigrationModal, setShowMigrationModal] = useState(false);
   const [isBanned, setIsBanned] = useState(false);
   const [isPenalized, setIsPenalized] = useState(false);
@@ -3131,8 +3131,8 @@ export default function App() {
           setLockedUntil(profile.gld_locked_until);
         }
 
-        // Set defaults if profile is missing or fields are null
-        setMigrationStatus(profile.legacy_uid === null || profile.legacy_uid === undefined);
+        // System defaults to no migration needed unless specifically required
+        setMigrationStatus(false);
         setLastMiningTime(profile.last_mining_time || null);
         setLegacyUid(profile.legacy_uid || null);
         setProfileUsername(profile.username || null);
@@ -3147,7 +3147,7 @@ export default function App() {
         setUserProfile(profile);
       } else {
         // No profile found, probably a new user
-        setMigrationStatus(true);
+        setMigrationStatus(false);
       }
 
       // 2. Load Academy Progress
@@ -3241,7 +3241,7 @@ export default function App() {
     
     if (!user) {
       setUserAssets({});
-      setMigrationStatus(true);
+      setMigrationStatus(false);
       setStreakCount(0);
       setLastStreakDate(null);
       return;
