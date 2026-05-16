@@ -267,6 +267,15 @@ const MARKET_DATA = [
 
 const TASKS = [
   { 
+    id: 9, 
+    title: 'Join our partner Studio AI', 
+    reward: 1, 
+    icon: <Icon name="zap" className="w-5 h-5" />, 
+    link: 'https://studio.creativefabrica.com/invite/6xo5fnLiXD',
+    frequency: 'One time',
+    isRed: true
+  },
+  { 
     id: 8, 
     title: 'Watch Ad (Renewable every 1 hour)', 
     reward: 0.005, 
