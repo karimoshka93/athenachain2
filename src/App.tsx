@@ -679,50 +679,6 @@ const Dashboard = ({
         </motion.div>
       )}
 
-      {/* Partner Ads Card */}
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.1 }}
-        className="glass rounded-3xl p-6 flex flex-col gap-4 border-gold/20 relative overflow-hidden"
-      >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center text-gold">
-              <Icon name="megaphone" className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-white">Partner Ads</h3>
-              <p className="text-[10px] text-gold/60 font-bold uppercase tracking-widest italic">Featured Partnership</p>
-            </div>
-          </div>
-          <Badge text="AD" color="gold" />
-        </div>
-        
-        <div className="aspect-video w-full rounded-2xl overflow-hidden border border-white/10 bg-black/40 shadow-inner">
-          <iframe 
-            src="https://www.youtube.com/embed/yha3Px1xlqs" 
-            title="TON Empires Video"
-            className="w-full h-full"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
-          ></iframe>
-        </div>
-
-        <a 
-          href="http://t.me/TONEMPIRES_bot" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="w-full bg-gold text-black font-black py-4 rounded-xl gold-glow hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-3 text-sm tracking-tight uppercase"
-        >
-          <Icon name="send" className="w-4 h-4 fill-black/20" />
-          Join now
-        </a>
-      </motion.div>
-
-
       {/* Mining Section */}
       <div className="glass rounded-3xl p-8 flex flex-col items-center justify-center gap-6 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-gold/20">
