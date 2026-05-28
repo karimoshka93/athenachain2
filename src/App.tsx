@@ -2971,6 +2971,69 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
 
 export default function App() {
   const { t } = useTranslation();
+
+  // Protective maintenance layer requested due to Supabase limits
+  return (
+    <div className="min-h-screen bg-[#0b0e14] text-white max-w-md mx-auto relative overflow-hidden flex flex-col items-center justify-center px-8 text-center">
+      {/* Background radial glow */}
+      <div className="fixed top-[-10%] left-[-20%] w-[80%] h-[40%] bg-gold/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="fixed bottom-[-10%] right-[-20%] w-[80%] h-[40%] bg-gold/5 rounded-full blur-[120px] pointer-events-none" />
+      
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full flex flex-col items-center gap-6"
+      >
+        <div className="flex flex-col items-center gap-4">
+          <motion.div 
+            animate={{ rotate: 360 }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            className="w-24 h-24 rounded-full border-2 border-gold/20 flex items-center justify-center relative shadow-[0_0_40px_rgba(218,165,32,0.1)]"
+          >
+            <div className="absolute inset-0 rounded-full border-t-2 border-gold animate-spin" />
+            <div className="w-16 h-16 rounded-full bg-gold-gradient flex items-center justify-center text-black shadow-2xl shadow-gold/40 overflow-hidden">
+              <img 
+                src="https://ik.imagekit.io/7e0zp2ext/GLD.png?updatedAt=1772483693392" 
+                alt="Athena Logo" 
+                className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+          </motion.div>
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-gold-gradient">Athena Chain</h1>
+            <p className="text-gray-400 text-sm mt-2">The Future of Digital Gold</p>
+          </div>
+        </div>
+
+        <div className="w-full glass rounded-3xl p-6 border-white/5 bg-white/[0.02] flex flex-col gap-4 text-sm leading-relaxed text-gray-300">
+          <div className="flex items-center gap-2 justify-center text-gold font-bold uppercase tracking-wider text-xs">
+            <Icon name="wrench" className="w-4 h-4 animate-pulse" />
+            System Updates Underway
+          </div>
+          <p className="text-center font-medium text-gray-300">
+            We are working on updates that are preventing information from being delivered correctly. We appreciate your patience.
+          </p>
+          <div className="h-[1px] bg-white/10 my-1" />
+          <p className="text-xs text-gray-400">
+            You can enjoy playing a game from one of our current partners:
+          </p>
+        </div>
+
+        <a 
+          href="https://t.me/TONEMPIRES_bot" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="w-full bg-gold-gradient text-black font-extrabold py-4 px-6 rounded-2xl gold-glow hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-sm tracking-wide uppercase font-sans cursor-pointer relative z-20"
+        >
+          <Icon name="send" className="w-5 h-5 fill-black/10" />
+          Join TON Empires Bot
+        </a>
+      </motion.div>
+    </div>
+  );
+
   const [user, setUser] = useState<User | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [authMode, setAuthMode] = useState<'login' | 'signup' | 'forgot-password' | 'update-password'>('login');
