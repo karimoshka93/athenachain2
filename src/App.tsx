@@ -700,25 +700,43 @@ const Dashboard = ({
           </span>
         </div>
         
-        <div className="grid grid-cols-4 gap-3 bg-black/20 p-2 rounded-2xl border border-white/5">
-          {[
-            { src: '/1.jfif', alt: 'Partner 1' },
-            { src: '/2.png', alt: 'Partner 2' },
-            { src: '/3.jfif', alt: 'Partner 3' },
-            { src: '/4.jfif', alt: 'Partner 4' }
-          ].map((partner, idx) => (
-            <div 
-              key={idx} 
-              className="aspect-square flex items-center justify-center bg-black/40 rounded-xl overflow-hidden border border-white/10 hover:border-gold/30 hover:bg-black/60 transition-all p-1.5 shadow-inner group cursor-pointer"
-            >
-              <img 
-                src={partner.src} 
-                alt={partner.alt}
-                className="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
-                referrerPolicy="no-referrer"
-              />
-            </div>
-          ))}
+        <div className="relative overflow-hidden bg-black/30 rounded-2xl border border-white/5 h-20 w-full flex flex-col justify-center shadow-inner">
+          {/* Background reveal element */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#07090d] select-none pointer-events-none">
+            <span className="text-[10px] text-gold/35 font-bold tracking-widest uppercase flex items-center gap-1.5 animate-pulse">
+              <Icon name="shield-check" className="w-3.5 h-3.5 text-gold/50" /> {t('dashboard.verifiedBackers') || 'Verified Backers'}
+            </span>
+            <span className="text-[8px] text-gray-600 font-medium tracking-wider mt-0.5">{t('dashboard.ecosystemSecure') || 'Athena Chain Ecosystem Co-signers'}</span>
+          </div>
+
+          {/* Single horizontal integrated strip representing the partner logos, styled and aligned as one cohesive image */}
+          <motion.div 
+            drag="y"
+            dragConstraints={{ top: 0, bottom: 45 }}
+            dragElastic={0.4}
+            whileDrag={{ cursor: 'grabbing', filter: 'brightness(1.15)' }}
+            className="absolute inset-x-0 top-0 bottom-0 bg-gradient-to-r from-gray-950 via-[#111622] to-gray-950 px-2.5 flex items-center justify-between border-b-2 border-gold/45 shadow-2xl z-10 select-none cursor-grab active:cursor-grabbing divide-x divide-white/5"
+            title="Drag down to inspect"
+          >
+            {[
+              { src: '/1.jfif', alt: 'Partner 1' },
+              { src: '/2.png', alt: 'Partner 2' },
+              { src: '/3.jfif', alt: 'Partner 3' },
+              { src: '/4.jfif', alt: 'Partner 4' }
+            ].map((partner, idx) => (
+              <div 
+                key={idx} 
+                className="flex-1 h-full flex items-center justify-center p-2.5 bg-black/[0.15] hover:bg-white/[0.01] transition-all"
+              >
+                <img 
+                  src={partner.src} 
+                  alt={partner.alt}
+                  className="max-h-full max-w-full object-contain filter brightness-95 contrast-105 active:scale-98 transition-all duration-300"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+            ))}
+          </motion.div>
         </div>
       </motion.div>
 
