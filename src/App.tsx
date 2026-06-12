@@ -679,6 +679,49 @@ const Dashboard = ({
         </motion.div>
       )}
 
+      {/* Financial Partners Section */}
+      <motion.div 
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="glass rounded-3xl p-5 border-white/5 bg-white/[0.02] flex flex-col gap-4 relative overflow-hidden shadow-2xl"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-gold/10 flex items-center justify-center text-gold shadow-[0_0_15px_rgba(218,165,32,0.1)]">
+              <Icon name="gem" className="w-4 h-4 text-gold" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-white uppercase tracking-wider">{t('dashboard.financialPartners') || 'Financial Partners'}</h3>
+              <p className="text-[9px] text-gold/60 font-medium uppercase tracking-widest leading-none mt-0.5">Top Backers</p>
+            </div>
+          </div>
+          <span className="text-[9px] text-emerald-400 font-bold uppercase tracking-widest bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20 shadow-sm animate-pulse">
+            SECURE
+          </span>
+        </div>
+        
+        <div className="grid grid-cols-4 gap-3 bg-black/20 p-2 rounded-2xl border border-white/5">
+          {[
+            { src: '/1.jfif', alt: 'Partner 1' },
+            { src: '/2.png', alt: 'Partner 2' },
+            { src: '/3.jfif', alt: 'Partner 3' },
+            { src: '/4.jfif', alt: 'Partner 4' }
+          ].map((partner, idx) => (
+            <div 
+              key={idx} 
+              className="aspect-square flex items-center justify-center bg-black/40 rounded-xl overflow-hidden border border-white/10 hover:border-gold/30 hover:bg-black/60 transition-all p-1.5 shadow-inner group cursor-pointer"
+            >
+              <img 
+                src={partner.src} 
+                alt={partner.alt}
+                className="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+          ))}
+        </div>
+      </motion.div>
+
       {/* Mining Section */}
       <div className="glass rounded-3xl p-8 flex flex-col items-center justify-center gap-6 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-gold/20">
@@ -2971,68 +3014,6 @@ const MoreTab = ({ userId, onBalanceUpdate, onLogout, onKYCClick }: { userId: st
 
 export default function App() {
   const { t } = useTranslation();
-
-  // Protective maintenance layer requested due to Supabase limits
-  return (
-    <div className="min-h-screen bg-[#0b0e14] text-white max-w-md mx-auto relative overflow-hidden flex flex-col items-center justify-center px-8 text-center">
-      {/* Background radial glow */}
-      <div className="fixed top-[-10%] left-[-20%] w-[80%] h-[40%] bg-gold/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="fixed bottom-[-10%] right-[-20%] w-[80%] h-[40%] bg-gold/5 rounded-full blur-[120px] pointer-events-none" />
-      
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full flex flex-col items-center gap-6"
-      >
-        <div className="flex flex-col items-center gap-4">
-          <motion.div 
-            animate={{ rotate: 360 }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="w-24 h-24 rounded-full border-2 border-gold/20 flex items-center justify-center relative shadow-[0_0_40px_rgba(218,165,32,0.1)]"
-          >
-            <div className="absolute inset-0 rounded-full border-t-2 border-gold animate-spin" />
-            <div className="w-16 h-16 rounded-full bg-gold-gradient flex items-center justify-center text-black shadow-2xl shadow-gold/40 overflow-hidden">
-              <img 
-                src="https://ik.imagekit.io/7e0zp2ext/GLD.png?updatedAt=1772483693392" 
-                alt="Athena Logo" 
-                className="w-full h-full object-cover"
-                referrerPolicy="no-referrer"
-              />
-            </div>
-          </motion.div>
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-gold-gradient">Athena Chain</h1>
-            <p className="text-gray-400 text-sm mt-2">The Future of Digital Gold</p>
-          </div>
-        </div>
-
-        <div className="w-full glass rounded-3xl p-6 border-white/5 bg-white/[0.02] flex flex-col gap-4 text-sm leading-relaxed text-gray-300">
-          <div className="flex items-center gap-2 justify-center text-gold font-bold uppercase tracking-wider text-xs">
-            <Icon name="wrench" className="w-4 h-4 animate-pulse" />
-            System Updates Underway
-          </div>
-          <p className="text-center font-medium text-gray-300">
-            We are working on updates that are preventing information from being delivered correctly. We appreciate your patience.
-          </p>
-          <div className="h-[1px] bg-white/10 my-1" />
-          <p className="text-xs text-gray-400">
-            You can enjoy playing a game from one of our current partners:
-          </p>
-        </div>
-
-        <a 
-          href="https://t.me/TONEMPIRES_bot" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="w-full bg-gold-gradient text-black font-extrabold py-4 px-6 rounded-2xl gold-glow hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-sm tracking-wide uppercase font-sans cursor-pointer relative z-20"
-        >
-          <Icon name="send" className="w-5 h-5 fill-black/10" />
-          Join TON Empires Bot
-        </a>
-      </motion.div>
-    </div>
-  );
 
   const [user, setUser] = useState<User | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
